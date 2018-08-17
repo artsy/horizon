@@ -1,5 +1,12 @@
 <ul>
   <% @projects.each do |project| %>
-    <li><%= project.name %></li>
+    <li>
+      <%= project.name %>
+      <ul>
+        <% project.stages.order(position: :asc).each do |stage| %>
+          <li><%= stage.name %></li>
+        <% end %>
+      </ul>
+    </li>
   <% end %>
 </ul>
