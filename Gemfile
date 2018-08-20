@@ -35,6 +35,7 @@ gem 'jbuilder', '~> 2.5'
 #gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'acts_as_list' # order Project#stages
+gem 'releasecop', '>= 0.0.9' # compare release stages
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
