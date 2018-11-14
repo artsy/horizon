@@ -8,17 +8,20 @@ class ComparisonService
   end
 
   def refresh_comparisons
-    checker = Releasecop::Checker.new(
-      project.name,
-      project.stages.order(position: :asc).map{|s| build_manifest_item(s) }
-    )
-    refreshed_at = Time.now
-    result = checker.check # build comparisons
-    if project.snapshot && equivalent_snapshots?(project.snapshot, result)
-      project.snapshot.update!(refreshed_at: refreshed_at)
-    else
-      store_new_snapshot!(project, result, refreshed_at)
-      clean_up_old_snapshots
+    Dir.mktmpdir(['releasecop', project.name]) do |dir|
+      checker = Releasecop::Checker.new(
+        project.name,
+        project.stages.order(position: :asc).map{|s| build_manifest_item(s) },
+        dir
+      )
+      refreshed_at = Time.now
+      result = checker.check # build comparisons
+      if project.snapshot && equivalent_snapshots?(project.snapshot, result)
+        project.snapshot.update!(refreshed_at: refreshed_at)
+      else
+        store_new_snapshot!(project, result, refreshed_at)
+        clean_up_old_snapshots
+      end
     end
   end
 
