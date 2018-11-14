@@ -20,7 +20,8 @@ spec:
       name: horizon-web
     spec:
       containers:
-      - env:
+      - name: horizon-web
+        env:
         - name: RAILS_ENV
           value: production
         - name: RAILS_SERVE_STATIC_FILES
@@ -36,7 +37,6 @@ spec:
             name: horizon-environment
         image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
         imagePullPolicy: Always
-        name: horizon-web
         ports:
         - containerPort: 3000
         resources:
@@ -117,7 +117,7 @@ spec:
     spec:
       containers:
       - name: horizon-sidekiq
-      - env:
+        env:
         - name: RAILS_ENV
           value: production
         - name: RAILS_LOG_TO_STDOUT
