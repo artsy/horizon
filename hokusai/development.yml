@@ -1,0 +1,37 @@
+---
+version: '2'
+services:
+  horizon:
+    env_file: ../.env
+    depends_on:
+    - horizon-postgres
+    - horizon-redis
+    environment:
+    - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
+    - REDIS_URL=redis://horizon-redis
+    extends:
+      file: build.yml
+      service: horizon
+    ports:
+    - 3000:3000
+    volumes:
+    - ../:/app
+  horizon-sidekiq:
+    command: bundle exec sidekiq
+    depends_on:
+    - horizon-postgres
+    - horizon-redis
+    environment:
+    - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
+    - REDIS_URL=redis://horizon-redis
+    extends:
+      file: build.yml
+      service: horizon
+    volumes:
+    - ../:/app
+  horizon-postgres:
+    image: postgres:9.5
+    environment:
+    - POSTGRES_DB=horizon_development
+  horizon-redis:
+    image: redis:3.2-alpine

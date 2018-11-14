@@ -1,0 +1,15 @@
+<ul>
+  <% @projects.each do |project| %>
+    <li>
+      <%= project.name %>
+      <ul>
+        <% project.stages.order(position: :asc).each_cons(2) do |ahead, behind| %>
+          <%
+            comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
+          %>
+          <li><%= ahead.name %> &rarr; <%= behind.name %><%= " (#{comparison.description.join(', ')})" if comparison && !comparison.released? %></li>
+        <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ul>

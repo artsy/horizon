@@ -1,0 +1,5 @@
+<ul>
+  <% @organizations.each do |org| %>
+    <li><%= link_to org.name, projects_path(organization_id: org.id) %></li>
+  <% end %>
+</ul>
