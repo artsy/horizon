@@ -1,0 +1,152 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: horizon-web
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: horizon
+        component: web
+        layer: application
+      name: horizon-web
+    spec:
+      containers:
+      - env:
+        - name: RAILS_ENV
+          value: production
+        - name: RAILS_SERVE_STATIC_FILES
+          value: 'true'
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
+        - name: TRACE_AGENT_HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        envFrom:
+        - configMapRef:
+            name: horizon-environment
+        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+        imagePullPolicy: Always
+        name: horizon-web
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 500Mi
+        readinessProbe:
+          httpGet:
+            port: 3000
+            path: /robots.txt
+            httpHeaders:
+            - name: X-Forwarded-Proto
+              value: https
+      dnsPolicy: Default
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                - foreground
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: horizon
+    component: web
+    layer: application
+  name: horizon-web
+  namespace: default
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:iam::585031190124:server-certificate/2018-01-17_artsy-net-wildcard"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    name: https
+    targetPort: 3000
+  - port: 80
+    protocol: TCP
+    name: http
+    targetPort: 3000
+  selector:
+    app: horizon
+    layer: application
+    component: web
+  sessionAffinity: None
+  type: LoadBalancer
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: horizon-sidekiq
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: horizon
+        layer: application
+        component: sidekiq
+      name: horizon-sidekiq
+      namespace: default
+    spec:
+      containers:
+      - name: horizon-sidekiq
+      - env:
+        - name: RAILS_ENV
+          value: production
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
+        - name: TRACE_AGENT_HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        envFrom:
+        - configMapRef:
+            name: horizon-environment
+        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+        imagePullPolicy: Always
+        args: ["bundle", "exec", "sidekiq"]
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - -f
+            - sidekiq
+        resources:
+          requests:
+            cpu: "0.5"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                - background
