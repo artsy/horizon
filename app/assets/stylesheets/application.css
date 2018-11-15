@@ -20,3 +20,22 @@
   -webkit-border-radius: 50%;
   width: 1.5em;
 }
+
+div.project {
+  border-style: solid;
+  border-width: 1px;
+  clear: both;
+}
+div.project_name {
+  float: left;
+}
+div.project_stage {
+  border-style: dashed;
+  border-width: 1px;
+  float: left;
+}
+div.project_comparison {
+  border-style: dotted;
+  border-width: 1px;
+  float: left;
+}

@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   def index
-    @projects = Project.where(projects_params)
+    @projects = Project.where(projects_params).order('name ASC')
   end
 
   private
