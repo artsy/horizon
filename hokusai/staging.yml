@@ -131,7 +131,7 @@ spec:
             name: horizon-environment
         image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
         imagePullPolicy: Always
-        args: ["bundle", "exec", "sidekiq"]
+        args: ["bundle", "exec", "sidekiq", "-c", "1"]
         livenessProbe:
           exec:
             command:

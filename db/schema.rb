@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_20_174000) do
+ActiveRecord::Schema.define(version: 2018_11_15_030011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,17 @@ ActiveRecord::Schema.define(version: 2018_08_20_174000) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.string "name"
+    t.bigint "organization_id"
+    t.string "basic_username"
+    t.string "basic_password"
+    t.jsonb "environment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_profiles_on_organization_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -63,14 +74,18 @@ ActiveRecord::Schema.define(version: 2018_08_20_174000) do
     t.string "hokusai"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "profile_id"
+    t.index ["profile_id"], name: "index_stages_on_profile_id"
     t.index ["project_id"], name: "index_stages_on_project_id"
   end
 
   add_foreign_key "comparisons", "snapshots"
   add_foreign_key "comparisons", "stages", column: "ahead_stage_id"
   add_foreign_key "comparisons", "stages", column: "behind_stage_id"
+  add_foreign_key "profiles", "organizations"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "snapshots"
   add_foreign_key "snapshots", "projects"
+  add_foreign_key "stages", "profiles"
   add_foreign_key "stages", "projects"
 end

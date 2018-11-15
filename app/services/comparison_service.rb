@@ -30,10 +30,12 @@ class ComparisonService
   def build_manifest_item(stage)
     {
       'name' => stage.name,
-      'git' => stage.git_remote,
+      'git' => construct_git(stage),
       'tag_pattern' => stage.tag_pattern,
       'branch' => stage.branch,
-      'hokusai' => stage.hokusai
+      'hokusai' => stage.hokusai,
+      'aws_access_key_id' => stage.profile&.environment&.fetch('AWS_ACCESS_KEY_ID'),
+      'aws_secret_access_key' => stage.profile&.environment&.fetch('AWS_SECRET_ACCESS_KEY')
     }
   end
 
@@ -59,5 +61,16 @@ class ComparisonService
     ids = project.snapshots.pluck(:id).sort
     return unless ids.size > KEEP_OLD_SNAPSHOTS
     project.snapshots.where('id < ?', ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
+  end
+
+  def construct_git(stage)
+    if stage.profile&.basic_username || stage.profile&.basic_password
+      uri = URI(stage.git_remote)
+      uri.user = stage.profile&.basic_username
+      uri.password = stage.profile&.basic_password
+      uri.to_s
+    else
+      stage.git_remote
+    end
   end
 end
