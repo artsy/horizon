@@ -7,7 +7,16 @@
           <%
             comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
           %>
-          <li><%= ahead.name %> &rarr; <%= behind.name %><%= " (#{comparison.description.join(', ')})" if comparison && !comparison.released? %></li>
+          <li>
+            <%= ahead.name %> &rarr; <%= behind.name %>
+            <% if comparison && !comparison.released? %>
+              <ul>
+                <% comparison.description.each do |line| %>
+                  <li><%= line %></li>
+                <% end %>
+              </ul>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </li>
