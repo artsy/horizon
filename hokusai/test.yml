@@ -5,11 +5,9 @@ services:
     command: bundle exec rake db:setup spec
     depends_on:
     - horizon-postgres
-    - horizon-redis
     environment:
     - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
     - RAILS_ENV=test
-    - REDIS_URL=redis://horizon-redis
     extends:
       file: build.yml
       service: horizon
@@ -17,5 +15,3 @@ services:
     - ../:/app
   horizon-postgres:
     image: postgres:9.5
-  horizon-redis:
-    image: redis:3.2-alpine
