@@ -17,7 +17,7 @@ services:
     volumes:
     - ../:/app
   horizon-sidekiq:
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -c 1
     depends_on:
     - horizon-postgres
     - horizon-redis

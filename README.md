@@ -21,4 +21,5 @@ TO DO
 * sanitize URLs with tokens/credentials in them
 * instead of including tokens in each git URL, define "profiles" associated with each organization and project
 * Experiment with programmatic git/hokusai access instead of shelling out
-
+* button to refresh project on-demand
+* Fix ugly AWS credentials -> hokusai flow
