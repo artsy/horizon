@@ -4,3 +4,9 @@
 require_relative 'config/application'
 
 Rails.application.load_tasks
+
+namespace :cron do
+  task refresh_comparisons: :environment do
+    ComparisonService.refresh_all_comparisons
+  end
+end

@@ -11,5 +11,9 @@ ActiveAdmin.register Project do
 #   permitted << :other if params[:action] == 'create' && current_user.admin?
 #   permitted
 # end
-
+  sidebar 'Associated Data', only: %i[show edit] do
+    ul do
+      li link_to 'Stages', admin_project_stages_path(project)
+    end
+  end
 end

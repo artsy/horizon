@@ -7,6 +7,12 @@ class ComparisonService
     @project = project
   end
 
+  def self.refresh_all_comparisons
+    Project.all.each do |project|
+      new(project).refresh_comparisons
+    end
+  end
+
   def refresh_comparisons
     Dir.mktmpdir(['releasecop', project.name]) do |dir|
       checker = Releasecop::Checker.new(
