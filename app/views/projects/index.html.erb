@@ -12,7 +12,7 @@
             <% if comparison && !comparison.released? %>
               <ul>
                 <% comparison.description.each do |line| %>
-                  <li><%= line %></li>
+                  <li><%= gravatar_from_log_line(line) %> <%= line %></li>
                 <% end %>
               </ul>
             <% end %>
