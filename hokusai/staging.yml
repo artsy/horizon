@@ -101,7 +101,7 @@ kind: CronJob
 metadata:
   name: horizon-refresh-cron
 spec:
-  schedule: */10 * * * *
+  schedule: "*/10 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
