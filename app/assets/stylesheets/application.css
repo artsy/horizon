@@ -20,3 +20,25 @@
   -webkit-border-radius: 50%;
   width: 1.5em;
 }
+
+div.project {
+  padding: 1em 0;
+}
+td.project_stage {
+  border-top: 1px solid;
+}
+td.project_stage div {
+  transform: rotate(-90deg);
+}
+td.project_comparison[data-released="true"] {
+  border-top: 1px solid;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+td.project_comparison[data-released="false"] {
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+}
