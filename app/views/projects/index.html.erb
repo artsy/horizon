@@ -1,22 +1,26 @@
 <% @projects.each do |project| %>
+  <% stages = project.stages.order(position: :asc) %>
   <div class="project">
     <div class="project_name"><%= project.name %></div>
-    <% stages = project.stages.order(position: :asc) %>
-    <% stages.each_cons(2) do |ahead, behind| %>
-      <div class="project_stage" data-stage-name="<%= ahead.name %>"><%= ahead.name %></div>
-      <%
-        comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
-      %>
-      <div class="project_comparison" data-unknown="<%= comparison.nil? %>" data-released="<%= comparison&.released? %>">
-        <% if comparison && !comparison.released? %>
-          <ul>
-            <% comparison.description.each do |line| %>
-              <li><%= gravatar_from_log_line(line) %> <%= line %></li>
+    <table width="100%">
+      <tr>
+        <% stages.each_cons(2) do |ahead, behind| %>
+          <td class="project_stage" data-stage-name="<%= ahead.name %>"><div><%= ahead.name %></div></td>
+          <%
+            comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
+          %>
+          <td class="project_comparison" data-unknown="<%= comparison.nil? %>" data-released="<%= comparison&.released? %>">
+            <% if comparison && !comparison.released? %>
+              <ul>
+                <% comparison.description.each do |line| %>
+                  <li><%= gravatar_from_log_line(line) %> <%= line %></li>
+                <% end %>
+              </ul>
             <% end %>
-          </ul>
+          </td>
         <% end %>
-      </div>
-    <% end %>
-    <div class="project_stage" data-stage-name="<%= stages.last.name %>"><%= stages.last.name %></div>
+        <td class="project_stage" data-stage-name="<%= stages.last.name %>"><div><%= stages.last.name %></div></td>
+      </tr>
+    </table>
   </div>
 <% end %>
