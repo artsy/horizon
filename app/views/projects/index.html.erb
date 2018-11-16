@@ -1,26 +1,33 @@
-<% @projects.each do |project| %>
-  <% stages = project.stages.order(position: :asc) %>
-  <div class="project">
-    <div class="project_name"><%= project.name %></div>
-    <table width="100%">
-      <tr>
-        <% stages.each_cons(2) do |ahead, behind| %>
-          <td class="project_stage" data-stage-name="<%= ahead.name %>"><div><%= ahead.name %></div></td>
-          <%
-            comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
-          %>
-          <td class="project_comparison" data-unknown="<%= comparison.nil? %>" data-released="<%= comparison&.released? %>">
-            <% if comparison && !comparison.released? %>
-              <ul>
-                <% comparison.description.each do |line| %>
-                  <li><%= gravatar_from_log_line(line) %> <%= line %></li>
-                <% end %>
-              </ul>
-            <% end %>
-          </td>
-        <% end %>
-        <td class="project_stage" data-stage-name="<%= stages.last.name %>"><div><%= stages.last.name %></div></td>
-      </tr>
-    </table>
-  </div>
-<% end %>
+<div class="projects">
+  <% @projects.each do |project| %>
+    <div class="project">
+      <%
+        fully_released = project.snapshot&.comparisons&.all?(&:released?)
+      %>
+      <div class="project_name">
+        <%= project_status_icon(project) %>
+        <%= project.name %>
+      </div>
+      <table width="100%">
+        <tr>
+          <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
+            <%= render partial: 'stage', locals: { stage: ahead, fully_released: fully_released } %>
+            <%
+              comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
+            %>
+            <td class="project_comparison" data-unknown="<%= comparison.nil? %>" data-released="<%= comparison&.released? %>">
+              <% if comparison && !comparison.released? %>
+                <ul>
+                  <% comparison.description.each do |line| %>
+                    <li><%= gravatar_from_log_line(line) %> <%= render_log_line(project, line) %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </td>
+          <% end %>
+          <%= render partial: 'stage', locals: { stage: project.stages.ordered.last, fully_released: fully_released } %>
+        </tr>
+      </table>
+    </div>
+  <% end %>
+</div>
