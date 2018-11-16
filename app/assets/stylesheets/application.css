@@ -27,9 +27,6 @@ div.project {
 td.project_stage {
   border-top: 1px solid;
 }
-td.project_stage div {
-  transform: rotate(-90deg);
-}
 td.project_comparison[data-released="true"] {
   border-top: 1px solid;
   border-left: 0;
