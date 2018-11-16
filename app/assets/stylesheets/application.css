@@ -26,7 +26,11 @@ div.projects {
   margin: 1em;
 }
 div.project {
-  padding: 0 0 1em 0;
+  padding: 0 0 1.25em 0;
+}
+
+div.project .project_name {
+  font-weight: bold;
 }
 
 .project table {
