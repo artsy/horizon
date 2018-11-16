@@ -3,16 +3,6 @@ Horizon
 
 Visual representations of release pipelines.
 
-Git references (`Stage#git_remote`) should be in this form:
-
-For Heroku:
-
-    https://heroku:<API_TOKEN>@git.heroku.com/<APP_NAME>.git
-
-For github:
-
-    https://<API_TOKEN>@github.com/<USER_OR_ORG>/<REPO>.git
-
 TO DO
 ---
 * ~~Support hokusai~~
