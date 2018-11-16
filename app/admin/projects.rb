@@ -16,4 +16,6 @@ ActiveAdmin.register Project do
       li link_to 'Stages', admin_project_stages_path(project)
     end
   end
+
+  permit_params :organization_id, :name
 end

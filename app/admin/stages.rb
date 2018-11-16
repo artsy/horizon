@@ -12,4 +12,6 @@ ActiveAdmin.register Stage do
 #   permitted
 # end
   belongs_to :project
+
+  permit_params :project_id, :profile_id, :name, :position, :git_remote, :tag_pattern, :branch, :hokusai
 end
