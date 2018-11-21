@@ -2,7 +2,7 @@ module ProjectsHelper
   LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9\-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/ # %h %ad %s (%an, %ae)
   GITHUB_REMOTE_EXPR = /https:\/\/github.com\/(?<org>[^\/]+)\/(?<project>[^\.]+).git/
   STATUS_ICONS = {
-    unknown: '&#10067;',
+    unknown: '?',
     warning: '&#10071;',
     released: '&check;'
   }
