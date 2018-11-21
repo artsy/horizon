@@ -3,6 +3,62 @@ Horizon
 
 Visual representations of release pipelines.
 
+Design
+---
+* `Organization`s have many `Project`s
+* Each `Project` has an associated list of `Stage`s, with their order determined by `Stage#position` (e.g., _master_, _staging_, and _production_)
+* `Stage`s must describe how to get information about their current state. This takes the form of a `#git_remote` (e.g., referring to Github or Heroku), optional `#branch` name (default: _master_), optional `#hokusai` environment (e.g., _staging_ or _production_), or `#tag_pattern` (e.g., _release-*_). The [`releasecop` gem](https://github.com/joeyAghion/releasecop) is used internally to determine stage diffs, so see that project for more detail.
+* `Stage`s can optionally be associated with a `Profile` that stores credentials for accessing git providers or AWS.
+* `Snapshot`s capture the complete state of a project's stages at a point in time. Each `Snapshot` has associated `Comparison`s between the consecutive stages of a project (e).g., a comparison between _master_ and _staging_, and a second between _staging_ and _production_)
+* A cron periodically reevaluates these comparisons, creating a new snapshot if the state has changed at all.
+
+Setup
+---
+
+    hokusai dev run 'bundle exec rake db:migrate'
+    hokusai dev start
+
+The administrative UI can then be found at http://localhost:3000/admin. Create organizations, projects, profiles, and stages from there. Alternatively, here's an example using the console:
+
+    org = Organization.create!(name: 'Acme')
+    website = org.projects.create!(name: 'acme.org')
+    heroku = org.profiles.create!(
+      name: 'heroku',
+      basic_username: 'heroku',
+      basic_password: '<heroku_token>'
+    )
+    github_aws = org.profiles.create!(
+      name: 'github/aws',
+      basic_username: 'github',
+      basic_password: '<github_token>',
+      environment: {'AWS_ACCESS_KEY_ID' => '<aws_id>', 'AWS_SECRET_ACCESS_KEY' => '<aws_secret>'}
+    )
+    website.stages.create!(
+      name: 'master',
+      git_remote: 'https://github.com/acme/website.git',
+      profile: github_aws
+    )
+    website.stages.create!(
+      name: 'staging',
+      git_remote: 'https://git.heroku.com/acme-website-staging.git',
+      profile: heroku
+    )
+    website.stages.create!(
+      name: 'production',
+      git_remote: 'https://git.heroku.com/acme-website-production.git',
+      profile: heroku
+    )
+
+Once the cron has run, its snapshots are visible from the `/projects` page.
+
+Deployment
+---
+
+Deployed manually via [hokusai](https://github.com/artsy/hokusai) to _only_ a staging environment.
+
+    hokusai registry push --force
+    hokusai staging deploy latest
+
 TO DO
 ---
 * ~~Support hokusai~~
