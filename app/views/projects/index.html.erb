@@ -1,9 +1,6 @@
 <div class="projects">
   <% @projects.each do |project| %>
     <div class="project">
-      <%
-        fully_released = project.snapshot&.comparisons&.all?(&:released?)
-      %>
       <div class="project_name">
         <%= project_status_icon(project) %>
         <%= project.name %>
@@ -11,7 +8,7 @@
       <table width="100%">
         <tr>
           <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
-            <%= render partial: 'stage', locals: { stage: ahead, fully_released: fully_released } %>
+            <%= render partial: 'stage', locals: { stage: ahead, fully_released: project.fully_released? } %>
             <%
               comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
             %>
@@ -25,7 +22,7 @@
               <% end %>
             </td>
           <% end %>
-          <%= render partial: 'stage', locals: { stage: project.stages.ordered.last, fully_released: fully_released } %>
+          <%= render partial: 'stage', locals: { stage: project.stages.ordered.last, fully_released: project.fully_released? } %>
         </tr>
       </table>
     </div>
