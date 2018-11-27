@@ -22,6 +22,10 @@ module ProjectsHelper
     end
   end
 
+  def project_anchor(project)
+    "project-#{project.id}"
+  end
+
   def get_status(project)
     return :unknown if project.snapshot.nil?
     return :released if project.snapshot&.comparisons&.all?(&:released?)

@@ -1,9 +1,9 @@
 <div class="projects">
   <% @projects.each do |project| %>
-    <div class="project">
+    <div class="project" id="<%= project_anchor(project) %>">
       <div class="project_name">
         <%= project_status_icon(project) %>
-        <%= project.name %>
+        <%= link_to project.name, "##{project_anchor(project)}" %>
       </div>
       <table width="100%">
         <tr>

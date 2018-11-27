@@ -32,7 +32,13 @@ div.project {
 div.project .project_name {
   font-weight: bold;
 }
-
+div.project .project_name a {
+  color: currentColor;
+  text-decoration: none;
+}
+div.project:target {
+  background-color: #ffc;
+}
 .project table {
   border-collapse: separate;
   border-spacing: 0;
