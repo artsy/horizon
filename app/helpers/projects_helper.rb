@@ -40,6 +40,10 @@ module ProjectsHelper
     line.match(/, ([^ ]*)\)$/)&.[](1)
   end
 
+  def first_name_from_log(line)
+    line.match(LOG_LINE_EXPR)[:name].split(' ')[0]
+  end
+
   def gravatar_from_email(email)
     return if email.blank?
     hash = Digest::MD5.hexdigest(email.downcase)

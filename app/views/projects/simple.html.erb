@@ -1,0 +1,133 @@
+
+<link rel="stylesheet" type="text/css" href="https://webfonts.artsy.net/unica-webfonts.css" />
+<style type="text/css">
+body {
+  font-family: "Unica77LLWebRegular"
+}
+svg {
+  padding-top: 60px;
+  padding-left: 60px;
+  clear: both;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+.released {
+  padding-left: 48px;
+}
+.released h2 {
+  float: left;
+  margin-left: 32px;
+}
+
+.green-circle {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px; 
+  background-color: #35D750;
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.red-circle {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px; 
+  background-color: #D73535;
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.todo {
+  padding-left: 80px;
+}
+
+.todo .project {
+  width: 300px;
+  float: left;
+  margin-right: 45px;
+}
+
+.todo .project .info {
+  border-left: black 1px solid;
+  margin-left: 5px;
+  margin-right: 16px;
+  min-height: 40px;
+}
+
+.todo .project .number {
+  font-size: 30px;
+  font-weight: bold;
+  height: 60px;
+  width: 60px;
+  text-align: center;
+  float: left;
+}
+
+.todo .project .release {
+  float: left;
+}
+
+.todo .project .who {
+  float: left;
+  clear: left;
+}
+
+</style>
+
+<svg width="293px" height="59px" viewBox="0 0 293 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-26.000000, -62.000000)">
+            <text id="Commits-since-last-d" font-family="Unica77LLWebRegular" font-size="20" font-weight="400" fill="#000000">
+                <tspan x="53.1" y="99">Commits since last deploy</tspan>
+            </text>
+            <rect id="Rectangle" stroke="#000000" stroke-width="2" x="27" y="63" width="291" height="57" rx="6"></rect>
+        </g>
+    </g>
+</svg>
+
+<div class="todo">
+  <% @needs_work.each do |project| %>
+    <div class="project">
+      <h2><div class="red-circle"></div><%= project.name.titleize %></h2>
+        <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
+          <% comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
+          <% if comparison && !comparison.released? %>
+            <div class="info">
+              <div class="number"><%= comparison.description.length %></div>
+              <div class="release">
+                <%= ahead.name.titleize %> to<br /><%= behind.name.titleize %><br />
+              </div>
+              <div class="who">
+                <%= comparison.description.map { |line| first_name_from_log(line).titleize }.uniq.to_sentence %>
+              </div>
+          </div>
+          <% end %>
+        <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div style="clear:both;">
+
+<svg width="125px" height="59px" viewBox="0 0 125 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-26.000000, -514.000000)">
+            <text id="Up-to-Date" font-family="Unica77LLWebRegular" font-size="20" font-weight="400" fill="#000000">
+                <tspan x="41.24" y="551">Up to Date</tspan>
+            </text>
+            <rect id="Rectangle-Copy-2" stroke="#000000" stroke-width="2" x="27" y="515" width="123" height="57" rx="6"></rect>
+        </g>
+    </g>
+</svg>
+
+<div class="released">
+  <% @released.each do |project| %>
+    <h2><div class="green-circle"></div><%= project.name.titleize %></h2>
+  <% end %>
+</div>
+
