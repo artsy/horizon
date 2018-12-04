@@ -91,7 +91,7 @@ h2 {
 </svg>
 
 <div class="todo">
-  <% @needs_work.each do |project| %>
+  <% @projects.reject(&:fully_released?).each do |project| %>
     <div class="project">
       <h2><div class="red-circle"></div><%= project.name.titleize %></h2>
         <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
@@ -105,7 +105,7 @@ h2 {
               <div class="who">
                 <%= comparison.description.map { |line| first_name_from_log(line).titleize }.uniq.to_sentence %>
               </div>
-          </div>
+            </div>
           <% end %>
         <% end %>
     </div>
@@ -126,8 +126,7 @@ h2 {
 </svg>
 
 <div class="released">
-  <% @released.each do |project| %>
+  <% @projects.select(&:fully_released?).each do |project| %>
     <h2><div class="green-circle"></div><%= project.name.titleize %></h2>
   <% end %>
 </div>
-

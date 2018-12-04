@@ -20,7 +20,7 @@ RSpec.feature "Organizations", type: :feature do
     visit '/'
     expect(page).to have_content('Artsy')
 
-    click_link 'Artsy'
+    click_link 'detail', match: :first
     expect(page).to have_content('shipping')
     expect(page).not_to have_content('foo_php')
     expect(page).to have_content('master')
