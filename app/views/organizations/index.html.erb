@@ -1,5 +1,8 @@
 <ul>
   <% @organizations.each do |org| %>
-    <li><%= link_to org.name, projects_path(organization_id: org.id) %></li>
+    <li>
+        <%= link_to org.name, projects_path(organization_id: org.id) %>, 
+        <%= link_to "dashboard", "/projects/" + org.id.to_s + "/dashboard" %>
+    </li>
   <% end %>
 </ul>
