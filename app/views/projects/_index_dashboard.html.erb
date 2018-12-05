@@ -111,7 +111,7 @@ h2 {
           <% comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
           <% if comparison && !comparison.released? %>
             <div class="comparison">
-              <div class="number"><%= link_to comparison.description.length, params.permit(:organization_id).merge(view: 'detail', anchor: project_anchor(project)) %></div>
+              <div class="number"><%= link_to comparison.description.length, params.permit(:organization_id).merge(view: 'detail', anchor: project_anchor(project)), 'data-turbolinks' => false %></div>
               <div class="release">
                 <%= ahead.name.titleize %> to<br /><%= behind.name.titleize %><br />
               </div>
