@@ -52,11 +52,18 @@ h2 {
   margin-right: 45px;
 }
 
-.todo .project .info {
+.todo .project .comparison {
   border-left: black 1px solid;
+  margin-bottom: 20px;
   margin-left: 5px;
   margin-right: 16px;
   min-height: 40px;
+}
+
+.todo .project .comparison:after {
+  content: "";
+  display: table;
+  clear: left;
 }
 
 .todo .project .number {
@@ -68,6 +75,11 @@ h2 {
   float: left;
 }
 
+.todo .project .number a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 .todo .project .release {
   float: left;
 }
@@ -75,6 +87,7 @@ h2 {
 .todo .project .who {
   float: left;
   clear: left;
+  margin-left: 5px
 }
 
 </style>
@@ -97,8 +110,8 @@ h2 {
         <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
           <% comparison = project.snapshot&.comparisons&.detect{|c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
           <% if comparison && !comparison.released? %>
-            <div class="info">
-              <div class="number"><%= comparison.description.length %></div>
+            <div class="comparison">
+              <div class="number"><%= link_to comparison.description.length, params.permit(:organization_id).merge(view: 'detail', anchor: project_anchor(project)) %></div>
               <div class="release">
                 <%= ahead.name.titleize %> to<br /><%= behind.name.titleize %><br />
               </div>
