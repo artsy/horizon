@@ -2,7 +2,8 @@
 <link rel="stylesheet" type="text/css" href="https://webfonts.artsy.net/unica-webfonts.css" />
 <style type="text/css">
 body {
-  font-family: "Unica77LLWebRegular"
+  font-family: "Unica77LLWebRegular";
+  font-size: 14px;
 }
 
 h1 {
@@ -12,11 +13,14 @@ h1 {
   line-height: 24px;
   clear: both;
   margin: 30px;
+  font-family: "Unica77LLWebMedium";
+  font-weight: normal;
 }
 
 h2 {
   font-size: 20px;
-  font-weight: bold;
+  font-family: "Unica77LLWebMedium";
+  font-weight: normal;
   color: black;
 }
 
@@ -35,6 +39,7 @@ p {
 
 .todo .project {
   border: 1px solid #E5E5E5;
+  border-radius: 2px;
   padding: 16px;
   width: calc(286px - 32px);
   height: calc(269px - 32px);
@@ -72,20 +77,29 @@ p {
 }
 
 .todo .project .release {
-  font-weight: bold;
+  font-family: "Unica77LLWebMedium";
+  font-size: 18px;
 }
 
 .todo .project .who {
   margin-left: 26px;
   color: #666666;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-y: hidden;
 }
 
 .todo .project .no-changes {
   margin-left: 26px;
+  color: #666666;
 }
 
 .todo .project .changes {
   margin-left: 26px;
+}
+
+.todo .project p {
+  color: #666666;
 }
 
 .circle {
@@ -119,6 +133,7 @@ p {
   margin: 30px;
   margin-top: 0;
   float: left;
+  border-radius: 2px;
 }
 
 .todo .circle {
@@ -133,6 +148,7 @@ p {
 
 .released-project p {
   margin-top: 3px;
+  color: #666666;
 }
 
 </style>
@@ -173,7 +189,7 @@ p {
   <% end %>
 </div>
 
-<h1>Up to date</h1>
+<h1 style="padding-top:30px;">Up to date</h1>
 
 <div class="released">
   <% @projects.select(&:fully_released?).each do |project| %>
