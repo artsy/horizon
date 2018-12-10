@@ -8,12 +8,26 @@ class ComparisonService
   end
 
   def self.refresh_all_comparisons
-    Project.all.each do |project|
-      new(project).refresh_comparisons
+    new_snapshots = []
+    Organization.all.map do |org|
+      new_snapshots += refresh_comparisons_for_organization(org)
     end
+    ActionCable.server.broadcast(ProjectChannel.channel_name, newSnapshot: true) if new_snapshots.any?
+    new_snapshots
+  end
+
+  def self.refresh_comparisons_for_organization(org)
+    new_snapshots = []
+    org.projects.each do |project|
+      new_snapshots << new(project).refresh_comparisons
+    end
+    new_snapshots.compact!
+    ActionCable.server.broadcast(ProjectChannel.channel_name(org.id), newSnapshots: true) if new_snapshots.any?
+    new_snapshots
   end
 
   def refresh_comparisons
+    new_snapshot = nil
     Dir.mktmpdir(['releasecop', project.name]) do |dir|
       checker = Releasecop::Checker.new(
         project.name,
@@ -25,10 +39,11 @@ class ComparisonService
       if project.snapshot && equivalent_snapshots?(project.snapshot, result)
         project.snapshot.update!(refreshed_at: refreshed_at)
       else
-        store_new_snapshot!(project, result, refreshed_at)
+        new_snapshot = store_new_snapshot!(project, result, refreshed_at)
         clean_up_old_snapshots
       end
     end
+    new_snapshot
   end
 
   private
