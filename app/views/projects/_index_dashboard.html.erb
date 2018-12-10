@@ -2,29 +2,32 @@
   <h1>Out of sync</h1>
 
   <div class="todo">
-    <% @todo = @projects.reject(&:fully_released?).sort_by { |p| p.snapshot&.comparisons&.map { |c| c.description.length }.sum }.reverse %>
-    <% @todo.each do |project| %>
-      <% commits = project.snapshot&.comparisons&.map { |c| c.description.length }.sum  %>
-      <div class="project <%= commits > 10 ? "red" : "" %> ">
+    <% @projects.reject(&:fully_released?).sort_by(&:total_comparison_size).reverse.each do |project| %>
+      <div class="project <%= healthy_count_class project.total_comparison_size %>">
         <h2><%= project.name.titleize %></h2>
         <p><%= project.description %></p>
         <div class="comparisons">
           <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
-            <% comparison = project.snapshot&.comparisons&.detect{ |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
-            <% if comparison %>
-              <div class="comparison">
-                <% commit_length = comparison.description.length %>
-                <% circle_color = commit_length == 0 ? "green" : commit_length > 10 ? "red": "yellow" %>
-                <div class="release"><div class="circle <%= circle_color %>"></div><%= behind.name.titleize %><br /></div>
-                <% if comparison.released? %>
-                  <div class="no-changes">Up to date</div>
-                <% else %>
-                  <div class="changes">
-                    <% message = commit_length.to_s + (commit_length > 1 ? " commits behind" : " commit behind")  %>
-                    <%= link_to message, params.permit(:organization_id).merge(view: 'detail', anchor: project_anchor(project)), 'data-turbolinks' => false %>
-                  </div>
-                  <div class="who"><%= comparison.description.map { |line| first_name_from_log(line).titleize }.uniq.to_sentence %></div>
-                <% end %>
+            <% if comparison = project.snapshot&.comparisons&.detect{ |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
+              <div class="comparison <%= healthy_count_class comparison.comparison_size %>">
+                <div class="stage">
+                  <div class="circle"></div>
+                  <%= behind.name.titleize %><br />
+                </div>
+                <div class="changes">
+                  <% if comparison.released? %>
+                    Up to date
+                  <% else %>
+                    <%= link_to \
+                      "#{pluralize(comparison.description.length, 'commit')} behind",
+                      params.permit(:organization_id).merge(view: 'detail', anchor: project_anchor(project)),
+                      'data-turbolinks' => false
+                    %>
+                  <% end %>
+                </div>
+                <div class="who">
+                  <%= comparison.description.map { |line| first_name_from_log(line).titleize }.uniq.to_sentence %>
+                </div>
               </div>
             <% end %>
           <% end %>

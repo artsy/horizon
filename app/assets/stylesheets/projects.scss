@@ -148,8 +148,11 @@
     color: inherit;
     text-decoration: inherit;
   }
+  .todo .project a:hover {
+    text-decoration: underline;
+  }
 
-  .todo .project .release {
+  .todo .project .stage {
     font-family: "Unica77LLWebMedium";
     font-size: 18px;
   }
@@ -162,13 +165,11 @@
     overflow-y: hidden;
   }
 
-  .todo .project .no-changes {
-    margin-left: 26px;
-    color: #666666;
-  }
-
   .todo .project .changes {
     margin-left: 26px;
+  }
+  .todo .project .comparison.green .changes {
+    color: #666666;
   }
 
   .todo .project p {
@@ -185,15 +186,15 @@
     margin-right: 16px;
   }
 
-  .circle.green {
+  .comparison.green .circle {
     background-color: #0FDB82;
   }
 
-  .circle.yellow {
+  .comparison.yellow .circle {
     background-color: #F1AF1B;
   }
 
-  .circle.red {
+  .comparison.red .circle {
     background-color: #F7625A;
   }
 

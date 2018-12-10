@@ -49,4 +49,12 @@ module ProjectsHelper
     hash = Digest::MD5.hexdigest(email.downcase)
     image_tag "https://www.gravatar.com/avatar/#{hash}", class: 'avatar'
   end
+
+  def healthy_count_class(count)
+    case count
+    when 0 then 'green'
+    when 1..10 then 'yellow'
+    else 'red'
+    end
+  end
 end

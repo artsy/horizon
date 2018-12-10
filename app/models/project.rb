@@ -7,4 +7,8 @@ class Project < ApplicationRecord
   def fully_released?
     !!snapshot&.comparisons&.all?(&:released?)
   end
+
+  def total_comparison_size
+    snapshot&.total_comparison_size || 0
+  end
 end
