@@ -4,4 +4,8 @@ class Comparison < ApplicationRecord
   belongs_to :behind_stage, class_name: 'Stage'
 
   acts_as_list scope: :snapshot
+
+  def comparison_size
+    description.length
+  end
 end
