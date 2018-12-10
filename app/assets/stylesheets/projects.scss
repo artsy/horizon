@@ -103,7 +103,7 @@
     height: 18px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow-y: hidden;
+    overflow: hidden;
   }
 
   .todo {
@@ -162,7 +162,7 @@
     color: #666666;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow-y: hidden;
+    overflow: hidden;
   }
 
   .todo .project .changes {
