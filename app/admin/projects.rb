@@ -17,5 +17,5 @@ ActiveAdmin.register Project do
     end
   end
 
-  permit_params :organization_id, :name
+  permit_params :organization_id, :name, :description
 end
