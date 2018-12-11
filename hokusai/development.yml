@@ -5,8 +5,10 @@ services:
     env_file: ../.env
     depends_on:
     - horizon-postgres
+    - horizon-redis
     environment:
     - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
+    - REDIS_URL=redis://horizon-redis
     extends:
       file: build.yml
       service: horizon
@@ -18,3 +20,5 @@ services:
     image: postgres:9.5
     environment:
     - POSTGRES_DB=horizon_development
+  horizon-redis:
+    image: redis:3.2-alpine
