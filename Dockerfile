@@ -5,15 +5,22 @@ ENV LANG C.UTF-8
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
 
-RUN apt-get update -qq && apt-get install -y nodejs python-pip && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update -qq && \
+    apt-get install -y nodejs nginx && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set up nginx
+RUN rm -v /etc/nginx/nginx.conf
+ADD config/nginx.conf /etc/nginx/
+ADD config/app.conf /etc/nginx/conf.d/
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN gem install bundler
 
 # throw errors if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
-
-# support hokusai registry commands
-RUN pip install --no-cache-dir hokusai
 
 # Set up working directory
 RUN mkdir /app
@@ -34,4 +41,4 @@ WORKDIR /app
 RUN bundle exec rake assets:precompile
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD nginx && bundle exec puma -C config/puma.rb
