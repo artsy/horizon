@@ -12,7 +12,7 @@ class ComparisonService
     Organization.all.map do |org|
       new_snapshots += refresh_comparisons_for_organization(org)
     end
-    ActionCable.server.broadcast(ProjectChannel.channel_name, newSnapshot: true) if new_snapshots.any?
+    ActionCable.server.broadcast(ProjectChannel.channel_name, newSnapshots: true) if new_snapshots.any?
     new_snapshots
   end
 
