@@ -6,8 +6,11 @@ ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_a
 RUN chmod +x /usr/local/bin/dumb-init
 
 RUN apt-get update -qq && \
-    apt-get install -y nodejs nginx && \
+    apt-get install -y nodejs nginx python-pip && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# support hokusai registry commands
+RUN pip install --no-cache-dir hokusai
 
 # Set up nginx
 RUN rm -v /etc/nginx/nginx.conf
