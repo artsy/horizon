@@ -20,6 +20,7 @@ ADD config/app.conf /etc/nginx/conf.d/
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN gem update --system
 RUN gem install bundler
 
 # throw errors if Gemfile has been modified since Gemfile.lock
