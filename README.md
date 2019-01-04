@@ -7,7 +7,7 @@ Visual representations of release pipelines.
 * Staging (only): [releases.artsy.net](https://releases.artsy.net)
 * GitHub: https://github.com/artsy/horizon
 * Point Team: [Platform](https://artsy.slack.com/messages/product-platform)
-
+* Deployment: builds of the `master` branch are automatically deployed to staging by CircleCI. There is no production environment.
 
 Design
 ---
@@ -56,14 +56,6 @@ The administrative UI can then be found at http://localhost:3000/admin. Create o
     )
 
 Once the cron has run, its snapshots are visible from the `/projects` page.
-
-Deployment
----
-
-Deployed manually via [hokusai](https://github.com/artsy/hokusai) to _only_ a staging environment.
-
-    hokusai registry push --force
-    hokusai staging deploy latest
 
 TO DO
 ---

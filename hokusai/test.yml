@@ -2,7 +2,7 @@
 version: '2'
 services:
   horizon:
-    command: bundle exec rake db:setup spec
+    command: ./hokusai/ci.sh
     depends_on:
     - horizon-postgres
     environment:
@@ -11,7 +11,5 @@ services:
     extends:
       file: build.yml
       service: horizon
-    volumes:
-    - ../:/app
   horizon-postgres:
     image: postgres:9.5
