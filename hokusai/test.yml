@@ -2,7 +2,7 @@
 version: '2'
 services:
   horizon:
-    command: bundle exec rake db:setup spec
+    command: ./hokusai/ci.sh
     depends_on:
     - horizon-postgres
     environment:
