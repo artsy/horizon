@@ -35,7 +35,7 @@ gem 'jbuilder', '~> 2.5'
 #gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'acts_as_list' # order Project#stages
-gem 'releasecop', '>= 0.0.13' # compare release stages
+gem 'releasecop', '>= 0.0.14' # compare release stages
 gem 'activeadmin' # manage models
 gem 'redis' # actioncable adapter
 
