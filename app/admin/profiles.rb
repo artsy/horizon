@@ -12,4 +12,14 @@ ActiveAdmin.register Profile do
 #   permitted
 # end
 
+  form do |f|
+    f.inputs do
+        f.input :name
+        f.input :organization
+        f.input :basic_username
+        f.input :basic_password
+        f.input :environment, as: :text
+    end
+    f.actions
+  end
 end
