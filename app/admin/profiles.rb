@@ -12,6 +12,8 @@ ActiveAdmin.register Profile do
 #   permitted
 # end
 
+  permit_params :name, :organization_id, :basic_username, :basic_password, :environment
+
   form do |f|
     f.inputs do
         f.input :name
