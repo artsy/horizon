@@ -12,7 +12,7 @@ ActiveAdmin.register Profile do
 #   permitted
 # end
 
-  permit_params :name, :organization_id, :basic_username, :basic_password, :environment
+  permit_params :name, :organization_id, :basic_username, :basic_password, :environment_input
 
   form do |f|
     f.inputs do
@@ -20,7 +20,7 @@ ActiveAdmin.register Profile do
         f.input :organization
         f.input :basic_username
         f.input :basic_password
-        f.input :environment, as: :text
+        f.input :environment_input, as: :text, label: 'Environment'
     end
     f.actions
   end

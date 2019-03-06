@@ -12,4 +12,5 @@ ActiveAdmin.register Organization do
 #   permitted
 # end
 
+  permit_params :name
 end
