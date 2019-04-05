@@ -3,6 +3,7 @@ module ProjectsHelper
   GITHUB_REMOTE_EXPR = /https:\/\/github.com\/(?<org>[^\/]+)\/(?<project>[^\.]+).git/
   STATUS_ICONS = {
     unknown: '?',
+    error: '&#9888;',
     warning: '&#10071;',
     released: '&check;'
   }
@@ -17,7 +18,7 @@ module ProjectsHelper
 
   def project_status_icon(project)
     status = get_status(project)
-    content_tag(:div, class: "project_status project_status_#{status}") do
+    content_tag(:div, class: "project_status project_status_#{status}", title: project.snapshot&.error_message) do
       raw(STATUS_ICONS[status])
     end
   end
@@ -28,6 +29,7 @@ module ProjectsHelper
 
   def get_status(project)
     return :unknown if project.snapshot.nil?
+    return :error if project.snapshot.error_message.present?
     return :released if project.snapshot&.comparisons&.all?(&:released?)
     :warning
   end
