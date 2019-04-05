@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   belongs_to :snapshot, optional: true
 
   def fully_released?
-    !!snapshot&.comparisons&.all?(&:released?)
+    snapshot && snapshot.error_message.nil? && snapshot.comparisons.all?(&:released?)
   end
 
   def total_comparison_size

@@ -6,6 +6,7 @@
       <div class="project <%= healthy_count_class project.total_comparison_size %>">
         <h2><%= project.name.titleize %></h2>
         <p><%= project.description %></p>
+        <div class="error_message"><%= project.snapshot&.error_message %></div>
         <div class="comparisons">
           <% project.stages.ordered.each_cons(2) do |ahead, behind| %>
             <% if comparison = project.snapshot&.comparisons&.detect{ |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id } %>
