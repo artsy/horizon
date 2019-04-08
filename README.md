@@ -67,5 +67,5 @@ TO DO
 * Experiment with programmatic git/hokusai access instead of shelling out
 * button to refresh project on-demand
 * ~~Fix ugly AWS credentials -> hokusai flow~~
-* Make errors [when refreshing projects] visible and avoid short-circuiting entire cron
+* ~~Make errors [when refreshing projects] visible and avoid short-circuiting entire cron~~
 
