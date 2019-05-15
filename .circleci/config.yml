@@ -28,6 +28,7 @@ workflows:
             branches:
               ignore: staging
       - deploy:
+          context: hokusai
           filters:
             branches:
               only: master
