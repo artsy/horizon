@@ -17,5 +17,15 @@ ActiveAdmin.register Project do
     end
   end
 
-  permit_params :organization_id, :name, :description
+  permit_params :organization_id, :name, :description, :tags_input
+
+  form do |f|
+    f.inputs do
+        f.input :organization
+        f.input :name
+        f.input :description
+        f.input :tags_input, label: 'Tags (JSON array)'
+    end
+    f.actions
+  end
 end

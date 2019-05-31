@@ -68,5 +68,5 @@ TO DO
 * button to refresh project on-demand
 * ~~Fix ugly AWS credentials -> hokusai flow~~
 * ~~Make errors [when refreshing projects] visible and avoid short-circuiting entire cron~~
-* Make sorting and classifying of projects more sophisticated (penalize staleness and not just number of commits)
-
+* Make sorting and classifying of projects more sophisticated (penalize staleness and number of contributors and not just number of commits)
+* ~~Add tags to projects and enable filtering dashboard/list view by them~~

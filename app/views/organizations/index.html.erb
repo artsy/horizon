@@ -4,6 +4,9 @@
       <%= org.name %>:
       <%= link_to 'detail', projects_path(organization_id: org.id) %> / 
       <%= link_to 'dashboard', projects_path(organization_id: org.id, view: 'dashboard') %>
+      <% if (tags = org.projects.pluck(:tags).flatten.uniq.sort).any? %>
+        (tags: <%=raw tags.map { |tag| link_to tag, projects_path(organization_id: org.id, view: 'dashboard', tags: [tag]) }.join(', ') %>)
+      <% end %>
     </li>
   <% end %>
 </ul>
