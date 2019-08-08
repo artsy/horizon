@@ -1,12 +1,6 @@
 class DeployStrategy < ApplicationRecord
   include JsonbEditable
 
-  belongs_to :stage
-  belongs_to :profile
-  validate :validate_arguments
-
-  jsonb_editable :arguments
-
   REQUIRED_ARGUMENTS = {
     'github pull request' => %w[base head]
   }
@@ -17,6 +11,15 @@ class DeployStrategy < ApplicationRecord
 
   PROVIDERS = ['github pull request']
 
+  belongs_to :stage
+  belongs_to :profile, optional: true
+  validates :provider, inclusion: {
+    in: PROVIDERS
+  }
+  validate :validate_arguments
+
+  jsonb_editable :arguments
+
   def github_repo
     arguments['repo'] || [stage.project.organization.name, stage.project.name].join('/')
   end
@@ -24,6 +27,8 @@ class DeployStrategy < ApplicationRecord
   private
 
   def validate_arguments
+    return unless PROVIDERS.include?(provider)
+
     unless REQUIRED_ARGUMENTS[provider].all? { |a| (arguments || {}).keys.include?(a) }
       errors.add(:arguments, "must include #{REQUIRED_ARGUMENTS[provider].to_sentence}")
     end

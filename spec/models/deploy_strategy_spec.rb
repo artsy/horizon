@@ -20,6 +20,12 @@ RSpec.describe DeployStrategy, type: :model do
     expect(strategy).to be_automatic
   end
 
+  it 'rejects unsupported providers' do
+    expect(stages.last.deploy_strategies.new(
+      provider: 'heroku'
+    )).not_to be_valid
+  end
+
   it 'requires expected arguments for github pull request provider' do
     expect do
       stages.last.deploy_strategies.create!(
