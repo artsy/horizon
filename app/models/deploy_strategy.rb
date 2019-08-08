@@ -1,21 +1,17 @@
 class DeployStrategy < ApplicationRecord
   include JsonbEditable
 
+  PROVIDERS = ['github pull request']
   REQUIRED_ARGUMENTS = {
     'github pull request' => %w[base head]
   }
-
   SUPPORTED_ARGUMENTS = {
     'github pull request' => %w[base head repo]
   }
 
-  PROVIDERS = ['github pull request']
-
   belongs_to :stage
   belongs_to :profile, optional: true
-  validates :provider, inclusion: {
-    in: PROVIDERS
-  }
+  validates :provider, inclusion: { in: PROVIDERS }
   validate :validate_arguments
 
   jsonb_editable :arguments

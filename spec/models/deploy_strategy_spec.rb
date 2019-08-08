@@ -10,7 +10,6 @@ RSpec.describe DeployStrategy, type: :model do
       provider: 'github pull request',
       automatic: true,
       arguments: {
-        # repo: 'artsy/candela',
         base: 'release',
         head: 'staging'
       }
@@ -18,6 +17,19 @@ RSpec.describe DeployStrategy, type: :model do
     expect(strategy.stage).to eq(stages.last)
     expect(strategy.github_repo).to eq('artsy/candela')
     expect(strategy).to be_automatic
+  end
+
+  it 'respects configured repo name' do
+    strategy = stages.last.deploy_strategies.create!(
+      provider: 'github pull request',
+      automatic: true,
+      arguments: {
+        repo: 'artsy/candela-foo',
+        base: 'release',
+        head: 'staging'
+      }
+    )
+    expect(strategy.github_repo).to eq('artsy/candela-foo')
   end
 
   it 'rejects unsupported providers' do

@@ -18,12 +18,11 @@ ActiveAdmin.register DeployStrategy do
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs do
-        f.input :provider, as: :select, collection: DeployStrategy::PROVIDERS
-        f.input :profile
-        f.input :automatic
-        f.input :arguments_input, label: 'Arguments (JSON)'
+      f.input :provider, as: :select, collection: DeployStrategy::PROVIDERS
+      f.input :profile
+      f.input :automatic
+      f.input :arguments_input, label: 'Arguments (JSON)'
     end
     f.actions
   end
-
 end
