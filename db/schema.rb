@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_31_194338) do
+ActiveRecord::Schema.define(version: 2019_08_08_151340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,16 @@ ActiveRecord::Schema.define(version: 2019_05_31_194338) do
     t.index ["ahead_stage_id"], name: "index_comparisons_on_ahead_stage_id"
     t.index ["behind_stage_id"], name: "index_comparisons_on_behind_stage_id"
     t.index ["snapshot_id"], name: "index_comparisons_on_snapshot_id"
+  end
+
+  create_table "deploy_strategies", force: :cascade do |t|
+    t.string "provider"
+    t.jsonb "arguments"
+    t.bigint "stage_id"
+    t.boolean "automatic"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stage_id"], name: "index_deploy_strategies_on_stage_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -85,6 +95,7 @@ ActiveRecord::Schema.define(version: 2019_05_31_194338) do
   add_foreign_key "comparisons", "snapshots"
   add_foreign_key "comparisons", "stages", column: "ahead_stage_id"
   add_foreign_key "comparisons", "stages", column: "behind_stage_id"
+  add_foreign_key "deploy_strategies", "stages"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "snapshots"
