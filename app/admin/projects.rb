@@ -22,10 +22,10 @@ ActiveAdmin.register Project do
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs do
-        f.input :organization
-        f.input :name
-        f.input :description
-        f.input :tags_input, label: 'Tags (JSON array)'
+      f.input :organization
+      f.input :name
+      f.input :description
+      f.input :tags_input, label: 'Tags (JSON array)'
     end
     f.actions
   end

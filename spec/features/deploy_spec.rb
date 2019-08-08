@@ -4,18 +4,12 @@ RSpec.feature "Deploys", type: :feature do
   let(:org) { Organization.create!(name: 'artsy') }
   let(:project) { org.projects.create!(name: 'candela') }
   let(:stages) { (1..2).map {|i| project.stages.create!(name: "stage #{i}", git_remote: 'https://github.com/artsy/candela.git') } }
-  let(:profile) { org.profiles.create!(
-    basic_password: "foo"
-  )}
-
+  let(:profile) { org.profiles.create!(basic_password: "foo") }
   let(:strategy) do
     stages.last.deploy_strategies.create!(
       provider: 'github pull request',
       automatic: true,
-      arguments: {
-        base: 'release',
-        head: 'staging'
-      },
+      arguments: { base: 'release', head: 'staging' },
       profile: profile
     )
   end
@@ -24,10 +18,7 @@ RSpec.feature "Deploys", type: :feature do
     invalid_strategy = stages.last.deploy_strategies.create!(
       provider: 'github pull request',
       automatic: true,
-      arguments: {
-        base: 'release',
-        head: 'staging'
-      }
+      arguments: { base: 'release', head: 'staging' }
     )
     expect {
       DeployService.start(invalid_strategy)

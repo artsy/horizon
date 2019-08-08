@@ -17,11 +17,11 @@ ActiveAdmin.register Profile do
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs do
-        f.input :name
-        f.input :organization
-        f.input :basic_username
-        f.input :basic_password
-        f.input :environment_input, as: :text, label: 'Environment'
+      f.input :name
+      f.input :organization
+      f.input :basic_username
+      f.input :basic_password
+      f.input :environment_input, as: :text, label: 'Environment'
     end
     f.actions
   end
