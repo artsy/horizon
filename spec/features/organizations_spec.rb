@@ -10,6 +10,23 @@ RSpec.feature "Organizations", type: :feature do
       lines: ['commit foo', 'commit bar']
     )
   end
+  let(:small_comparison) do
+    double('Releasecop::Comparison',
+      ahead: double('Releasecop::ManifestItem', name: 'master'),
+      behind: double('Releasecop::ManifestItem', name: 'production'),
+      :unreleased? => true,
+      lines: (0..3).map { |i| "commit #{i}" }
+    )
+  end
+  let(:large_comparison) do
+    double('Releasecop::Comparison',
+      ahead: double('Releasecop::ManifestItem', name: 'master'),
+      behind: double('Releasecop::ManifestItem', name: 'production'),
+      :unreleased? => true,
+      lines: (0..20).map { |i| "commit #{i}" }
+    )
+  end
+
 
   scenario 'view organizations and projects' do
     project = org.projects.create!(name: 'shipping')
@@ -41,6 +58,7 @@ RSpec.feature "Organizations", type: :feature do
     }.not_to change(Snapshot, :count)
   end
 
+
   it 'cleans up old snapshots' do
     project = org.projects.create!(name: 'shipping')
     ahead = project.stages.create!(name: 'master')
@@ -57,5 +75,61 @@ RSpec.feature "Organizations", type: :feature do
     ComparisonService.new(project).refresh_comparisons
     expect(project.snapshots.size).to eq(5)
     expect(Snapshot.where(id: snapshots.first.id).count).to eq(0)
+  end
+
+  context 'deploys' do
+    it 'deploys when warranted and automatic' do
+      project = org.projects.create!(name: 'shipping')
+      project.stages.create!(name: 'master')
+      prod = project.stages.create!(name: 'production')
+      profile = org.profiles.create!(basic_password: 'foo')
+      prod.deploy_strategies.create!(
+        provider: 'github pull request',
+        profile: profile,
+        automatic: true,
+        arguments: { base: 'release', head: 'staging ' }
+      )
+      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+        Releasecop::Result.new('shipping', [large_comparison])
+      )
+      expect(DeployService).to receive(:start)
+      ComparisonService.new(project).refresh_comparisons
+    end
+
+    it 'does nothing unless warranted' do
+      project = org.projects.create!(name: 'shipping')
+      project.stages.create!(name: 'master')
+     prod = project.stages.create!(name: 'production')
+      profile = org.profiles.create!(basic_password: 'foo')
+      prod.deploy_strategies.create!(
+        provider: 'github pull request',
+        profile: profile,
+        automatic: true,
+        arguments: { base: 'release', head: 'staging ' }
+      )
+      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+        Releasecop::Result.new('shipping', [small_comparison])
+      )
+      expect(DeployService).not_to receive(:start)
+      ComparisonService.new(project).refresh_comparisons
+    end
+
+    it 'does nothing when deploy warranted but automatic is false' do
+      project = org.projects.create!(name: 'shipping')
+      project.stages.create!(name: 'master')
+      prod = project.stages.create!(name: 'production')
+      profile = org.profiles.create!(basic_password: 'foo')
+      prod.deploy_strategies.create!(
+        provider: 'github pull request',
+        profile: profile,
+        automatic: false,
+        arguments: { base: 'release', head: 'staging ' }
+      )
+      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+        Releasecop::Result.new('shipping', [large_comparison])
+      )
+      expect(DeployService).not_to receive(:start)
+      ComparisonService.new(project).refresh_comparisons
+    end
   end
 end
