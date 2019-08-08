@@ -33,9 +33,11 @@ ActiveRecord::Schema.define(version: 2019_08_08_151340) do
     t.string "provider"
     t.jsonb "arguments"
     t.bigint "stage_id"
+    t.bigint "profile_id"
     t.boolean "automatic"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_deploy_strategies_on_profile_id"
     t.index ["stage_id"], name: "index_deploy_strategies_on_stage_id"
   end
 
@@ -95,6 +97,7 @@ ActiveRecord::Schema.define(version: 2019_08_08_151340) do
   add_foreign_key "comparisons", "snapshots"
   add_foreign_key "comparisons", "stages", column: "ahead_stage_id"
   add_foreign_key "comparisons", "stages", column: "behind_stage_id"
+  add_foreign_key "deploy_strategies", "profiles"
   add_foreign_key "deploy_strategies", "stages"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "projects", "organizations"
