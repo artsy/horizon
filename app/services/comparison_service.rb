@@ -36,10 +36,22 @@ class ComparisonService
       new_snapshot = store_new_snapshot!(project, result, refreshed_at)
       clean_up_old_snapshots
     end
+    project.stages.select { |s| warrants_deploy?(s) }.each do |stage|
+      stage.deploy_strategies.each do |strategy|
+        DeployService.start(strategy) if strategy.automatic?
+      end
+    end
     new_snapshot
   end
 
   private
+
+  def warrants_deploy?(stage)
+    comparison = stage.project.snapshot.comparisons.detect do |c|
+      c.behind_stage == stage
+    end
+    comparison && comparison.comparison_size >= 10
+  end
 
   def perform_comparison
     Dir.mktmpdir(['releasecop', project.name]) do |dir|

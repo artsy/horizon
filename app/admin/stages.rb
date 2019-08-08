@@ -13,5 +13,11 @@ ActiveAdmin.register Stage do
 # end
   belongs_to :project
 
+  sidebar 'Associated Data', only: %i[show edit] do
+    ul do
+      li link_to 'Deploy Strategies', admin_stage_deploy_strategies_path(stage)
+    end
+  end
+
   permit_params :project_id, :profile_id, :name, :position, :git_remote, :tag_pattern, :branch, :hokusai
 end
