@@ -1,4 +1,4 @@
-class API::DeployBlocksController < ApplicationController
+class Api::DeployBlocksController < ApplicationController
   def index
     project = Project.find(params[:project_id])
     coerced_resolved_param =
