@@ -1,5 +1,4 @@
 module ProjectsHelper
-  LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9\-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/ # %h %ad %s (%an, %ae)
   GITHUB_REMOTE_EXPR = /https:\/\/github.com\/(?<org>[^\/]+)\/(?<project>[^\.]+).git/
   STATUS_ICONS = {
     unknown: '?',
@@ -11,9 +10,9 @@ module ProjectsHelper
   def render_log_line(project, line)
     github_match = project.stages.ordered.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
     return line unless github_match
-    line_match = line.match(LOG_LINE_EXPR)
-    link = link_to line_match[:sha], "https://github.com/#{github_match[:org]}/#{github_match[:project]}/commit/#{line_match[:sha]}"
-    h(line).sub(Regexp.new(line_match[:sha]), link).html_safe
+    parsed_line = ReleasecopService.parsed_log_line(line)
+    link = link_to parsed_line[:sha], "https://github.com/#{github_match[:org]}/#{github_match[:project]}/commit/#{parsed_line[:sha]}"
+    h(line).sub(Regexp.new(parsed_line[:sha]), link).html_safe
   end
 
   def project_status_icon(project)
@@ -35,15 +34,12 @@ module ProjectsHelper
   end
 
   def gravatar_from_log_line(line)
-    gravatar_from_email(email_from_log_line(line))
-  end
-
-  def email_from_log_line(line)
-    line.match(/, ([^ ]*)\)$/)&.[](1)
+    email = ReleasecopService.parsed_log_line(line)[:email]
+    gravatar_from_email(email)
   end
 
   def first_name_from_log(line)
-    line.match(LOG_LINE_EXPR)[:name].split(' ')[0]
+    ReleasecopService.parsed_log_line(line)[:name].split(' ')[0]
   end
 
   def gravatar_from_email(email)
