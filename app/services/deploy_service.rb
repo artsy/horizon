@@ -8,7 +8,7 @@ class DeployService
 
   def self.create_github_pull_request(deploy_strategy)
     access_token = deploy_strategy.profile&.basic_password
-    raise 'profile.basic_password is required for Github authentication' if access_token.blank?
+    raise 'A profile and basic_password are required for Github authentication' if access_token.blank?
 
     client = Octokit::Client.new(access_token: access_token)
     begin

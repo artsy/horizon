@@ -50,7 +50,7 @@ class ComparisonService
     comparison = stage.project.snapshot.comparisons.detect do |c|
       c.behind_stage == stage
     end
-    comparison && comparison.comparison_size >= 10
+    comparison && comparison.comparison_size > 10
   end
 
   def perform_comparison

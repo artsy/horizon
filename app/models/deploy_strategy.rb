@@ -16,6 +16,7 @@ class DeployStrategy < ApplicationRecord
 
   jsonb_editable :arguments
 
+  # Prefer a `repo` argument, but fall back to org and project names otherwise.
   def github_repo
     arguments['repo'] || [stage.project.organization.name, stage.project.name].join('/')
   end
@@ -23,7 +24,7 @@ class DeployStrategy < ApplicationRecord
   private
 
   def validate_arguments
-    return unless PROVIDERS.include?(provider)
+    return unless PROVIDERS.include?(provider) # don't bother if provider invalid
 
     unless REQUIRED_ARGUMENTS[provider].all? { |a| (arguments || {}).keys.include?(a) }
       errors.add(:arguments, "must include #{REQUIRED_ARGUMENTS[provider].to_sentence}")
