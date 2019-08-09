@@ -22,7 +22,7 @@ RSpec.feature "Deploys", type: :feature do
     )
     expect {
       DeployService.start(invalid_strategy)
-    }.to raise_error('profile.basic_password is required for Github authentication')    
+    }.to raise_error('A profile and basic_password are required for Github authentication')
   end
 
   it "Sends an Octokit request to create pull request when initializing a client" do

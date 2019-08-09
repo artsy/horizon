@@ -28,7 +28,7 @@ class ComparisonService
 
   def refresh_comparisons
     refreshed_at = Time.now
-    result = perform_comparison
+    result = ReleasecopService.new(project).perform_comparison
     new_snapshot = nil
     if project.snapshot && equivalent_snapshots?(project.snapshot, result)
       project.snapshot.update!(refreshed_at: refreshed_at)
@@ -50,46 +50,7 @@ class ComparisonService
     comparison = stage.project.snapshot.comparisons.detect do |c|
       c.behind_stage == stage
     end
-    comparison && comparison.comparison_size >= 10
-  end
-
-  def perform_comparison
-    Dir.mktmpdir(['releasecop', project.name]) do |dir|
-      checker = Releasecop::Checker.new(
-        project.name,
-        project.stages.order(position: :asc).map{|s| build_manifest_item(s) },
-        dir
-      )
-      ResultWrapper.new(checker) # build comparisons
-    end
-  end
-
-  class ResultWrapper
-    attr_accessor :result, :error
-
-    def initialize(checker)
-      begin
-        @result = checker.check
-      rescue => ex
-        self.error = ex
-      end
-    end
-
-    def comparisons
-      @result&.comparisons || []
-    end
-  end
-
-  def build_manifest_item(stage)
-    {
-      'name' => stage.name,
-      'git' => construct_git(stage),
-      'tag_pattern' => stage.tag_pattern.presence,
-      'branch' => stage.branch.presence,
-      'hokusai' => stage.hokusai.presence,
-      'aws_access_key_id' => stage.profile&.environment&.fetch('AWS_ACCESS_KEY_ID'),
-      'aws_secret_access_key' => stage.profile&.environment&.fetch('AWS_SECRET_ACCESS_KEY')
-    }
+    comparison && comparison.comparison_size > 10
   end
 
   def equivalent_snapshots?(snapshot, result)
@@ -115,16 +76,5 @@ class ComparisonService
     ids = project.snapshots.pluck(:id).sort
     return unless ids.size > KEEP_OLD_SNAPSHOTS
     project.snapshots.where('id < ?', ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
-  end
-
-  def construct_git(stage)
-    if stage.profile&.basic_username || stage.profile&.basic_password
-      uri = URI(stage.git_remote)
-      uri.user = stage.profile&.basic_username
-      uri.password = stage.profile&.basic_password
-      uri.to_s
-    else
-      stage.git_remote
-    end
   end
 end

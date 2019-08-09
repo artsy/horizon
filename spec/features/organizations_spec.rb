@@ -5,17 +5,9 @@ RSpec.feature "Organizations", type: :feature do
   let(:releasecop_comparison) do
     double('Releasecop::Comparison',
       ahead: double('Releasecop::ManifestItem', name: 'master'),
-      behind: double('Releasecop::ManifestItem', name: 'staging'),
-      :unreleased? => true,
-      lines: ['commit foo', 'commit bar']
-    )
-  end
-  let(:small_comparison) do
-    double('Releasecop::Comparison',
-      ahead: double('Releasecop::ManifestItem', name: 'master'),
       behind: double('Releasecop::ManifestItem', name: 'production'),
       :unreleased? => true,
-      lines: (0..3).map { |i| "commit #{i}" }
+      lines: ['commit foo', 'commit bar']
     )
   end
   let(:large_comparison) do
@@ -31,7 +23,7 @@ RSpec.feature "Organizations", type: :feature do
   scenario 'view organizations and projects' do
     project = org.projects.create!(name: 'shipping')
     project.stages.create!(name: 'master')
-    project.stages.create!(name: 'staging')
+    project.stages.create!(name: 'production')
     Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php')
 
     visit '/'
@@ -41,7 +33,7 @@ RSpec.feature "Organizations", type: :feature do
     expect(page).to have_content('shipping')
     expect(page).not_to have_content('foo_php')
     expect(page).to have_content('master')
-    expect(page).to have_content('staging')
+    expect(page).to have_content('production')
 
     # view diffs...
     allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
@@ -62,7 +54,7 @@ RSpec.feature "Organizations", type: :feature do
   it 'cleans up old snapshots' do
     project = org.projects.create!(name: 'shipping')
     ahead = project.stages.create!(name: 'master')
-    behind = project.stages.create!(name: 'staging')
+    behind = project.stages.create!(name: 'production')
     snapshots = 5.times.map do |i|
       project.snapshots.create!(refreshed_at: Time.now + i.days).tap do |snapshot|
         snapshot.comparisons.create!(ahead_stage: ahead, behind_stage: behind, released: false, description: [i])
@@ -108,7 +100,7 @@ RSpec.feature "Organizations", type: :feature do
         arguments: { base: 'release', head: 'staging ' }
       )
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
-        Releasecop::Result.new('shipping', [small_comparison])
+        Releasecop::Result.new('shipping', [releasecop_comparison])
       )
       expect(DeployService).not_to receive(:start)
       ComparisonService.new(project).refresh_comparisons
