@@ -2,6 +2,7 @@ class ComparisonService
   attr_accessor :project
 
   KEEP_OLD_SNAPSHOTS = 5
+  DEPLOY_AT_SEVERITY = 10
 
   def initialize(project)
     @project = project
@@ -14,6 +15,19 @@ class ComparisonService
     end
     ActionCable.server.broadcast(ProjectChannel.channel_name, newSnapshots: true) if new_snapshots.any?
     new_snapshots
+  end
+
+  def self.parsed(comparison)
+    comparison.description.map { |l| ReleasecopService.parsed_log_line(l) }
+  end
+
+  # Calculates a score of how badly a deploy is needed based on commits, contributors, and age.
+  def self.severity_score(commits)
+    contributors = commits.map { |c| c[:email] }.uniq
+    now = Time.now
+    oldest_commit_at = commits.map { |c| c[:date] }.min&.to_time
+    age = (now - (oldest_commit_at || now))/1.day
+    commits.size + contributors.size**2 + age**2
   end
 
   def self.refresh_comparisons_for_organization(org)
@@ -50,7 +64,10 @@ class ComparisonService
     comparison = stage.project.snapshot.comparisons.detect do |c|
       c.behind_stage == stage
     end
-    comparison && comparison.comparison_size > 10
+    return false unless comparison
+
+    commits = self.class.parsed(comparison)
+    self.class.severity_score(commits) > DEPLOY_AT_SEVERITY
   end
 
   def equivalent_snapshots?(snapshot, result)
