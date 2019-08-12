@@ -1,19 +1,5 @@
 class ProjectsController < ApplicationController
-  VIEWS = %w[detail dashboard]
-
   def index
-    @organization_id = projects_params[:organization_id]
-    @projects = Project.where(projects_params)
-    @projects = @projects.where('tags ?| array[:tags]', tags: params[:tags]) if params[:tags]&.any?
-    @projects.sort_by do |project|
-      [project.fully_released? ? 1 : 0, project.name]
-    end
-    @view = VIEWS.include?(params[:view]) ? params[:view] : 'detail'
-  end
-
-  private
-
-  def projects_params
-    params.permit(:organization_id)
+    @presenter = ProjectsPresenter.new(params)
   end
 end
