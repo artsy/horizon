@@ -8,7 +8,7 @@ module ProjectsHelper
   }
 
   def render_log_line(project, line)
-    github_match = project.stages.ordered.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
+    github_match = project.ordered_stages.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
     return line unless github_match
     parsed_line = ReleasecopService.parsed_log_line(line)
     link = link_to parsed_line[:sha], "https://github.com/#{github_match[:org]}/#{github_match[:project]}/commit/#{parsed_line[:sha]}"

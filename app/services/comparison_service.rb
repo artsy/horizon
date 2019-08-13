@@ -17,7 +17,11 @@ class ComparisonService
     new_snapshots
   end
 
-  def self.parsed(comparison)
+  def self.comparison_score(comparison)
+    severity_score(parsed_commits(comparison))
+  end
+
+  def self.parsed_commits(comparison)
     comparison.description.map { |l| ReleasecopService.parsed_log_line(l) }
   end
 
@@ -66,8 +70,7 @@ class ComparisonService
     end
     return false unless comparison
 
-    commits = self.class.parsed(comparison)
-    self.class.severity_score(commits) > DEPLOY_AT_SEVERITY
+    self.class.comparison_score(comparison) > DEPLOY_AT_SEVERITY
   end
 
   def equivalent_snapshots?(snapshot, result)
