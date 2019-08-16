@@ -54,7 +54,7 @@ class ComparisonService
       new_snapshot = store_new_snapshot!(project, result, refreshed_at)
       clean_up_old_snapshots
     end
-    unless project.deploy_blocks.unresolved.any?
+    if project.deploy_blocks.unresolved.empty?
       project.stages.select { |s| warrants_deploy?(s) }.each do |stage|
         stage.deploy_strategies.each do |strategy|
           DeployService.start(strategy) if strategy.automatic?
