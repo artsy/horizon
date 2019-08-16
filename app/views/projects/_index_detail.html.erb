@@ -4,6 +4,7 @@
       <div class="project_name">
         <%= project_status_icon(project) %>
         <%= link_to project.name, { anchor: project_anchor(project) }, 'data-turbolinks' => false %>
+        <%= blocked(project) %>
       </div>
       <table width="100%">
         <tr>
