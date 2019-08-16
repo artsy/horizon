@@ -19,7 +19,6 @@ RSpec.feature "Organizations", type: :feature do
     )
   end
 
-
   scenario 'view organizations and projects' do
     project = org.projects.create!(name: 'shipping')
     project.stages.create!(name: 'master')
@@ -120,6 +119,25 @@ RSpec.feature "Organizations", type: :feature do
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
       )
+      expect(DeployService).not_to receive(:start)
+      ComparisonService.new(project).refresh_comparisons
+    end
+
+    it 'respects deploy blocks' do
+      project = org.projects.create!(name: 'shipping')
+      project.stages.create!(name: 'master')
+      prod = project.stages.create!(name: 'production')
+      profile = org.profiles.create!(basic_password: 'foo')
+      prod.deploy_strategies.create!(
+        provider: 'github pull request',
+        profile: profile,
+        automatic: true,
+        arguments: { base: 'release', head: 'staging ' }
+      )
+      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+        Releasecop::Result.new('shipping', [large_comparison])
+      )
+      project.deploy_blocks.create!(description: 'staging broken')
       expect(DeployService).not_to receive(:start)
       ComparisonService.new(project).refresh_comparisons
     end
