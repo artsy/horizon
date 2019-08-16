@@ -37,6 +37,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'acts_as_list' # order Project#stages
 gem 'releasecop', '>= 0.0.15' # compare release stages
 gem 'activeadmin' # manage models
+gem 'active_admin_datetimepicker'
 gem 'redis' # actioncable adapter
 gem "octokit", "~> 4.0" # talk to github api
 
