@@ -35,7 +35,7 @@ RSpec.feature "Deploys", type: :feature do
     }.to raise_error('A profile and basic_password are required for Github authentication')
   end
 
-  it "sends an Octokit request to create pull request when initializing a client" do
+  it "sends an Octokit request to create pull request" do
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request).
       with('artsy/candela', 'release', 'staging', anything, anything).
       and_return(double(number: 42))
