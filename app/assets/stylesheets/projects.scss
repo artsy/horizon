@@ -20,6 +20,9 @@
 
   div.project .project_name {
     font-weight: bold;
+    div.blocked {
+      display: inline;
+    }
   }
   div.project .project_name a {
     color: currentColor;
@@ -119,6 +122,10 @@
     margin: 30px;
     margin-top: 0;
     float: left;
+
+    .blocked {
+      float: right;
+    }
   }
 
   .todo .project.red {

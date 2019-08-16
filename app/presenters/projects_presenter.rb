@@ -23,7 +23,7 @@ class ProjectsPresenter
 
   class ProjectWrapper
     attr_accessor :project
-    delegate :name, :snapshot, :id, :description, to: :project
+    delegate :name, :snapshot, :id, :description, :deploy_blocks, to: :project
 
     def initialize(project)
       @project = project
