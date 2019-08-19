@@ -14,7 +14,7 @@ ActiveAdmin.register Project do
   sidebar 'Associated Data', only: %i[show edit] do
     ul do
       li link_to 'Stages', admin_project_stages_path(project)
-      li link_to 'Deploy Blocks', admin_project_deploy_blocks_path(project)
+      li link_to 'Deploy Blocks', admin_deploy_blocks_path(q: { project_id_eq: project.id })
     end
   end
 
