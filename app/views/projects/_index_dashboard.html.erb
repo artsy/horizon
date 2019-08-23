@@ -46,7 +46,11 @@
   <div class="released">
     <% @presenter.released_projects.each do |project| %>
       <div class="released-project">
-      <h2><div class="circle green"></div><%= project.name.titleize %></h2>
+      <h2>
+        <div class="circle green"></div>
+        <%= project.name.titleize %>
+        <%= blocked(project) %>
+      </h2>
       <p><%= project.description %></p>
       </div>
     <% end %>
