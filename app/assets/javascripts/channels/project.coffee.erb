@@ -11,5 +11,5 @@ $(->
 
     received: (data) ->
       # Called when there's incoming data on the websocket for this channel
-      location.reload() if data.newSnapshots?
+      location.reload() if data.newSnapshots? || data.updatedBlocks?
 )
