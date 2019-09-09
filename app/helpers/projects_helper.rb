@@ -59,6 +59,6 @@ module ProjectsHelper
   def blocked(project)
     blocks = project.deploy_blocks.unresolved.to_a
     return if blocks.empty?
-    tag.div(raw('&#9888;'), class: 'blocked', title: blocks.map(&:description).to_sentence)
+    tag.div(raw('⚠️'), class: 'blocked', title: blocks.map(&:description).to_sentence)
   end
 end
