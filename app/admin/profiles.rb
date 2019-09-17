@@ -14,6 +14,16 @@ ActiveAdmin.register Profile do
 
   permit_params :name, :organization_id, :basic_username, :basic_password, :environment_input
 
+  controller do
+    def update
+      if params[:profile][:basic_password].blank?
+        params[:profile].delete(:basic_password)
+      end
+
+      super
+    end
+  end
+
   form do |f|
     f.semantic_errors *f.object.errors.keys
     f.inputs do
