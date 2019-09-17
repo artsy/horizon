@@ -147,6 +147,13 @@ ActiveAdmin.setup do |config|
   #
   # config.before_action :do_something_awesome
 
+  # == Attribute Filters
+  #
+  # You can exclude possibly sensitive model attributes from being displayed,
+  # added to forms, or exported by default by ActiveAdmin
+  #
+  config.filter_attributes = [:encrypted_password, :password, :password_confirmation, :basic_username, :basic_password, :environment, :environment_input]
+
   # == Localize Date/Time Format
   #
   # Set the localize format to display dates and times.
