@@ -9,6 +9,12 @@ Visual representations of release pipelines.
 * Point Team: [Platform](https://artsy.slack.com/messages/product-platform)
 * Deployment: builds of the `master` branch are automatically deployed to staging by CircleCI. There is no production environment.
 
+Features
+---
+- [Release Dashboard](https://releases.artsy.net/projects?organization_id=1&view=dashboard)
+- [Release Detail](https://releases.artsy.net/projects?organization_id=1)
+- [Deploy Blockers](https://releases.artsy.net/admin/deploy_blocks)
+
 Design
 ---
 * `Organization`s have many `Project`s
