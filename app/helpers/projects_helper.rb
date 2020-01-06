@@ -54,9 +54,10 @@ module ProjectsHelper
 
   def healthy_count_class(count)
     case count
-    when 0 then 'green'
-    when 1..10 then 'yellow'
-    else 'red'
+    when 0...1 then 'green'
+    when 1...10 then 'yellow'
+    when 10...500 then 'red'
+    else 'red aged'
     end
   end
 end
