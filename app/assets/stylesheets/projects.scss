@@ -134,6 +134,13 @@
     border: 1px solid #f7625a;
   }
 
+  .todo .project.aged {
+    background-image: image-url("aged_top_left.png"), image-url("aged_top_right.png");
+    box-shadow: inset 0 0 40px hsla(33,42%,66%,.6);
+    background-position: 0 0,100% 0;
+    background-repeat: no-repeat;
+  }
+
   .todo .project h2 {
     font-size: 28px;
     margin: 0;
