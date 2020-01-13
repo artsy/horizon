@@ -28,6 +28,8 @@ class DeployService
         group_by(&:login).map{|k,v| [v.size, k] }.sort.reverse.map(&:last)
       assignee = sorted_logins.detect { |l| client.check_assignee(repo, l) }
       client.add_assignees(repo, pr.number, assignee) if assignee
+      slack = Slack::Web::Client.new
+      slack.chat_postMessage(channel: '#dev', message: "<#{pr.html_url}|Deploy PR> ready for #{repo}", as_user: true)
     rescue Octokit::UnprocessableEntity
       # PR already exists
     end    
