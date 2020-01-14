@@ -56,8 +56,9 @@ class ComparisonService
     end
     if project.deploy_blocks.unresolved.empty?
       project.stages.select { |s| warrants_deploy?(s) }.each do |stage|
+        slack_token = stage.profile&.environment&.fetch('SLACK_API_TOKEN')
         stage.deploy_strategies.each do |strategy|
-          DeployService.start(strategy) if strategy.automatic?
+          DeployService.start(strategy, slack_token) if strategy.automatic?
         end
       end
     end
