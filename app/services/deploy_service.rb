@@ -1,8 +1,5 @@
 class DeployService
-  def self.start(deploy_strategy, slack_token = nil)
-    Slack.configure do |config|
-      config.token = slack_token if slack_token
-    end
+  def self.start(deploy_strategy)
     case deploy_strategy.provider
     when 'github pull request'
       pr_info = create_github_pull_request(deploy_strategy)
