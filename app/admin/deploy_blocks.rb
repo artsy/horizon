@@ -6,7 +6,7 @@ ActiveAdmin.register DeployBlock do
   form do |f|
     semantic_errors
     inputs do
-      input :project
+      input :project, collection: Project.all.order(:name)
       input(
         :resolved_at,
         as: :date_time_picker,
