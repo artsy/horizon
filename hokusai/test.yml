@@ -1,15 +1,19 @@
 ---
-version: '2'
+version: "2"
 services:
   horizon:
     command: ./hokusai/ci.sh
     depends_on:
-    - horizon-postgres
+      - horizon-postgres
     environment:
-    - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
-    - RAILS_ENV=test
+      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
+      - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
+      - RAILS_ENV=test
     extends:
       file: build.yml
       service: horizon
   horizon-postgres:
     image: postgres:9.5
+    environment:
+      - POSTGRES_DB=horizon_test
+      - POSTGRES_HOST_AUTH_METHOD=trust
