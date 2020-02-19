@@ -1,26 +1,28 @@
 ---
-version: '2'
+version: "2"
 services:
   horizon:
     env_file: ../.env
     depends_on:
-    - horizon-postgres
-    - horizon-redis
+      - horizon-postgres
+      - horizon-redis
     environment:
-    - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
-    - REDIS_URL=redis://horizon-redis
+      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
+      - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
+      - REDIS_URL=redis://horizon-redis
     extends:
       file: build.yml
       service: horizon
     ports:
-    - 3000:3000
-    - 8080:8080
-    - 8443:8443
+      - 3000:3000
+      - 8080:8080
+      - 8443:8443
     volumes:
-    - ../:/app
+      - ../:/app
   horizon-postgres:
     image: postgres:9.5
     environment:
-    - POSTGRES_DB=horizon_development
+      - POSTGRES_DB=horizon_development
+      - POSTGRES_HOST_AUTH_METHOD=trust
   horizon-redis:
     image: redis:3.2-alpine
