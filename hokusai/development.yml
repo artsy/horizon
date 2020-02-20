@@ -7,7 +7,6 @@ services:
       - horizon-postgres
       - horizon-redis
     environment:
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
       - REDIS_URL=redis://horizon-redis
     extends:

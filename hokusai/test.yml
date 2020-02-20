@@ -6,7 +6,6 @@ services:
     depends_on:
       - horizon-postgres
     environment:
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
       - RAILS_ENV=test
     extends:
