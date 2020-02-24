@@ -1,36 +1,34 @@
-version: 2
-jobs:
-  test:
-    docker:
-      - image: artsy/hokusai:0.5.0
-    steps:
-      - add_ssh_keys
-      - checkout
-      - setup_remote_docker
-      - run: hokusai test
-  deploy:
-    docker:
-      - image: artsy/hokusai:0.5.0
-    steps:
-      - add_ssh_keys
-      - checkout
-      - setup_remote_docker
-      - run: hokusai configure --kubectl-version 1.6.3 --s3-bucket artsy-citadel --s3-key k8s/config --platform linux
-      - run: hokusai registry push --tag $CIRCLE_SHA1 --force --overwrite
-      - run: hokusai staging deploy $CIRCLE_SHA1
-      - run: git push git@github.com:artsy/horizon.git $CIRCLE_SHA1:refs/heads/staging --force
+version: 2.1
+
+orbs:
+  hokusai: artsy/hokusai@0.7.0
+
+not_staging: &not_staging
+  filters:
+    branches:
+      ignore:
+        - staging
+
+only_master: &only_master
+  context: hokusai
+  filters:
+    branches:
+      only: master
+
 workflows:
-  version: 2
-  default:
+  build-deploy:
     jobs:
-      - test:
-          filters:
-            branches:
-              ignore: staging
-      - deploy:
-          context: hokusai
-          filters:
-            branches:
-              only: master
+      - hokusai/test:
+          <<: *not_staging
+
+      - hokusai/push:
+          name: push-staging-image
+          <<: *only_master
           requires:
-            - test
+            - hokusai/test
+
+      - hokusai/deploy-staging:
+          <<: *only_master
+          project-name: horizon
+          requires:
+            - push-staging-image
