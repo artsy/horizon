@@ -1,4 +1,4 @@
-Horizon
+Horizon [![CircleCI](https://circleci.com/gh/artsy/horizon.svg?style=svg)](https://circleci.com/gh/artsy/horizon)
 ===
 
 Visual representations of release pipelines.
