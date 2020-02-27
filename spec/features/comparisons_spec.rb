@@ -60,20 +60,6 @@ RSpec.feature "Comparisons", type: :feature do
       ComparisonService.new(project).refresh_comparisons
     end
 
-    it 'does nothing unless warranted' do
-      project.stages.last.deploy_strategies.create!(
-        provider: 'github pull request',
-        profile: profile,
-        automatic: true,
-        arguments: { base: 'release', head: 'staging ' }
-      )
-      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
-        Releasecop::Result.new('shipping', [small_comparison])
-      )
-      expect(DeployService).not_to receive(:start)
-      ComparisonService.new(project).refresh_comparisons
-    end
-
     it 'does nothing when deploy warranted but automatic is false' do
       project.stages.last.deploy_strategies.create!(
         provider: 'github pull request',

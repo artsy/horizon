@@ -71,8 +71,7 @@ class ComparisonService
       c.behind_stage == stage
     end
     return false unless comparison
-
-    self.class.comparison_score(comparison) > DEPLOY_AT_SEVERITY
+    return true
   end
 
   def equivalent_snapshots?(snapshot, result)
