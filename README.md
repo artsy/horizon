@@ -29,9 +29,20 @@ Design
 
 Setup
 ---
+Copy `.env.test` to an `.env` file
+```
+cp .env.test .env
+```
 
-    hokusai dev run 'bundle exec rake db:migrate'
-    hokusai dev start
+Run database migrations with hokusai
+```
+hokusai dev run 'bundle exec rake db:migrate'
+```
+
+Start development server with hokusai
+```
+hokusai dev start
+```
 
 The administrative UI can then be found at http://localhost:3000/admin. Create organizations, projects, profiles, and stages from there. Alternatively, here's an example using the console:
 
