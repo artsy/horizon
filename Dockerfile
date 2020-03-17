@@ -30,8 +30,7 @@ RUN mkdir /app
 
 # Set up gems
 WORKDIR /tmp
-ADD Gemfile Gemfile
-ADD Gemfile.lock Gemfile.lock
+COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
 # Finally, add the rest of our app's code
