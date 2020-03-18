@@ -1,4 +1,4 @@
-FROM ruby:2.5.1
+FROM ruby:2.6.0
 ENV LANG C.UTF-8
 
 # Set up dumb-init
@@ -30,8 +30,7 @@ RUN mkdir /app
 
 # Set up gems
 WORKDIR /tmp
-ADD Gemfile Gemfile
-ADD Gemfile.lock Gemfile.lock
+COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
 # Finally, add the rest of our app's code
