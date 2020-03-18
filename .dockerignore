@@ -1,6 +1,8 @@
 .git
 .gitignore
 README.md
+Dockerfile
+.dockerignore
 
 #
 # OS X
@@ -26,6 +28,7 @@ coverage/
 spec/tmp
 **.orig
 rerun.txt
+node_modules
 
 # TODO Comment out these rules if you are OK with secrets being uploaded to the repo
 #config/initializers/secret_token.rb
