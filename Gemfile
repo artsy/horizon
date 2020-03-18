@@ -40,6 +40,7 @@ gem 'activeadmin' # manage models
 gem 'active_admin_datetimepicker'
 gem 'redis' # actioncable adapter
 gem "octokit", "~> 4.0" # talk to github api
+gem "webpacker"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
