@@ -20,44 +20,44 @@ spec:
       name: horizon-web
     spec:
       containers:
-      - name: horizon-web
-        env:
-        - name: TRACE_AGENT_HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        envFrom:
-        - configMapRef:
-            name: horizon-environment
-        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3000
-        - containerPort: 8080
-        - containerPort: 8443
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            memory: 500Mi
-        readinessProbe:
-          httpGet:
-            port: 3000
-            path: /robots.txt
-            httpHeaders:
-            - name: X-Forwarded-Proto
-              value: https
+        - name: horizon-web
+          env:
+            - name: TRACE_AGENT_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          envFrom:
+            - configMapRef:
+                name: horizon-environment
+          image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+            - containerPort: 8080
+            - containerPort: 8443
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 500Mi
+          readinessProbe:
+            httpGet:
+              port: 3000
+              path: /robots.txt
+              httpHeaders:
+                - name: X-Forwarded-Proto
+                  value: https
       dnsPolicy: Default
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: tier
-                operator: In
-                values:
-                - foreground
+              - matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - foreground
 ---
 apiVersion: v1
 kind: Service
@@ -77,14 +77,14 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "300"
 spec:
   ports:
-  - port: 443
-    protocol: TCP
-    name: https
-    targetPort: 8443
-  - port: 80
-    protocol: TCP
-    name: http
-    targetPort: 8080
+    - port: 443
+      protocol: TCP
+      name: https
+      targetPort: 8443
+    - port: 80
+      protocol: TCP
+      name: http
+      targetPort: 8080
   selector:
     app: horizon
     layer: application
@@ -119,21 +119,21 @@ spec:
       template:
         spec:
           containers:
-          - name: horizon-refresh-cron
-            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
-            args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
-            imagePullPolicy: Always
-            envFrom:
-            - configMapRef:
-                name: horizon-environment
+            - name: horizon-refresh-cron
+              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+              args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: horizon-environment
           restartPolicy: Never
           affinity:
             nodeAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 1
-                preference:
-                  matchExpressions:
-                  - key: tier
-                    operator: In
-                    values:
-                    - background
+                - weight: 1
+                  preference:
+                    matchExpressions:
+                      - key: tier
+                        operator: In
+                        values:
+                          - background
