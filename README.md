@@ -3,10 +3,12 @@ Horizon [![CircleCI](https://circleci.com/gh/artsy/horizon.svg?style=svg)](https
 
 Visual representations of release pipelines.
 
-* State: internal usage
-* Staging (only): [releases.artsy.net](https://releases.artsy.net) (admin dashboard: [https://releases.artsy.net/admin](https://releases.artsy.net/admin))
-* GitHub: https://github.com/artsy/horizon
-* Point Team: [Platform](https://artsy.slack.com/messages/product-platform)
+* **State:** internal usage
+* **Production:** [https://releases.artsy.net](https://releases.artsy.net) | [k8s](https://kubernetes.artsy.net/#!/search?q=horizon&namespace=default)
+* **Staging:** [https://releases-staging.artsy.net](https://releases-staging.artsy.net) | [k8s](https://kubernetes-staging.artsy.net/#!/search?q=horizon&namespace=default)
+* **GitHub:** https://github.com/artsy/horizon
+* **CI/Deploys:** [CircleCi](https://circleci.com/gh/artsy/horizon); merged PRs to `artsy/horizon#master` are automatically deployed to staging; PRs from `staging` to `release` are automatically deployed to production. [Start a deploy...](https://github.com/artsy/horizon/compare/release...staging?expand=1)
+* **Point Team:** [Platform](https://artsy.slack.com/messages/product-platform)
 * Deployment: builds of the `master` branch are automatically deployed to staging by CircleCI. **There is no production environment.**
 
 Quick links
