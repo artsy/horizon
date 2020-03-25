@@ -120,34 +120,34 @@ spec:
     - 104.16.0.0/12
     - 172.64.0.0/13
     - 131.0.72.0/22
-# ---
-# apiVersion: batch/v2alpha1
-# kind: CronJob
-# metadata:
-#   name: horizon-refresh-cron
-# spec:
-#   schedule: "*/10 * * * *"
-#   concurrencyPolicy: Forbid
-#   jobTemplate:
-#     spec:
-#       template:
-#         spec:
-#           containers:
-#           - name: horizon-refresh-cron
-#             image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-#             args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
-#             imagePullPolicy: Always
-#             envFrom:
-#             - configMapRef:
-#                 name: horizon-environment
-#           restartPolicy: Never
-#           affinity:
-#             nodeAffinity:
-#               preferredDuringSchedulingIgnoredDuringExecution:
-#               - weight: 1
-#                 preference:
-#                   matchExpressions:
-#                   - key: tier
-#                     operator: In
-#                     values:
-#                     - background
+---
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: horizon-refresh-cron
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: horizon-refresh-cron
+              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
+              args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: horizon-environment
+          restartPolicy: Never
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 1
+                  preference:
+                    matchExpressions:
+                      - key: tier
+                        operator: In
+                        values:
+                          - background
