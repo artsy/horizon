@@ -37,7 +37,8 @@ RUN bundle install -j4
 COPY . ./
 
 # Precompile Rails assets
-RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile && \
+    chown -R deploy:deploy ./
 
 # Switch to less privelidged user
 USER deploy
