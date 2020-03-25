@@ -1,6 +1,13 @@
 FROM ruby:2.6.0-alpine
 ENV LANG C.UTF-8
 
+# Set up nginx
+RUN rm -v /etc/nginx/nginx.conf
+ADD config/nginx.conf /etc/nginx/
+ADD config/app.conf /etc/nginx/conf.d/
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
 WORKDIR /app
 
 RUN apk update && apk --no-cache --quiet add \
@@ -18,13 +25,6 @@ RUN apk update && apk --no-cache --quiet add \
 
 # support hokusai registry commands
 RUN pip install --upgrade --no-cache-dir hokusai
-
-# Set up nginx
-RUN rm -v /etc/nginx/nginx.conf
-ADD config/nginx.conf /etc/nginx/
-ADD config/app.conf /etc/nginx/conf.d/
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log
 
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
