@@ -1,46 +1,46 @@
-FROM ruby:2.6.0
+FROM ruby:2.6.0-alpine
 ENV LANG C.UTF-8
 
-# Set up dumb-init
-ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
-RUN chmod +x /usr/local/bin/dumb-init
+WORKDIR /app
 
-RUN apt-get update -qq && \
-    apt-get install -y nodejs nginx python-pip && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk update && apk --no-cache --quiet add \
+    build-base \
+    dumb-init \
+    nodejs \
+    nginx \
+    postgresql-dev \
+    postgresql-client \
+    python2-dev \
+    py-pip \
+    tzdata \
+    yarn && \
+    adduser -D -g '' deploy
 
 # support hokusai registry commands
-RUN pip install --no-cache-dir hokusai
+RUN pip install --upgrade --no-cache-dir hokusai
 
 # Set up nginx
 RUN rm -v /etc/nginx/nginx.conf
 ADD config/nginx.conf /etc/nginx/
 ADD config/app.conf /etc/nginx/conf.d/
-
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN gem install bundler -v '<2'
-
-# throw errors if Gemfile has been modified since Gemfile.lock
-RUN bundle config --global frozen 1
-
-# Set up working directory
-RUN mkdir /app
+RUN gem install bundler -v '<2' && \
+    bundle config --global frozen 1
 
 # Set up gems
-WORKDIR /tmp
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
-# Finally, add the rest of our app's code
-# (this is done at the end so that changes to our app's code
-# don't bust Docker's cache)
-ADD . /app
-WORKDIR /app
+# Copy application code
+COPY . ./
 
 # Precompile Rails assets
 RUN bundle exec rake assets:precompile
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+# Switch to less privelidged user
+USER deploy
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD nginx && bundle exec puma -C config/puma.rb

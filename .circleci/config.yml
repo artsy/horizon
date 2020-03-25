@@ -15,12 +15,19 @@ only_master: &only_master
     branches:
       only: master
 
+only_release: &only_release
+  context: hokusai
+  filters:
+    branches:
+      only: release
+
 workflows:
   build-deploy:
     jobs:
       - hokusai/test:
           <<: *not_staging
 
+      # Staging
       - hokusai/push:
           name: push-staging-image
           <<: *only_master
@@ -32,3 +39,7 @@ workflows:
           project-name: horizon
           requires:
             - push-staging-image
+
+      # Release
+      - hokusai/deploy-production:
+          <<: *only_release
