@@ -48,9 +48,9 @@ spec:
               httpHeaders:
                 - name: X-Forwarded-Proto
                   value: https
-              initialDelaySeconds: 10
-              periodSeconds: 10
-              timeoutSeconds: 5
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
           lifecycle:
             preStop:
               exec:
@@ -81,11 +81,11 @@ spec:
           volumeMounts:
             - name: nginx-secrets
               mountPath: /etc/nginx/ssl
-              volumes:
-                - name: nginx-secrets
-                  secret:
-                    secretName: nginx-secrets
-                    defaultMode: 420
+      volumes:
+        - name: nginx-secrets
+          secret:
+            secretName: nginx-secrets
+            defaultMode: 420
       dnsPolicy: Default
       affinity:
         nodeAffinity:
