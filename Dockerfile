@@ -14,7 +14,8 @@ RUN apk update && apk --no-cache --quiet add \
     python2-dev \
     py-pip \
     tzdata \
-    yarn && \
+    yarn \
+    git && \
     adduser -D -g '' deploy
 
 # support hokusai registry commands
