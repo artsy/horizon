@@ -1,3 +1,5 @@
 ---
 project-name: horizon
-pre-deploy: "rake db:migrate"
+hokusai-required-version: "~=0.5"
+pre-deploy: "bundle exec rake db:migrate"
+git-remote: git@github.com:artsy/horizon.git

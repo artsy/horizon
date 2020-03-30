@@ -3,16 +3,20 @@ version: "2"
 services:
   horizon:
     command: ./hokusai/ci.sh
-    depends_on:
-      - horizon-postgres
     environment:
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
       - RAILS_ENV=test
+      - REDIS_URL=redis://horizon-redis
     extends:
       file: build.yml
       service: horizon
+    depends_on:
+      - horizon-postgres
+      - horizon-redis
   horizon-postgres:
     image: postgres:9.5
     environment:
       - POSTGRES_DB=horizon_test
       - POSTGRES_HOST_AUTH_METHOD=trust
+  horizon-redis:
+    image: redis:3.2-alpine

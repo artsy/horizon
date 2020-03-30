@@ -2,9 +2,6 @@
 version: "2"
 services:
   horizon:
-    depends_on:
-      - horizon-redis
-      - horizon-postgres
     environment:
       - RAILS_ENV=development
       - RAILS_LOG_TO_STDOUT=true
@@ -19,6 +16,9 @@ services:
       - 8443:8443
     volumes:
       - ../:/app
+    depends_on:
+      - horizon-postgres
+      - horizon-redis
   horizon-postgres:
     image: postgres:9.5
     environment:
