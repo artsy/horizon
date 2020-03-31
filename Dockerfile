@@ -1,14 +1,11 @@
-FROM ruby:2.6.0-alpine
+FROM ruby:2.6-alpine
 ENV LANG C.UTF-8
-ENV PORT 3000
-EXPOSE 3000
 
 WORKDIR /app
 
-RUN apk update && apk --no-cache --quiet add \
+RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     dumb-init \
-    nodejs \
     postgresql-dev \
     postgresql-client \
     python2-dev \
@@ -18,16 +15,17 @@ RUN apk update && apk --no-cache --quiet add \
     git && \
     adduser -D -g '' deploy
 
+# Switch to 3.9 alpine registry for node v10
+RUN sed -i -e 's/v[[:digit:]]\..*\//v3.9\//g' /etc/apk/repositories && \
+    cat /etc/alpine-release && \
+    apk update && apk --no-cache --quiet add --update nodejs=~10
+
 # support hokusai registry commands
 RUN pip install --upgrade --no-cache-dir hokusai
 
-# RUN npm install -g yarn
-
+# Set up gems and packages
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
-
-# Set up gems and packages
-WORKDIR /tmp
 COPY Gemfile \
     Gemfile.lock \
     .ruby-version \

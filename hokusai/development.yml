@@ -2,9 +2,9 @@
 version: "2"
 services:
   horizon:
+    env_file: ../.env
     environment:
       - RAILS_ENV=development
-      - RAILS_LOG_TO_STDOUT=true
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
       - REDIS_URL=redis://horizon-redis
     extends:
