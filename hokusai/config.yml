@@ -1,5 +1,7 @@
 ---
 project-name: horizon
-hokusai-required-version: "~=0.5"
+hokusai-required-version: ">=0.5.8"
 pre-deploy: "bundle exec rake db:migrate"
 git-remote: git@github.com:artsy/horizon.git
+template-config-files:
+  - s3://artsy-citadel/k8s/hokusai-vars.yml
