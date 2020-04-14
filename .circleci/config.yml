@@ -1,13 +1,14 @@
 version: 2.1
 
 orbs:
-  hokusai: artsy/hokusai@0.7.0
+  hokusai: artsy/hokusai@0.7.2
 
-not_staging: &not_staging
+not_staging_or_release: &not_staging_or_release
   filters:
     branches:
       ignore:
         - staging
+        - release
 
 only_master: &only_master
   context: hokusai
@@ -25,9 +26,8 @@ workflows:
   build-deploy:
     jobs:
       - hokusai/test:
-          <<: *not_staging
+          <<: *not_staging_or_release
 
-      # Staging
       - hokusai/push:
           name: push-staging-image
           <<: *only_master
@@ -40,6 +40,5 @@ workflows:
           requires:
             - push-staging-image
 
-      # Release
       - hokusai/deploy-production:
           <<: *only_release
