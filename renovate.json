@@ -1,4 +1,6 @@
 {
   "extends": ["@artsy:app"],
-  "assignees": ["eessex"],
+  "assignees": [
+    "eessex"
+  ]
 }
