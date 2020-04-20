@@ -13,9 +13,10 @@ RSpec.feature "Organizations", type: :feature do
 
   scenario 'view organizations and projects' do
     project = org.projects.create!(name: 'shipping')
+    other = org.projects.create!(name: 'scheduling', tags: ['logistics'])
     project.stages.create!(name: 'master')
     project.stages.create!(name: 'production')
-    Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php')
+    Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php', tags: nil)
 
     visit '/'
     expect(page).to have_content('Artsy')
