@@ -3,4 +3,5 @@
 set -ex
 
 sleep 1 # wait for postgres :(
-bundle exec rake db:setup spec
+bundle exec rails db:prepare
+bundle exec rake spec
