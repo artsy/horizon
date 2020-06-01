@@ -28,6 +28,11 @@ RUN gem install bundler -v '<2' && \
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
+
+# Create directories for Puma/Nginx & give deploy user access
+RUN mkdir -p /shared/pids /shared/sockets && \
+    chown -R deploy:deploy /shared
+
 # Copy application code
 COPY . ./
 
