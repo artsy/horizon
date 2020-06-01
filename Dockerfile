@@ -1,11 +1,11 @@
-FROM ruby:2.6.0-alpine
+FROM ruby:2.6.6-alpine
 ENV LANG C.UTF-8
 ENV PORT 3000
 EXPOSE 3000
 
 WORKDIR /app
 
-RUN apk update && apk --no-cache --quiet add \
+RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     dumb-init \
     nodejs \
