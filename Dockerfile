@@ -1,11 +1,11 @@
-FROM ruby:2.6.0-alpine
+FROM ruby:2.6.6-alpine
 ENV LANG C.UTF-8
 ENV PORT 3000
 EXPOSE 3000
 
 WORKDIR /app
 
-RUN apk update && apk --no-cache --quiet add \
+RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     dumb-init \
     nodejs \
@@ -27,6 +27,11 @@ RUN gem install bundler -v '<2' && \
 # Set up gems
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
+
+
+# Create directories for Puma/Nginx & give deploy user access
+RUN mkdir -p /shared/pids /shared/sockets && \
+    chown -R deploy:deploy /shared
 
 # Copy application code
 COPY . ./
