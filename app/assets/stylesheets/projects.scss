@@ -3,6 +3,11 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .projects_detail {
+  font-family: "Unica77LLWebRegular", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+
   .avatar {
     border-radius: 50%;
     -moz-border-radius: 50%;
@@ -19,7 +24,6 @@
   }
 
   div.project .project_name {
-    font-weight: bold;
     div.blocked {
       display: inline;
     }
@@ -78,10 +82,10 @@
 }
 
 .projects_dashboard {
-  body {
-    font-family: "Unica77LLWebRegular";
-    font-size: 14px;
-  }
+  font-family: "Unica77LLWebRegular", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
 
   h1 {
     font-size: 18px;
@@ -90,14 +94,10 @@
     line-height: 24px;
     clear: both;
     margin: 30px;
-    font-family: "Unica77LLWebMedium";
-    font-weight: normal;
   }
 
   h2 {
     font-size: 20px;
-    font-family: "Unica77LLWebMedium";
-    font-weight: normal;
     color: black;
   }
 
@@ -135,9 +135,10 @@
   }
 
   .todo .project.aged {
-    background-image: image-url("aged_top_left.png"), image-url("aged_top_right.png");
-    box-shadow: inset 0 0 40px hsla(33,42%,66%,.6);
-    background-position: 0 0,100% 0;
+    background-image: image-url("aged_top_left.png"),
+      image-url("aged_top_right.png");
+    box-shadow: inset 0 0 40px hsla(33, 42%, 66%, 0.6);
+    background-position: 0 0, 100% 0;
     background-repeat: no-repeat;
   }
 
@@ -171,8 +172,8 @@
     color: #900;
   }
   .todo .project .stage {
-    font-family: "Unica77LLWebMedium";
     font-size: 18px;
+    font-weight: bold;
   }
 
   .todo .project .who {

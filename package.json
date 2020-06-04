@@ -2,6 +2,7 @@
   "name": "horizon",
   "private": true,
   "dependencies": {
+    "@artsy/palette": "^10.0.0",
     "@rails/actioncable": "^6.0.3-1",
     "@rails/activestorage": "^6.0.3-1",
     "@rails/ujs": "^6.0.3-1",
@@ -9,6 +10,7 @@
     "jquery": "^3.5.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "styled-components": "^4",
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
@@ -19,6 +21,7 @@
     "@types/jquery": "^3.3.38",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
+    "@types/styled-components": "^4",
     "@types/webpack-env": "^1.15.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "typescript": "^3.9.3",

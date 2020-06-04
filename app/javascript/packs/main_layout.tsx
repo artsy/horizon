@@ -4,16 +4,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-
-const Hello = (props) => <div>Hello {props.name}!</div>;
-
-Hello.defaultProps = {
-  name: "David",
-};
+import { MainLayout } from "components/MainLayout";
 
 document.addEventListener("turbolinks:load", () => {
-  ReactDOM.render(
-    <Hello name="React" />,
-    document.getElementById("main-layout")
-  );
+  ReactDOM.render(<MainLayout />, document.getElementById("main-layout"));
 });
