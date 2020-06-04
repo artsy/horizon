@@ -1,15 +1,16 @@
+import { ArtsyMarkIcon, Box, Flex, Link, Sans, Theme } from "@artsy/palette"
 import React from "react"
-import { Box, Link, Theme, Sans, Flex, ArtsyMarkIcon } from "@artsy/palette"
 
-export const MainLayout = () => {
+export const MainLayout: React.FC = () => {
   return (
     <Theme>
       <NavBar />
+      <Box id="body" />
     </Theme>
   )
 }
 
-export const NavBar = () => {
+export const NavBar: React.FC  = () => {
   return (
     <Box width="100%">
       <Link href="/" noUnderline display="inline-block">

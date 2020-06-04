@@ -24,9 +24,11 @@ RUN pip install --upgrade --no-cache-dir hokusai
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
 
-# Set up gems
+# Set up gems & packages, empty cache to save space
 COPY Gemfile Gemfile.lock .ruby-version package.json yarn.lock ./
-RUN bundle install -j4 && yarn install --no-cache
+RUN bundle install -j4 && \
+    yarn install --frozen-lockfile --quiet && \
+    yarn cache clean --force
 
 
 # Create directories for Puma/Nginx & give deploy user access
