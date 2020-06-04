@@ -10,7 +10,7 @@ export const MainLayout: React.FC = () => {
   )
 }
 
-export const NavBar: React.FC  = () => {
+export const NavBar: React.FC = () => {
   return (
     <Box width="100%">
       <Link href="/" noUnderline display="inline-block">

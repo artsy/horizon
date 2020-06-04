@@ -5,17 +5,17 @@
     "module": "es6",
     "lib": ["es6", "dom"],
     "moduleResolution": "node",
+    "noEmit": true,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "dist",
     "pretty": true,
     "skipLibCheck": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
     "target": "es2016",
     "jsx": "react",
     "types": ["node", "webpack-env", "jquery", "actioncable"]
   },
-  "exclude": ["**/*.spec.ts", "node_modules", "public"]
+  "exclude": ["node_modules", "public"]
 }
