@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "app/javascript",
+    "allowSyntheticDefaultImports": true,
+    "module": "es6",
+    "lib": ["es6", "dom"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es2016",
+    "jsx": "react",
+    "types": ["node", "webpack-env", "jquery", "actioncable"]
+  },
+  "exclude": ["node_modules", "public"]
+}
