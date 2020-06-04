@@ -14,7 +14,7 @@
     "strict": true,
     "target": "es2016",
     "jsx": "react",
-    "types": ["node"]
+    "types": ["node", "webpack-env", "jquery", "actioncable"]
   },
   "exclude": ["**/*.spec.ts", "node_modules", "public"]
 }
