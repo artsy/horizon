@@ -1,21 +1,20 @@
 {
   "compilerOptions": {
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
+    "baseUrl": "app/javascript",
+    "allowSyntheticDefaultImports": true,
     "module": "es6",
+    "lib": ["es6", "dom"],
     "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "pretty": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es5",
+    "strict": true,
+    "target": "es2016",
     "jsx": "react",
-    "noEmit": true
+    "types": ["node"]
   },
-  "exclude": [
-    "**/*.spec.ts",
-    "node_modules",
-    "vendor",
-    "public"
-  ],
-  "compileOnSave": false
+  "exclude": ["**/*.spec.ts", "node_modules", "public"]
 }

@@ -25,8 +25,8 @@ RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
 
 # Set up gems
-COPY Gemfile Gemfile.lock .ruby-version ./
-RUN bundle install -j4
+COPY Gemfile Gemfile.lock .ruby-version package.json yarn.lock ./
+RUN bundle install -j4 && yarn install --no-cache
 
 
 # Create directories for Puma/Nginx & give deploy user access
