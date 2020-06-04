@@ -1,5 +1,5 @@
-import consumer from "./consumer";
-import $ from "jquery";
+import consumer from "./consumer"
+import $ from "jquery"
 
 consumer.subscriptions.create(
   {
@@ -13,12 +13,11 @@ consumer.subscriptions.create(
     disconnected() {
       // Called when the subscription has been terminated by the server
     },
-    // @ts-ignore
     received(data) {
       // Called when there's incoming data on the websocket for this channel
       if (data.newSnapshots || data.updatedBlocks) {
-        location.reload();
+        location.reload()
       }
     },
-  }
-);
+  },
+)

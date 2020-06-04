@@ -1,13 +1,13 @@
-import React from "react";
-import { Box, Link, Theme, Sans, Flex, ArtsyMarkIcon } from "@artsy/palette";
+import React from "react"
+import { Box, Link, Theme, Sans, Flex, ArtsyMarkIcon } from "@artsy/palette"
 
 export const MainLayout = () => {
   return (
     <Theme>
       <NavBar />
     </Theme>
-  );
-};
+  )
+}
 
 export const NavBar = () => {
   return (
@@ -21,5 +21,5 @@ export const NavBar = () => {
         </Flex>
       </Link>
     </Box>
-  );
-};
+  )
+}

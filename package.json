@@ -1,6 +1,9 @@
 {
   "name": "horizon",
   "private": true,
+  "scripts": {
+    "prettier": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'"
+  },
   "dependencies": {
     "@artsy/palette": "^10.0.0",
     "@rails/actioncable": "^6.0.3-1",
@@ -24,8 +27,15 @@
     "@types/styled-components": "^4",
     "@types/webpack-env": "^1.15.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "prettier": "^2.0.5",
     "typescript": "^3.9.3",
     "webpack": "^4.43.0",
     "webpack-dev-server": "^3.11.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true
   }
 }

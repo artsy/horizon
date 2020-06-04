@@ -2,10 +2,10 @@
 // like app/views/layouts/application.html.erb. All it does is render <div>Hello React</div> at the bottom
 // of the page.
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { MainLayout } from "components/MainLayout";
+import React from "react"
+import ReactDOM from "react-dom"
+import { MainLayout } from "components/MainLayout"
 
 document.addEventListener("turbolinks:load", () => {
-  ReactDOM.render(<MainLayout />, document.getElementById("main-layout"));
-});
+  ReactDOM.render(<MainLayout />, document.getElementById("main-layout"))
+})
