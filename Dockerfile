@@ -28,6 +28,10 @@ RUN gem install bundler -v '<2' && \
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
+# Set up packages, empty cache to save space
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --quiet && \
+    yarn cache clean --force
 
 # Create directories for Puma/Nginx & give deploy user access
 RUN mkdir -p /shared/pids /shared/sockets && \

@@ -1,5 +1,63 @@
 {
   "name": "horizon",
   "private": true,
-  "dependencies": {}
+  "scripts": {
+    "lint": "eslint ./app --ext ts,tsx,js,jsx --fix",
+    "prettier": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'",
+    "type-check": "tsc --noEmit --pretty"
+  },
+  "dependencies": {
+    "@artsy/palette": "10.1.0",
+    "@rails/actioncable": "6.0.3-1",
+    "@rails/activestorage": "6.0.3-1",
+    "@rails/ujs": "6.0.3-1",
+    "@rails/webpacker": "5.1.1",
+    "jquery": "3.5.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "styled-components": "4.4.1",
+    "turbolinks": "5.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.10.2",
+    "@babel/preset-react": "7.10.1",
+    "@babel/preset-typescript": "7.10.1",
+    "@types/actioncable": "5.2.3",
+    "@types/jquery": "3.3.38",
+    "@types/react": "16.9.35",
+    "@types/react-dom": "16.9.8",
+    "@types/styled-components": "4.4.3",
+    "@types/webpack-env": "1.15.2",
+    "@typescript-eslint/eslint-plugin": "3.1.0",
+    "@typescript-eslint/parser": "3.1.0",
+    "babel-plugin-transform-react-remove-prop-types": "0.4.24",
+    "eslint": "7.1.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-react": "7.20.0",
+    "husky": "4.2.5",
+    "lint-staged": "10.2.9",
+    "prettier": "2.0.5",
+    "typescript": "3.9.5",
+    "webpack": "4.43.0",
+    "webpack-dev-server": "3.11.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn type-check"
+    }
+  },
+  "lint-staged": {
+    "*.@(ts|tsx|js|jsx)": [
+      "yarn lint",
+      "yarn prettier"
+    ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true
+  }
 }

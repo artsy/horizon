@@ -10,3 +10,14 @@ namespace :cron do
     ComparisonService.refresh_all_comparisons
   end
 end
+
+if Rails.env.development? || Rails.env.test?
+  desc 'run prettier'
+  task prettier: :environment do
+    system 'yarn prettier'
+    abort 'prettier failed' unless $CHILD_STATUS.exitstatus.zero?
+  end
+
+  Rake::Task[:default].clear
+  task default: %i[prettier spec]
+end
