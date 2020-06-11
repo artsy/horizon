@@ -19,15 +19,10 @@ export interface Project {
   git_remote: string
   id: string
   name: string
-  ordered_stages: [Stage]
+  comparedStages: [ComparedStage]
+  orderedStages: [Stage]
   severity: number
   tags: Tags
-}
-
-export interface ProjectWithComparison {
-  project: Project
-  compared_stages: [ComparedStage]
-  ordered_stages: [Stage]
 }
 
 export type TagsList = {

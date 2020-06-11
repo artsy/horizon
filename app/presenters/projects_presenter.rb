@@ -56,6 +56,17 @@ class ProjectsPresenter
         }
       end
     end
+
+    def as_json(_options = nil)
+      attributes = @project.as_json
+      computed_attributes = {
+        comparedStages: compared_stages,
+        orderedStages: ordered_stages,
+        severity: severity,
+        isFullyReleased: fully_released?
+      }
+      attributes.merge(computed_attributes)
+    end
   end
 
   private

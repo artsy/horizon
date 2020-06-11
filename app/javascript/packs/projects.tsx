@@ -4,10 +4,7 @@ import ReactDOM from "react-dom"
 
 document.addEventListener("turbolinks:load", () => {
   const node = document.getElementById("projects_data")
-  const props = JSON.parse((node && node.getAttribute("data")) || "")
+  const props = JSON.parse((node && node.dataset.props) || "")
 
-  ReactDOM.render(
-    <ProjectsIndex {...props} />,
-    document.getElementById("react-body"),
-  )
+  ReactDOM.render(<ProjectsIndex {...props} />, node)
 })

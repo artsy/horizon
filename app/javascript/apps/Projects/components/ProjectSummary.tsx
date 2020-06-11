@@ -1,31 +1,38 @@
 import { BorderBox, Box, Sans } from "@artsy/palette"
-import { ProjectWithComparison, Stage } from "Typings"
+import { Project, Stage } from "Typings"
 import { CommitsMessage } from "./StageCommitsMessage"
 import React from "react"
 import { StageName } from "./StageName"
 
-export const ProjectSummary: React.FC<ProjectWithComparison> = ({
-  project,
-  compared_stages,
-  ordered_stages,
+export const ProjectSummary: React.FC<Project> = ({
+  severity,
+  name,
+  description,
+  comparedStages,
+  orderedStages,
 }) => {
-  const borderColor = getColorFromSeverity(project.severity)
+  const borderColor = getColorFromSeverity(severity)
+  const isAgedClass = (severity > 10 && "aged") || ""
 
   return (
-    <BorderBox flexDirection="column" borderColor={borderColor}>
+    <BorderBox
+      className={isAgedClass}
+      flexDirection="column"
+      borderColor={borderColor}
+    >
       <Box>
         <Sans size="8" style={{ textTransform: "capitalize" }}>
-          {project.name}
+          {name}
         </Sans>
-        <Sans size="3t">{project.description}</Sans>
+        <Sans size="3t">{description}</Sans>
       </Box>
 
       <Box pt={1}>
-        {ordered_stages.map((stage: Stage, i: number) => {
+        {orderedStages.map((stage: Stage, i: number) => {
           if (i === 0) {
             return null
           }
-          const comparison = compared_stages[i - 1]
+          const comparison = comparedStages[i - 1]
           return (
             <Box key={i} pt={1}>
               <StageName comparison={comparison} stage={stage} />

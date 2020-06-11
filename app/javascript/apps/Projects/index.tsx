@@ -1,29 +1,28 @@
 import React from "react"
 import { Box, CSSGrid, Sans } from "@artsy/palette"
-import { ProjectWithComparison } from "Typings"
+import { Project } from "Typings"
 import { ProjectSummary } from "./components/ProjectSummary"
 import { MainLayout } from "components/MainLayout"
 
 interface Projects {
-  released_projects: [ProjectWithComparison]
-  unreleased_projects: [ProjectWithComparison]
-  projects: [ProjectWithComparison]
+  releasedProjects: [Project]
+  unreleasedProjects: [Project]
+  projects: [Project]
   params: any
 }
 
 export const ProjectsIndex: React.FC<Projects> = (props) => {
-  const { released_projects, unreleased_projects } = props
+  const { releasedProjects, unreleasedProjects } = props
   return (
     <MainLayout>
-      <Box px={3}>
-        <Sans size="8">Projects Index</Sans>
-        <Box pb={3}>
+      <Box px={3} pt={2}>
+        <Box pb={4}>
           <Sans size="6">Out of sync</Sans>
-          <ProjectSummaryGrid projects={unreleased_projects} />
+          <ProjectSummaryGrid projects={unreleasedProjects} />
         </Box>
-        <Box pb={3}>
+        <Box pb={4}>
           <Sans size="6">Up to date</Sans>
-          <ProjectSummaryGrid projects={released_projects} />
+          <ProjectSummaryGrid projects={releasedProjects} />
         </Box>
       </Box>
     </MainLayout>
@@ -31,7 +30,7 @@ export const ProjectsIndex: React.FC<Projects> = (props) => {
 }
 
 const ProjectSummaryGrid: React.FC<{
-  projects: [ProjectWithComparison]
+  projects: [Project]
 }> = ({ projects }) => {
   return (
     <CSSGrid
@@ -39,13 +38,8 @@ const ProjectSummaryGrid: React.FC<{
       gridGap={[2, 4]}
       my={2}
     >
-      {projects.map(({ project, compared_stages, ordered_stages }, i) => (
-        <ProjectSummary
-          key={i}
-          project={project}
-          compared_stages={compared_stages}
-          ordered_stages={ordered_stages}
-        />
+      {projects.map((project, i) => (
+        <ProjectSummary key={i} {...project} />
       ))}
     </CSSGrid>
   )
