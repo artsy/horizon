@@ -4,6 +4,8 @@
   "scripts": {
     "lint": "eslint ./app --ext ts,tsx,js,jsx --fix",
     "prettier": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'",
+    "test": "jest",
+    "test-watch": "jest --watch",
     "type-check": "tsc --noEmit --pretty"
   },
   "dependencies": {
