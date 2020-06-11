@@ -1,11 +1,11 @@
 import { ArtsyMarkIcon, Box, Flex, Link, Sans, Theme } from "@artsy/palette"
 import React from "react"
 
-export const MainLayout: React.FC = () => {
+export const MainLayout: React.FC = (props: any) => {
   return (
     <Theme>
       <NavBar />
-      <Box id="body" />
+      {props.children}
     </Theme>
   )
 }

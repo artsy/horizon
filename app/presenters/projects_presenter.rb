@@ -3,6 +3,9 @@ class ProjectsPresenter
 
   def initialize(params)
     @params = params
+    @released_projects = released_projects()
+    @unreleased_projects = unreleased_projects()
+    @detailed_projects = detailed_projects()
   end
 
   def detailed_projects
@@ -38,14 +41,19 @@ class ProjectsPresenter
     end
 
     def severity
-      compared_stages.map(&:last).compact.max || 0
+      scores = compared_stages.to_a.map { |stage| stage[:score] }
+      scores.compact.max || 0
     end
 
     # enumerates pairs of stages, the corresponding comparison object, and severity score
     def compared_stages
       @compared_stages ||= ordered_stages.each_cons(2).map do |ahead, behind|
         comparison = snapshot&.comparisons&.detect{ |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
-        [ahead, behind, comparison, (ComparisonService.comparison_score(comparison) if comparison)]
+        {
+          stages: [ahead, behind],
+          snapshot: comparison,
+          score: (ComparisonService.comparison_score(comparison) if comparison)
+        }
       end
     end
   end
