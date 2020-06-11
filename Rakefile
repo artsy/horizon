@@ -25,5 +25,5 @@ if Rails.env.development? || Rails.env.test?
   end
 
   Rake::Task[:default].clear
-  task default: %i[prettier spec jest]
+  task default: %i[prettier jest spec]
 end
