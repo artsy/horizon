@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
       params: params,
       releasedProjects: presenter.released_projects,
       unreleasedProjects: presenter.unreleased_projects,
-      projects: [presenter.detailed_projects]
+      projects: presenter.detailed_projects
     }
   end
 end

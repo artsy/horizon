@@ -21,9 +21,7 @@ export const ProjectSummary: React.FC<Project> = ({
       borderColor={borderColor}
     >
       <Box>
-        <Sans size="8" style={{ textTransform: "capitalize" }}>
-          {name}
-        </Sans>
+        <Sans size="8">{name}</Sans>
         <Sans size="3t">{description}</Sans>
       </Box>
 

@@ -3,7 +3,16 @@ export interface Stage {
 }
 
 export interface Snapshot {
-  description: [string]
+  description: [Commit]
+}
+
+export interface Commit {
+  commit: string
+  date: string
+  firstName: string
+  gravatar: string
+  href: string
+  message: string
 }
 
 export interface ComparedStage {
@@ -16,8 +25,11 @@ export type Tags = [string]
 
 export interface Project {
   description: string
-  git_remote: string
+  gitRemote: string
   id: string
+  isBlocked: boolean
+  isFullyReleased: boolean
+  isKubernetes: boolean
   name: string
   comparedStages: [ComparedStage]
   orderedStages: [Stage]
