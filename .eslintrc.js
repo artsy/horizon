@@ -12,6 +12,14 @@ module.exports = {
     "plugin:react/recommended",
     "prettier",
   ],
+  overrides: [
+    {
+      files: ["**/*.tsx"],
+      rules: {
+        "react/prop-types": "off",
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
@@ -30,7 +38,7 @@ module.exports = {
   },
   settings: {
     react: {
-      version: "detect", 
+      version: "detect",
     },
-  }
+  },
 }
