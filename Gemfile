@@ -44,6 +44,8 @@ gem "octokit", "~> 4.0" # talk to github api
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'dotenv-rails'
+  gem 'rspec-rails' # tests!
 end
 
 group :development do
@@ -53,7 +55,6 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails' # tests!
   gem 'capybara' # feature specs
 end
 
