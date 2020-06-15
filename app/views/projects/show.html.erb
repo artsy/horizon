@@ -1,0 +1,8 @@
+<%= content_tag :div,
+  id: "project_data",
+  data: {
+    props: @props.to_json
+  } do %>
+<% end %>
+
+<%= javascript_pack_tag 'project', 'data-turbolinks-track': 'reload' %>

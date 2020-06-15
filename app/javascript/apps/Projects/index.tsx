@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, CSSGrid, Sans } from "@artsy/palette"
 import { Project } from "Typings"
-import { ProjectSummary } from "./components/ProjectSummary"
+import { ProjectSummary } from "../../components/Project/ProjectSummary"
 import { MainLayout } from "components/MainLayout"
 
 interface Projects {
@@ -9,12 +9,16 @@ interface Projects {
   unreleasedProjects: [Project]
   projects: [Project]
   params: any
+  tags: [string]
 }
 
-export const ProjectsIndex: React.FC<Projects> = (props) => {
-  const { releasedProjects, unreleasedProjects } = props
+export const ProjectsIndex: React.FC<Projects> = ({
+  releasedProjects,
+  unreleasedProjects,
+  tags,
+}) => {
   return (
-    <MainLayout>
+    <MainLayout tags={tags}>
       <Box px={3} pt={2}>
         <Box pb={4}>
           <Sans size="6">Out of sync</Sans>

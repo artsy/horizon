@@ -1,10 +1,11 @@
+import { ComparedStage } from "Typings"
 import React from "react"
 import { Sans } from "@artsy/palette"
-import { Snapshot } from "Typings"
 
-export const CommitsMessage: React.FC<{
-  snapshot?: Snapshot
-}> = ({ snapshot }) => {
+export const CommitsMessage: React.FC<ComparedStage> = ({
+  blame,
+  snapshot,
+}) => {
   const count = snapshot ? snapshot.description.length : 0
   let message = "Up to date"
   if (count > 1) {

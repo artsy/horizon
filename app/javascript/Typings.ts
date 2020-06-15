@@ -16,9 +16,10 @@ export interface Commit {
 }
 
 export interface ComparedStage {
-  stages: [Stage]
+  blame: string
   score: number
   snapshot: Snapshot
+  stages: [Stage]
 }
 
 export type Tags = [string]
