@@ -1,1 +1,1 @@
-export type Tags = [string]
+export type Tags = string[]
