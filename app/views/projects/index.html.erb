@@ -1,2 +1,10 @@
+<%= content_tag :div,
+  id: "projects_data",
+  data: {
+    props: @props.to_json
+  } do %>
+<% end %>
+
+<%= javascript_pack_tag 'projects' %>
 <%= hidden_field_tag 'organization_subscription_identifier', ProjectChannel.organization_identifier(params[:organization_id]) %>
 <%= render partial: "index_#{@presenter.view}" %>

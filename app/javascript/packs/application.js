@@ -21,5 +21,3 @@ require("@rails/activestorage").start()
 
 // ActionCable
 require("channels")
-// Theme + NavBar
-require("./main_layout")
