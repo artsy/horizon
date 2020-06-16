@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -ex
+
+environment="staging"
+dump_file="$environment.dump"
+target_database="horizon_development"
+
+url=$(hokusai $environment env get DATABASE_URL | cut -d '=' -f 2)
+
+dropdb $target_database
+createdb $target_database
+pg_dump $url -O -Fc -x -f $dump_file
+pg_restore $dump_file -Fc --no-owner -d $target_database
+
+rm $dump_file
