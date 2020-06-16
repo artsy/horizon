@@ -17,8 +17,7 @@
     "jquery": "3.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "styled-components": "4.4.1",
-    "turbolinks": "5.2.0"
+    "styled-components": "4.4.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",

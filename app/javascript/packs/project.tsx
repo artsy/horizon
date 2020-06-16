@@ -1,8 +1,8 @@
+import { ProjectShow } from "apps/Project"
 import React from "react"
 import ReactDOM from "react-dom"
-import { ProjectShow } from "apps/Project"
 
-document.addEventListener("turbolinks:load", () => {
+document.addEventListener("DOMContentLoaded", () => {
   const node = document.getElementById("project_data")
   const props = JSON.parse((node && node.dataset.props) || "")
 

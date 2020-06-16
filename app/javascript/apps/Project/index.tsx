@@ -1,15 +1,18 @@
+import React from "react"
 import { Box, Flex, Link, Sans, Tags } from "@artsy/palette"
 import { Project, Stage, TagsList, Tags as TagsType } from "Typings"
-import { find } from "lodash"
 import { MainLayout } from "components/MainLayout"
-import React from "react"
 import { StageWithComparison } from "components/Stage/StageWithComparison"
+import { find } from "lodash"
 import { tagPath } from "UrlHelper"
 
-export const ProjectShow: React.FC<{ project: Project }> = ({ project }) => {
+export const ProjectShow: React.FC<{ project: Project; tags: TagsType }> = ({
+  project,
+  tags,
+}) => {
   const isKubernetes = hasHokusai(project.orderedStages)
   return (
-    <MainLayout>
+    <MainLayout tags={tags}>
       <Box px={3} py={3} maxWidth={1080} mx="auto">
         <Box mb={1}>
           <Sans size="10" style={{ textTransform: "capitalize" }}>
