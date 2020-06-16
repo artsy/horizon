@@ -1,5 +1,6 @@
-import { Box, Flex, ReadMore, Sans, StackableBorderBox } from "@artsy/palette"
+import { Box, Flex, Separator, StackableBorderBox } from "@artsy/palette"
 import { ComparedStage, Stage } from "Typings"
+import { CommitSummary } from "./StageCommitSummary"
 import { CommitsMessage } from "./StageCommitsMessage"
 import React from "react"
 import { StageName } from "./StageName"
@@ -8,8 +9,7 @@ export const StageWithComparison: React.FC<{
   stage: Stage
   comparison?: ComparedStage
 }> = ({ comparison = {} as ComparedStage, stage }) => {
-  const diff = comparison.snapshot && comparison.snapshot.description
-
+  const { diff } = comparison
   return (
     <StackableBorderBox flexDirection="column">
       <Flex justifyContent="space-between">
@@ -18,20 +18,12 @@ export const StageWithComparison: React.FC<{
       </Flex>
 
       {diff && diff.length > 0 && (
-        <Sans size="3t" pl={35} pt={1}>
-          <ReadMore
-            maxChars={350}
-            content={
-              <Box>
-                {diff.map((commit, i) => (
-                  <Box mb={1} key={i}>
-                    <li>{commit}</li>
-                  </Box>
-                ))}
-              </Box>
-            }
-          />
-        </Sans>
+        <Box>
+          <Separator my={2} />
+          {diff.map((commit, i) => (
+            <CommitSummary {...commit} key={i} />
+          ))}
+        </Box>
       )}
     </StackableBorderBox>
   )

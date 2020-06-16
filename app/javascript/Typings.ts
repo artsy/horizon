@@ -7,16 +7,17 @@ export interface Snapshot {
 }
 
 export interface Commit {
-  commit: string
   date: string
   firstName: string
   gravatar: string
   href: string
   message: string
+  sha: string
 }
 
 export interface ComparedStage {
   blame: string
+  diff: [Commit]
   score: number
   snapshot: Snapshot
   stages: [Stage]

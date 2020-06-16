@@ -10,7 +10,7 @@ import {
 } from "@artsy/palette"
 import React, { useState } from "react"
 import { Tags } from "Typings"
-import { tagPath } from "UrlHelper"
+import { tagPath } from "../UrlHelper"
 
 interface MainLayoutProps {
   tags?: Tags

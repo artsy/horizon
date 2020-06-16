@@ -60,7 +60,7 @@ class ProjectPresenter
         firstName: first_name_from_log_line(line),
         gravatar: gravatar_from_log_line(line),
         href: link_from_log_line(line),
-        message: line
+        message: line[:message]
       }
     end
   end

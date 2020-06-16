@@ -1,6 +1,4 @@
 class ProjectsPresenter
-  GITHUB_REMOTE_EXPR = /https:\/\/github.com\/(?<org>[^\/]+)\/(?<project>[^\.]+).git/
-
   def initialize(params)
     @params = params
     @released_projects = released_projects()
