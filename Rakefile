@@ -18,6 +18,12 @@ if Rails.env.development? || Rails.env.test?
     abort 'prettier failed' unless $CHILD_STATUS.exitstatus.zero?
   end
 
+  desc 'run jest'
+  task jest: :environment do
+    system 'yarn test'
+    abort 'jest failed' unless $CHILD_STATUS.exitstatus.zero?
+  end
+
   Rake::Task[:default].clear
-  task default: %i[prettier spec]
+  task default: %i[prettier jest spec]
 end
