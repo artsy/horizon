@@ -20,10 +20,10 @@ RSpec.feature "Projects", type: :feature do
 
     visit '/'
 
-    expect(page).to have_content('shipping')
-    expect(page).to have_content('foo_php')
-    expect(page).to have_content('master')
-    expect(page).to have_content('production')
+    expect(page).to have_content('Out of sync')
+    expect(page).to have_content('Foo Php')
+    expect(page).to have_content('Shipping')
+    expect(page).to have_content('Scheduling')
 
     # view diffs...
     allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
