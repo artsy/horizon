@@ -18,7 +18,7 @@ class ProjectsPresenter
   end
 
   def view
-    VIEWS.include?(@params[:view]) ? @params[:view] : 'detail'
+    VIEWS.include?(@params[:view]) ? @params[:view] : 'dashboard'
   end
 
   class ProjectWrapper
