@@ -3,7 +3,7 @@
     <div class="project" id="<%= project_anchor(project) %>">
       <div class="project_name">
         <%= project_status_icon(project) %>
-        <%= link_to project.name, { anchor: project_anchor(project) }, 'data-turbolinks' => false %>
+        <%= link_to project.name, { anchor: project_anchor(project) } %>
         <%= blocked(project) %>
       </div>
       <table width="100%">
