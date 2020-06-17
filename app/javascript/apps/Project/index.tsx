@@ -11,15 +11,22 @@ import {
   Tags,
 } from "@artsy/palette"
 import { Project, Stage, TagsList, Tags as TagsType } from "Typings"
-import { deployBlockPath, projectEditPath, tagPath } from "shared/UrlHelper"
-import { MainLayout } from "components/MainLayout"
+import {
+  deployBlockPath,
+  projectEditPath,
+  tagPath,
+} from "../../shared/UrlHelper"
+import { MainLayout } from "../../components/MainLayout"
 import React from "react"
-import { StageWithComparison } from "components/Stage/StageWithComparison"
+import { StageWithComparison } from "../../components/Stage/StageWithComparison"
+import styled from "styled-components"
 
-export const ProjectShow: React.FC<{ project: Project; tags: TagsType }> = ({
-  project,
-  tags,
-}) => {
+export interface ProjectShowProps {
+  project: Project
+  tags: TagsType
+}
+
+export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
   const {
     comparedStages,
     description,
@@ -32,6 +39,7 @@ export const ProjectShow: React.FC<{ project: Project; tags: TagsType }> = ({
   } = project
   const isAgedClass = (severity > 10 && "aged") || ""
   const blockLink = block && deployBlockPath(block.id)
+  const gitLink = gitRemote && gitRemote.replace(".git", "")
 
   return (
     <MainLayout tags={tags}>
@@ -44,26 +52,29 @@ export const ProjectShow: React.FC<{ project: Project; tags: TagsType }> = ({
         className={isAgedClass}
       >
         <Box mb={1}>
-          <Sans size="10" style={{ textTransform: "capitalize" }}>
+          <Sans size="10" element="h1" style={{ textTransform: "capitalize" }}>
             {name}
           </Sans>
           <Sans size="3">{description}</Sans>
 
           <Box position="absolute" right={3} top={3}>
-            <Link href={projectEditPath(project.id)} underlineBehavior="hover">
+            <EditLink
+              href={projectEditPath(project.id)}
+              underlineBehavior="hover"
+            >
               <Flex alignItems="center">
                 <Sans size="3t" weight="medium" pr={0.5}>
                   Edit
                 </Sans>
                 <EditIcon />
               </Flex>
-            </Link>
+            </EditLink>
           </Box>
 
-          {gitRemote && (
+          {gitLink && (
             <Box my={1}>
               <Sans size="3">
-                <Link href={gitRemote}>{gitRemote}</Link>
+                <Link href={gitLink}>{gitLink}</Link>
               </Sans>
             </Box>
           )}
@@ -109,12 +120,14 @@ export const ProjectShow: React.FC<{ project: Project; tags: TagsType }> = ({
         </Box>
 
         <Box>
-          <Flex my={1} alignItems="center">
-            <Sans size="3t" weight="medium" pr={1}>
-              Teams
-            </Sans>
-            <Tags tags={formattedTags(project.tags)} />
-          </Flex>
+          {project.tags && project.tags.length > 0 && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Teams
+              </Sans>
+              <Tags tags={formattedTags(project.tags)} />
+            </Flex>
+          )}
 
           {isKubernetes && (
             <Flex my={1} alignItems="center">
@@ -139,3 +152,5 @@ export const formattedTags = (tags: TagsType): TagsList => {
     name: tag,
   }))
 }
+
+export const EditLink = styled(Link)``
