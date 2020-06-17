@@ -6,6 +6,14 @@ class ProjectsController < ApplicationController
     }
   end
 
+  def show
+    project = Project.find(params[:id])
+    @props = {
+      project: ProjectPresenter.new(project),
+      tags: tags
+    }
+  end
+
   private
 
   def tags
