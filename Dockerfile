@@ -12,13 +12,16 @@ RUN apk update && apk --no-cache --quiet add --update \
     postgresql-dev \
     postgresql-client \
     python2-dev \
-    py-pip \
+    py2-setuptools \
     tzdata \
     yarn \
     git && \
     adduser -D -g '' deploy
 
 # support hokusai registry commands
+RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install
+RUN easy_install pip
+RUN pip install --upgrade pip
 RUN pip install --upgrade --no-cache-dir hokusai
 
 RUN gem install bundler -v '<2' && \
