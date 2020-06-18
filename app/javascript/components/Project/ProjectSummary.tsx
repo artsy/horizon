@@ -1,8 +1,9 @@
 import { BorderBox, Box, Button, Link, Sans } from "@artsy/palette"
 import { Project, Stage } from "Typings"
-import { CommitsMessage } from "components/Stage/StageCommitsMessage"
+import { CommitsMessage } from "../Stage/StageCommitsMessage"
 import React from "react"
-import { StageName } from "components/Stage/StageName"
+import { StageName } from "../Stage/StageName"
+import { projectPath } from "../../shared/UrlHelper"
 
 export const ProjectSummary: React.FC<Project> = ({
   comparedStages,
@@ -14,7 +15,7 @@ export const ProjectSummary: React.FC<Project> = ({
   severity,
 }) => {
   const borderColor = getColorFromSeverity(severity)
-  const isAgedClass = (severity > 10 && "aged") || ""
+  const isAgedClass = (severity >= 500 && "aged") || ""
 
   return (
     <BorderBox
@@ -23,7 +24,7 @@ export const ProjectSummary: React.FC<Project> = ({
       borderColor={borderColor}
       position="relative"
     >
-      <Link href={`projects/${id}`} underlineBehavior="none">
+      <Link href={projectPath(id)} underlineBehavior="none">
         {block && (
           <Box position="absolute" right={3}>
             <Button variant="primaryBlack" size="small">
@@ -33,7 +34,7 @@ export const ProjectSummary: React.FC<Project> = ({
         )}
         <Box>
           <Sans size="8">{name}</Sans>
-          <Sans size="3t">{description}</Sans>
+          {description && <Sans size="3t">{description}</Sans>}
         </Box>
 
         <Box pt={1}>
@@ -62,9 +63,9 @@ export const ProjectSummary: React.FC<Project> = ({
 }
 
 export const getColorFromSeverity = (severity: number): string | undefined => {
-  if (severity > 10) {
+  if (severity >= 10) {
     return "red100"
-  } else if (severity > 1) {
+  } else if (severity >= 1) {
     return "yellow100"
   }
 }

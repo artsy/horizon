@@ -26,10 +26,10 @@ export interface ComparedStage {
 
 export interface Project {
   created_at: string
-  description: string
-  gitRemote: string
+  description?: string
+  gitRemote?: string
   id: number
-  block: Block
+  block: Block | null
   isFullyReleased: boolean
   isKubernetes: boolean
   name: string
@@ -38,7 +38,7 @@ export interface Project {
   organization_id: number
   severity: number
   snapshot_id: number
-  tags: Tags
+  tags?: Tags
   updated_at: string
 }
 

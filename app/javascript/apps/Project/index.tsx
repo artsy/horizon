@@ -37,7 +37,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
     severity,
     orderedStages,
   } = project
-  const isAgedClass = (severity > 10 && "aged") || ""
+  const isAgedClass = (severity >= 500 && "aged") || ""
   const blockLink = block && deployBlockPath(block.id)
   const gitLink = gitRemote && gitRemote.replace(".git", "")
 
@@ -72,16 +72,18 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
           </Box>
 
           {gitLink && (
-            <Box my={1}>
+            <Box mt={1} mb={3}>
               <Sans size="3">
-                <Link href={gitLink}>{gitLink}</Link>
+                <Link href={gitLink} underlineBehavior="hover">
+                  {gitLink}
+                </Link>
               </Sans>
             </Box>
           )}
 
           {block && (
             <>
-              <Separator my={3} />
+              <Separator mb={3} />
               <Flex alignItems="center" mb={2}>
                 <Button variant="primaryBlack" mr={1} mb={1}>
                   <Link
