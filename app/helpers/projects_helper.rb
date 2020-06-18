@@ -39,7 +39,8 @@ module ProjectsHelper
   end
 
   def first_name_from_log(line)
-    ReleasecopService.parsed_log_line(line)[:name].split(' ')[0]
+    name = ReleasecopService.parsed_log_line(line)[:name]
+    name && name.split(' ')[0] || ""
   end
 
   def gravatar_from_email(email)

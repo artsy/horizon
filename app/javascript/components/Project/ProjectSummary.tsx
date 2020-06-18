@@ -8,7 +8,7 @@ export const ProjectSummary: React.FC<Project> = ({
   comparedStages,
   description,
   id,
-  isBlocked,
+  block,
   name,
   orderedStages,
   severity,
@@ -24,7 +24,7 @@ export const ProjectSummary: React.FC<Project> = ({
       position="relative"
     >
       <Link href={`projects/${id}`} underlineBehavior="none">
-        {isBlocked && (
+        {block && (
           <Box position="absolute" right={3}>
             <Button variant="primaryBlack" size="small">
               Blocked

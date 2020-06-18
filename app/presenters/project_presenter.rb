@@ -31,9 +31,9 @@ class ProjectPresenter
     !hokusai_stages.nil?
   end
 
-  def blocked?
+  def block
     blocks = deploy_blocks.unresolved.to_a
-    blocks.any?
+    blocks.first
   end
 
   # enumerates pairs of stages, the corresponding comparison object, and severity score
@@ -95,7 +95,7 @@ class ProjectPresenter
     computed_attributes = {
       comparedStages: compared_stages,
       gitRemote: git_remote,
-      isBlocked: blocked?,
+      block: block,
       isFullyReleased: fully_released?,
       isKubernetes: is_kubernetes?,
       name: name.titleize,
@@ -105,4 +105,3 @@ class ProjectPresenter
     attributes.merge(computed_attributes)
   end
 end
-

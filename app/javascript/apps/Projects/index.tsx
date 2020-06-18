@@ -2,7 +2,7 @@ import React from "react"
 import { Box, CSSGrid, Sans } from "@artsy/palette"
 import { Project } from "Typings"
 import { ProjectSummary } from "../../components/Project/ProjectSummary"
-import { MainLayout } from "components/MainLayout"
+import { MainLayout } from "../../components/MainLayout"
 
 interface Projects {
   releasedProjects: [Project]

@@ -25,7 +25,6 @@
                     <%= link_to \
                       "#{pluralize(comparison.description.length, 'commit')} behind",
                       params.permit(:organization_id, :view).merge(view: 'detail', anchor: project_anchor(project)),
-                      'data-turbolinks' => false,
                       title: "(score: #{severity})"
                     %>
                   <% end %>
