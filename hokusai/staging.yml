@@ -163,7 +163,7 @@ spec:
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
-  name: horizon-refresh-cron
+  name: horizon-refresh-comparisons-cron
 spec:
   schedule: "0 9 * * *"
   concurrencyPolicy: Forbid
@@ -172,9 +172,40 @@ spec:
       template:
         spec:
           containers:
-            - name: horizon-refresh-cron
+            - name: horizon-refresh-comparisons-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
               args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: horizon-environment
+          restartPolicy: Never
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 1
+                  preference:
+                    matchExpressions:
+                      - key: tier
+                        operator: In
+                        values:
+                          - background
+---
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: horizon-refresh-project-data-cron
+spec:
+  schedule: "0 0 * * 1"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: horizon-refresh-project-data-cron
+              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+              args: ["bundle", "exec", "rake", "cron:refresh_project_data"]
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:

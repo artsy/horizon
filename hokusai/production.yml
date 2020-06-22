@@ -164,7 +164,7 @@ spec:
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
-  name: horizon-refresh-cron
+  name: horizon-refresh-comparisons-cron
 spec:
   schedule: "*/10 * * * *"
   concurrencyPolicy: Forbid
@@ -173,7 +173,7 @@ spec:
       template:
         spec:
           containers:
-            - name: horizon-refresh-cron
+            - name: horizon-refresh-comparisons-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
               args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
               imagePullPolicy: Always
