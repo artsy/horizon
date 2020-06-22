@@ -7,6 +7,8 @@ export interface Block {
   updated_at: string
 }
 
+export type CiProvider = "circleci" | "travis"
+
 export interface Commit {
   date: string
   firstName: string
@@ -24,23 +26,35 @@ export interface ComparedStage {
   stages: Stage[]
 }
 
+export interface Dependency {
+  id: number
+  name: string
+  version: string
+}
+
 export interface Project {
+  block: Block
+  ci_provider: CiProvider
+  comparedStages: ComparedStage[]
   created_at: string
   description: string
+  dependencies: Dependency[]
   gitRemote: string
   id: number
-  block: Block
   isFullyReleased: boolean
   isKubernetes: boolean
   name: string
-  comparedStages: ComparedStage[]
+  orbs: Orb[]
   orderedStages: Stage[]
   organization_id: number
+  renovate: boolean
   severity: number
   snapshot_id: number
   tags: Tags
   updated_at: string
 }
+
+export type Orb = "hokusai" | "yarn"
 
 export interface Stage {
   branch: string | null

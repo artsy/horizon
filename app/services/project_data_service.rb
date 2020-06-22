@@ -25,7 +25,11 @@ class ProjectDataService
   end
 
   def ci_provider
-    'circleci' if @circle_config
+    if @circle_config
+      'circleci'
+    elsif travis_config
+      'travis'
+    end
   end
 
   def has_renovate?
@@ -40,8 +44,8 @@ class ProjectDataService
   end
 
   def update_dependencies
-    update_dependency('ruby', ruby_version)
-    update_dependency('node', node_version)
+    ruby_version && update_dependency('ruby', ruby_version)
+    node_version && update_dependency('node', node_version)
   end
 
   def update_dependency(name, version)
@@ -66,6 +70,11 @@ class ProjectDataService
     file = fetch_github_file('.circleci/config.yml')
     return if !file
     decode_content(file)
+  end
+
+  def travis_config
+    file = fetch_github_file('.travis.yml')
+    true if file
   end
 
   def renovate_config

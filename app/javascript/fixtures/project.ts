@@ -3,12 +3,16 @@ import { Project } from "Typings"
 export const projectFixture: Project = {
   id: 11,
   name: "Force",
+  ci_provider: "circleci",
   organization_id: 1,
+  renovate: true,
   created_at: "2018-11-14T17:26:37.086-05:00",
   updated_at: "2020-06-17T05:02:36.347-04:00",
   snapshot_id: 19463,
   description: "Artsy.net web front-end",
   tags: ["platform"],
+  orbs: ["hokusai", "yarn"],
+  dependencies: [],
   comparedStages: [
     {
       stages: [

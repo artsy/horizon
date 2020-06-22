@@ -93,9 +93,10 @@ class ProjectPresenter
   def as_json(_options = nil)
     attributes = @project.as_json
     computed_attributes = {
-      comparedStages: compared_stages,
-      gitRemote: git_remote,
       block: block,
+      comparedStages: compared_stages,
+      dependencies: @project.dependencies,
+      gitRemote: git_remote,
       isFullyReleased: fully_released?,
       isKubernetes: is_kubernetes?,
       name: name.titleize,
