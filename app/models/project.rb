@@ -8,4 +8,8 @@ class Project < ApplicationRecord
   belongs_to :snapshot, optional: true
 
   jsonb_editable :tags
+
+  def github_repo
+    [organization.name, name].join('/')
+  end
 end
