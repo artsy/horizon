@@ -9,16 +9,19 @@ class ProjectDataService
     @circle_config = circle_config
   end
 
-  def computed_properties
-    {
-      dependencies: {
-        ruby: ruby_version,
-        node: node_version
-      },
+  def self.refresh_data_for_org(org, access_token)
+    org.projects.each do |project|
+      new(project, access_token).update_computed_properties
+    end
+  end
+
+  def update_computed_properties
+    update_dependencies
+    @project.update({
       ci_provider: ci_provider,
       renovate: has_renovate?,
       orbs: orbs
-    }
+    })
   end
 
   def ci_provider
@@ -34,6 +37,16 @@ class ProjectDataService
     @circle_config.include?('artsy/hokusai@') && orbs.push('hokusai')
     @circle_config.include?('artsy/yarn@') && orbs.push('yarn')
     orbs
+  end
+
+  def update_dependencies
+    update_dependency('ruby', ruby_version)
+    update_dependency('node', node_version)
+  end
+
+  def update_dependency(name, version)
+    d = @project.dependencies.where(name: name) || Dependency.new
+    d.update(name: name, version: version)
   end
 
   def ruby_version
