@@ -171,7 +171,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: 3600
 spec:
   rules:
-    host: releases-staging.artsy.net
+    - host: releases-staging.artsy.net
       http:
         paths:
           - path: /
