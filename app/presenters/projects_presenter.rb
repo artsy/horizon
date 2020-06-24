@@ -1,9 +1,9 @@
 class ProjectsPresenter
   def initialize(params)
     @params = params
-    @released_projects = released_projects()
-    @unreleased_projects = unreleased_projects()
-    @detailed_projects = detailed_projects()
+    @released_projects = released_projects
+    @unreleased_projects = unreleased_projects
+    @detailed_projects = detailed_projects
   end
 
   def detailed_projects
@@ -24,7 +24,7 @@ class ProjectsPresenter
     @projects ||= begin
       query = Project.includes(:stages, snapshot: [:comparisons]).where(@params.permit(:organization_id))
       query = query.where('tags ?| array[:tags]', tags: @params[:tags]) if @params[:tags]&.any?
-      query.map { |p| ProjectPresenter.new(p) }
+      query.entries.map { |p| ProjectPresenter.new(p) }
     end
   end
 end
