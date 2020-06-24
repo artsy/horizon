@@ -1,9 +1,6 @@
 class ProjectsPresenter
   def initialize(params)
     @params = params
-    @released_projects = released_projects
-    @unreleased_projects = unreleased_projects
-    @detailed_projects = detailed_projects
   end
 
   def detailed_projects
