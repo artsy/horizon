@@ -2,7 +2,10 @@ import { BorderBox } from "@artsy/palette"
 import { ProjectSummary } from "../ProjectSummary"
 import React from "react"
 import { mount } from "enzyme"
-import { unreleasedProjectFixture } from "../../../fixtures/project"
+import {
+  releasedProjectFixture,
+  unreleasedProjectFixture,
+} from "../../../fixtures/project"
 
 describe("ProjectSummary", () => {
   let props
@@ -26,7 +29,7 @@ describe("ProjectSummary", () => {
   })
 
   it("Renders up to date stages", () => {
-    const component = getWrapper()
+    const component = getWrapper({ ...releasedProjectFixture })
     expect(component.text()).toMatch("staging")
     expect(component.text()).toMatch("Up to date")
   })
