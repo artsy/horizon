@@ -56,7 +56,7 @@ describe("ProjectShow", () => {
     )
     expect(component.find(StackableBorderBox).at(1).text()).toMatch("staging")
     expect(component.find(StackableBorderBox).at(1).text()).toMatch(
-      "Up to date",
+      "1 commit behind",
     )
     expect(component.find(StackableBorderBox).at(2).text()).toMatch(
       "production",
