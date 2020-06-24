@@ -110,7 +110,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
 
         <Box mb={3}>
           {orderedStages.map((stage: Stage, i: number) => {
-            const comparison = i > 1 ? comparedStages[i - 1] : undefined
+            const comparison = i > 0 ? comparedStages[i - 1] : undefined
             return (
               <StageWithComparison
                 stage={stage}
