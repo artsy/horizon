@@ -3,7 +3,7 @@ import { EditLink, ProjectShow, ProjectShowProps } from "../index"
 import { NavBar } from "../../../components/MainLayout"
 import React from "react"
 import { mount } from "enzyme"
-import { projectFixture } from "../../../fixtures/project"
+import { unreleasedProjectFixture } from "../../../fixtures/project"
 
 describe("ProjectShow", () => {
   let props: ProjectShowProps
@@ -13,7 +13,7 @@ describe("ProjectShow", () => {
 
   beforeEach(() => {
     props = {
-      project: projectFixture,
+      project: unreleasedProjectFixture,
       tags: ["platform", "galleries"],
     }
   })

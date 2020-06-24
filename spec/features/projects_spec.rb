@@ -19,11 +19,11 @@ RSpec.feature "Projects", type: :feature do
     Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php', tags: nil)
 
     visit '/'
-
-    expect(page).to have_content('Out of sync')
-    expect(page).to have_content('Foo Php')
-    expect(page).to have_content('Shipping')
-    expect(page).to have_content('Scheduling')
+    expect(page).to have_selector 'div[id="projects_data"]'
+    props = find('div[id="projects_data"]')["data-props"].as_json
+    expect(props).to have_content('Foo Php')
+    expect(props).to have_content('Shipping')
+    expect(props).to have_content('Scheduling')
 
     # view diffs...
     allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
@@ -31,8 +31,11 @@ RSpec.feature "Projects", type: :feature do
     )
     ComparisonService.new(project).refresh_comparisons
     visit projects_path(organization_id: org.id)
-    expect(page).to have_content('2 commits behind')
-
+    expect(page).to have_selector 'div[id="projects_data"]'
+    props_with_comparison = find('div[id="projects_data"]')["data-props"].as_json
+    expect(props_with_comparison).to have_content('"comparedStages":[{"stages":[{"id":')
+    expect(props_with_comparison).to have_content('"description":["commit foo","commit bar"]')
+    
     # only persist new snapshots upon changes
     expect {
       ComparisonService.new(project).refresh_comparisons
