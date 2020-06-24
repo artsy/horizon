@@ -1,6 +1,6 @@
 import { Box, Flex, Separator, StackableBorderBox } from "@artsy/palette"
 import { ComparedStage, Stage } from "Typings"
-import { CommitSummary } from "./StageCommitsSummary"
+import { CommitSummary } from "./StageCommitSummary"
 import { CommitsMessage } from "./StageCommitsMessage"
 import React from "react"
 import { StageName } from "./StageName"
