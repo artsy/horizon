@@ -75,7 +75,8 @@ class ProjectPresenter
   end
 
   def first_name_from_log_line(line)
-    line[:name].split(' ')[0].titleize
+    name = line[:name] && line[:name].split(' ')[0]
+    name && name.titleize
   end
 
   def link_from_log_line(line)

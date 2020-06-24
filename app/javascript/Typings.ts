@@ -33,13 +33,13 @@ export interface Dependency {
 }
 
 export interface Project {
-  block: Block
+  block?: Block
   ci_provider: CiProvider
   comparedStages: ComparedStage[]
   created_at: string
-  description: string
+  description?: string
   dependencies: Dependency[]
-  gitRemote: string
+  gitRemote?: string
   id: number
   isFullyReleased: boolean
   isKubernetes: boolean
@@ -50,7 +50,7 @@ export interface Project {
   renovate: boolean
   severity: number
   snapshot_id: number
-  tags: Tags
+  tags?: Tags
   updated_at: string
 }
 
