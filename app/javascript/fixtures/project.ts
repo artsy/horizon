@@ -188,12 +188,16 @@ export const releasedProjectFixture: Project = {
   block: null,
   id: 25,
   name: "Radiation",
+  ci_provider: "circleci",
   organization_id: 1,
   created_at: "2018-11-14T22:26:37.395Z",
   updated_at: "2020-06-15T18:52:09.790Z",
   snapshot_id: 19401,
   description: "Inquiry email relaying",
   tags: ["platform"],
+  orbs: ["hokusai", "yarn"],
+  dependencies: [],
+  renovate: true,
   comparedStages: [
     {
       stages: [

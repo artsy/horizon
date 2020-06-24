@@ -33,7 +33,7 @@ export interface Dependency {
 }
 
 export interface Project {
-  block?: Block
+  block?: Block | null
   ci_provider: CiProvider
   comparedStages: ComparedStage[]
   created_at: string

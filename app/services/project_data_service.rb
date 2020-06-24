@@ -49,8 +49,12 @@ class ProjectDataService
   end
 
   def update_dependency(name, version)
-    d = @project.dependencies.where(name: name) || Dependency.new
-    d.update(name: name, version: version)
+    d = @project.dependencies.where(name: name)
+    if d.empty?
+      @project.dependencies << Dependency.create(name: name, version: version)
+    else
+      d.update(name: name, version: version)
+    end
   end
 
   def ruby_version
