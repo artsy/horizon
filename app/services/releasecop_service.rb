@@ -3,6 +3,8 @@
 class ReleasecopService
   attr_accessor :project
 
+  # format criteria: %h %ad %s (%an, %ae)
+  # see https://github.com/joeyAghion/releasecop/blob/master/lib/releasecop/comparison.rb#L5
   LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9\-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/.freeze
 
   def self.parsed_log_line(line)

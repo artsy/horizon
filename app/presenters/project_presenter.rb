@@ -15,7 +15,7 @@ class ProjectPresenter
     @ordered_stages ||= project.stages.sort_by(&:position)
   end
 
-  def fully_released?
+  def is_fully_released? # rubocop:disable Naming/PredicateName
     snapshot && severity.zero?
   end
 
@@ -29,9 +29,8 @@ class ProjectPresenter
     stage&.git_remote
   end
 
-  def kubernetes?
-    hokusai_stages = ordered_stages&.detect { |s| s.hokusai }
-    !hokusai_stages.nil?
+  def is_kubernetes? # rubocop:disable Naming/PredicateName
+    true if ordered_stages&.detect { |s| !s.hokusai&.empty? }
   end
 
   def block
@@ -104,8 +103,8 @@ class ProjectPresenter
       comparedStages: compared_stages,
       gitRemote: git_remote,
       block: block,
-      isFullyReleased: fully_released?,
-      isKubernetes: kubernetes?,
+      isFullyReleased: is_fully_released?,
+      isKubernetes: is_kubernetes?,
       name: name.titleize,
       orderedStages: ordered_stages,
       severity: severity
