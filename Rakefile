@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
@@ -12,6 +14,10 @@ namespace :cron do
 end
 
 if Rails.env.development? || Rails.env.test?
+  require 'rubocop/rake_task'
+  desc 'Run RuboCop'
+  RuboCop::RakeTask.new(:rubocop)
+
   desc 'run prettier'
   task prettier: :environment do
     system 'yarn prettier'
@@ -25,5 +31,5 @@ if Rails.env.development? || Rails.env.test?
   end
 
   Rake::Task[:default].clear
-  task default: %i[prettier jest spec]
+  task default: %i[prettier rubocop jest spec]
 end
