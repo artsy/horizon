@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ComparisonService
   attr_accessor :project
 
@@ -26,11 +28,11 @@ class ComparisonService
   end
 
   # Calculates a score of how badly a deploy is needed based on commits, contributors, and age.
-  def self.severity_score(commits)
+  def self.severity_score(commits) # rubocop:disable Metrics/AbcSize
     contributors = commits.map { |c| c[:email] }.uniq
     now = Time.now
     oldest_commit_at = commits.map { |c| c[:date] }.min&.to_time
-    age = (now - (oldest_commit_at || now))/1.day
+    age = (now - (oldest_commit_at || now)) / 1.day
     commits.size + contributors.size**2 + age**2
   end
 
@@ -44,7 +46,7 @@ class ComparisonService
     new_snapshots
   end
 
-  def refresh_comparisons
+  def refresh_comparisons # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     refreshed_at = Time.now
     result = ReleasecopService.new(project).perform_comparison
     new_snapshot = nil
@@ -71,15 +73,16 @@ class ComparisonService
       c.behind_stage == stage
     end
     return false unless comparison
-    return true
+
+    true
   end
 
   def equivalent_snapshots?(snapshot, result)
     snapshot.comparisons.order(position: :asc).map(&:description) == result.comparisons.map(&:lines) &&
-    snapshot.error_message == result.error&.message
+      snapshot.error_message == result.error&.message
   end
 
-  def store_new_snapshot!(project, result, refreshed_at)
+  def store_new_snapshot!(project, result, refreshed_at) # rubocop:disable Metrics/AbcSize
     snapshot = project.snapshots.create!(refreshed_at: refreshed_at, error_message: result.error&.message)
     result.comparisons.each do |c|
       snapshot.comparisons.create!(
@@ -96,6 +99,7 @@ class ComparisonService
   def clean_up_old_snapshots
     ids = project.snapshots.pluck(:id).sort
     return unless ids.size > KEEP_OLD_SNAPSHOTS
+
     project.snapshots.where('id < ?', ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
   end
 end

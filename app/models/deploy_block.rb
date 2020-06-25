@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeployBlock < ApplicationRecord
   belongs_to :project
 
@@ -10,6 +12,7 @@ class DeployBlock < ApplicationRecord
 
   def broadcast_updates
     return unless id_previously_changed? || resolved_at_previously_changed?
+
     ActionCable.server.broadcast(ProjectChannel.channel_name(project.organization_id), updatedBlocks: true)
     ActionCable.server.broadcast(ProjectChannel.channel_name, updatedBlocks: true)
   end

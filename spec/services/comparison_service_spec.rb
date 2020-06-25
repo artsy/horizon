@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ComparisonService, type: :model do
@@ -9,42 +11,48 @@ RSpec.describe ComparisonService, type: :model do
     end
 
     let(:one_recent_commit_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-08-01' }
-      ])
+      ComparisonService.severity_score(
+        [{ email: 'foo@bar.com', date: '2019-08-01' }]
+      )
     end
 
     let(:one_semirecent_commit_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-07-31' }
-      ])
+      ComparisonService.severity_score(
+        [{ email: 'foo@bar.com', date: '2019-07-31' }]
+      )
     end
 
     let(:one_week_old_commit_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-07-25' }
-      ])
+      ComparisonService.severity_score(
+        [{ email: 'foo@bar.com', date: '2019-07-25' }]
+      )
     end
 
     let(:one_recent_contributor_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-08-01' },
-        { email: 'foo@bar.com', date: '2019-08-02' }
-      ])
+      ComparisonService.severity_score(
+        [
+          { email: 'foo@bar.com', date: '2019-08-01' },
+          { email: 'foo@bar.com', date: '2019-08-02' }
+        ]
+      )
     end
 
     let(:two_recent_contributors_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-08-01' },
-        { email: 'baz@bar.com', date: '2019-08-02' }
-      ])
+      ComparisonService.severity_score(
+        [
+          { email: 'foo@bar.com', date: '2019-08-01' },
+          { email: 'baz@bar.com', date: '2019-08-02' }
+        ]
+      )
     end
 
     let(:two_old_contributors_score) do
-      ComparisonService.severity_score([
-        { email: 'foo@bar.com', date: '2019-07-20' },
-        { email: 'baz@bar.com', date: '2019-07-19' }
-      ])
+      ComparisonService.severity_score(
+        [
+          { email: 'foo@bar.com', date: '2019-07-20' },
+          { email: 'baz@bar.com', date: '2019-07-19' }
+        ]
+      )
     end
 
     it 'is 0 for no changes' do

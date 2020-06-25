@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeployService
   def self.start(deploy_strategy)
     case deploy_strategy.provider
@@ -6,7 +8,7 @@ class DeployService
     end
   end
 
-  def self.create_github_pull_request(deploy_strategy)
+  def self.create_github_pull_request(deploy_strategy) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     access_token = deploy_strategy.profile&.basic_password
     raise 'A profile and basic_password are required for Github authentication' if access_token.blank?
 
@@ -22,15 +24,14 @@ class DeployService
       )
 
       # assign appropriate github user
-      sorted_logins = client.pull_request_commits(repo, pr.number).
-        flat_map{|c| [c.author, c.committer] }.
-        reject{|c| c.type == 'Bot' || c.login == 'web-flow' || c.login[/\bbot\b/] }.
-        group_by(&:login).map{|k,v| [v.size, k] }.sort.reverse.map(&:last)
+      sorted_logins = client.pull_request_commits(repo, pr.number)
+                            .flat_map { |c| [c.author, c.committer] }
+                            .reject { |c| c.type == 'Bot' || c.login == 'web-flow' || c.login[/\bbot\b/] }
+                            .group_by(&:login).map { |k, v| [v.size, k] }.sort.reverse.map(&:last)
       assignee = sorted_logins.detect { |l| client.check_assignee(repo, l) }
       client.add_assignees(repo, pr.number, assignee) if assignee
     rescue Octokit::UnprocessableEntity
       # PR already exists
-    end    
+    end
   end
 end
-

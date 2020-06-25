@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class ReleasecopService
   attr_accessor :project
 
-  LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9\-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/ # %h %ad %s (%an, %ae)
+  LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9\-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/.freeze
 
   def self.parsed_log_line(line)
     line.match(LOG_LINE_EXPR)&.named_captures&.with_indifferent_access || {}
@@ -26,11 +28,9 @@ class ReleasecopService
     attr_accessor :result, :error
 
     def initialize(checker)
-      begin
-        @result = checker.check
-      rescue => ex
-        self.error = ex
-      end
+      @result = checker.check
+    rescue StandardError => e
+      self.error = e
     end
 
     def comparisons
@@ -62,5 +62,4 @@ class ReleasecopService
       'aws_secret_access_key' => stage.profile&.environment&.fetch('AWS_SECRET_ACCESS_KEY')
     }
   end
-
 end

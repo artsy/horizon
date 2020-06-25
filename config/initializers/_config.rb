@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Horizon.mattr_accessor :config
 
 Horizon.config = {

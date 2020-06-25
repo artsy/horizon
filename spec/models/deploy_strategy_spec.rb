@@ -1,9 +1,18 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe DeployStrategy, type: :model do
   let(:org) { Organization.create!(name: 'artsy') }
   let(:project) { org.projects.create!(name: 'candela') }
-  let(:stages) { (1..2).map {|i| project.stages.create!(name: "stage #{i}", git_remote: 'https://github.com/artsy/candela.git') } }
+  let(:stages) do
+    (1..2).map do |i|
+      project.stages.create!(
+        name: "stage #{i}",
+        git_remote: 'https://github.com/artsy/candela.git'
+      )
+    end
+  end
 
   it 'has an associated github pull request deploy strategy' do
     strategy = stages.last.deploy_strategies.create!(
@@ -33,9 +42,11 @@ RSpec.describe DeployStrategy, type: :model do
   end
 
   it 'rejects unsupported providers' do
-    expect(stages.last.deploy_strategies.new(
-      provider: 'heroku'
-    )).not_to be_valid
+    expect(
+      stages.last.deploy_strategies.new(
+        provider: 'heroku'
+      )
+    ).not_to be_valid
   end
 
   it 'requires expected arguments for github pull request provider' do
