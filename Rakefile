@@ -11,12 +11,12 @@ namespace :cron do
   end
 
   task refresh_project_data: :environment do
-    return if !Horizon.config[:github_access_token]
-
-    ProjectDataService.refresh_data_for_org(
-      Organization.find(Horizon.config[:default_org_id]),
-      Horizon.config[:github_access_token]
-    )
+    if Horizon.config[:github_access_token]
+      ProjectDataService.refresh_data_for_org(
+        Organization.find(Horizon.config[:default_org_id]) || Organization.first,
+        Horizon.config[:github_access_token]
+      )
+    end
   end
 end
 

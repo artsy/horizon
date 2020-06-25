@@ -38,9 +38,10 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
     gitRemote,
     isKubernetes,
     name,
+    orbs,
+    orderedStages,
     renovate,
     severity,
-    orderedStages,
   } = project
   const isAgedClass = (severity >= 500 && "aged") || ""
   const blockLink = block && deployBlockPath(block.id)
@@ -142,6 +143,15 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
                 Dependencies
               </Sans>
               <Tags tags={formattedDependencies(dependencies)} />
+            </Flex>
+          )}
+
+          {orbs && orbs.length > 0 && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Orbs
+              </Sans>
+              <Tags tags={formattedTags(orbs)} />
             </Flex>
           )}
 

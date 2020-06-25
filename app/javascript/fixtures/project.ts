@@ -12,7 +12,20 @@ export const unreleasedProjectFixture: Project = {
   description: "Artsy.net web front-end",
   tags: ["platform"],
   orbs: ["hokusai", "yarn"],
-  dependencies: [],
+  dependencies: [
+    {
+      id: 36,
+      project_id: 31,
+      name: "ruby",
+      version: "2.6.5",
+    },
+    {
+      id: 37,
+      project_id: 31,
+      name: "node",
+      version: "^10.15.1",
+    },
+  ],
   comparedStages: [
     {
       stages: [

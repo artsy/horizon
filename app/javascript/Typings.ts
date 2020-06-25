@@ -29,6 +29,7 @@ export interface ComparedStage {
 export interface Dependency {
   id: number
   name: string
+  project_id: number
   version: string
 }
 
