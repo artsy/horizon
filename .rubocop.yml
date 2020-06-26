@@ -4,11 +4,8 @@ AllCops:
     - db/**/*
     - bin/**/*
     - node_modules/**/*
-    - spec/*.rb
   TargetRubyVersion: 2.6
-Metrics/BlockLength:
-  Enabled: false
-Metrics/MethodLength:
+Metrics:
   Enabled: false
 Style/Documentation:
   Enabled: false

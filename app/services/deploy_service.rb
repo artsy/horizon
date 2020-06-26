@@ -8,7 +8,7 @@ class DeployService
     end
   end
 
-  def self.create_github_pull_request(deploy_strategy) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  def self.create_github_pull_request(deploy_strategy)
     access_token = deploy_strategy.profile&.basic_password
     raise 'A profile and basic_password are required for Github authentication' if access_token.blank?
 

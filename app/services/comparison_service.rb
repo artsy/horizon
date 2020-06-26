@@ -28,7 +28,7 @@ class ComparisonService
   end
 
   # Calculates a score of how badly a deploy is needed based on commits, contributors, and age.
-  def self.severity_score(commits) # rubocop:disable Metrics/AbcSize
+  def self.severity_score(commits)
     contributors = commits.map { |c| c[:email] }.uniq
     now = Time.now
     oldest_commit_at = commits.map { |c| c[:date] }.min&.to_time
@@ -46,7 +46,7 @@ class ComparisonService
     new_snapshots
   end
 
-  def refresh_comparisons # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+  def refresh_comparisons
     refreshed_at = Time.now
     result = ReleasecopService.new(project).perform_comparison
     new_snapshot = nil
@@ -82,7 +82,7 @@ class ComparisonService
       snapshot.error_message == result.error&.message
   end
 
-  def store_new_snapshot!(project, result, refreshed_at) # rubocop:disable Metrics/AbcSize
+  def store_new_snapshot!(project, result, refreshed_at)
     snapshot = project.snapshots.create!(refreshed_at: refreshed_at, error_message: result.error&.message)
     result.comparisons.each do |c|
       snapshot.comparisons.create!(

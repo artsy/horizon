@@ -25,7 +25,7 @@ class DeployStrategy < ApplicationRecord
 
   private
 
-  def validate_arguments # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize
+  def validate_arguments
     return unless PROVIDERS.include?(provider) # don't bother if provider invalid
 
     unless REQUIRED_ARGUMENTS[provider].all? { |a| (arguments || {}).keys.include?(a) }

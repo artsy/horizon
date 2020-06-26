@@ -15,7 +15,7 @@ class ProjectPresenter
     @ordered_stages ||= project.stages.sort_by(&:position)
   end
 
-  def is_fully_released? # rubocop:disable Naming/PredicateName
+  def fully_released?
     snapshot && severity.zero?
   end
 
@@ -29,8 +29,8 @@ class ProjectPresenter
     stage&.git_remote
   end
 
-  def is_kubernetes? # rubocop:disable Naming/PredicateName
-    true if ordered_stages&.detect { |s| !s.hokusai&.empty? }
+  def kubernetes?
+    ordered_stages&.any? { |s| !s.hokusai&.empty? }
   end
 
   def block
@@ -39,7 +39,7 @@ class ProjectPresenter
   end
 
   # enumerates pairs of stages, the corresponding comparison object, and severity score
-  def compared_stages # rubocop:disable Metrics/CyclomaticComplexity
+  def compared_stages
     @compared_stages ||= ordered_stages.each_cons(2).map do |ahead, behind|
       comparison = snapshot&.comparisons&.detect { |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
       {
@@ -103,8 +103,8 @@ class ProjectPresenter
       comparedStages: compared_stages,
       gitRemote: git_remote,
       block: block,
-      isFullyReleased: is_fully_released?,
-      isKubernetes: is_kubernetes?,
+      isFullyReleased: fully_released?,
+      isKubernetes: kubernetes?,
       name: name.titleize,
       orderedStages: ordered_stages,
       severity: severity

@@ -23,7 +23,7 @@ module ExceptionsTestHelper
   #     ...
   #   end
   #
-  def with_exceptions_app(enabled: true) # rubocop:disable Metrics/AbcSize
+  def with_exceptions_app(enabled: true)
     org_show_detailed_exceptions = Rails.application.env_config['action_dispatch.show_detailed_exceptions']
     org_show_exceptions = Rails.application.env_config['action_dispatch.show_exceptions']
 
