@@ -3,15 +3,16 @@
 require 'base64'
 
 class ProjectDataService
-  def initialize(project, access_token)
+  def initialize(project)
     @project = project
+    access_token = @project.organization.profiles.first.basic_password
     @client = Octokit::Client.new(access_token: access_token)
     @circle_config = circle_config
   end
 
-  def self.refresh_data_for_org(org, access_token)
+  def self.refresh_data_for_org(org)
     org.projects.each do |project|
-      new(project, access_token).update_computed_properties
+      new(project).update_computed_properties
     end
   end
 
@@ -46,17 +47,13 @@ class ProjectDataService
   end
 
   def update_dependencies
-    ruby_version && update_dependency('ruby', ruby_version)
-    node_version && update_dependency('node', node_version)
+    update_dependency('ruby', ruby_version) if ruby_version
+    update_dependency('node', node_version) if node_version
   end
 
   def update_dependency(name, version)
-    d = @project.dependencies.where(name: name)
-    if d.empty?
-      @project.dependencies << Dependency.create(name: name, version: version)
-    else
-      d.update(name: name, version: version)
-    end
+    @project.dependencies.find_or_initialize_by(name: name)
+            .update!(version: version)
   end
 
   def ruby_version
@@ -87,8 +84,7 @@ class ProjectDataService
   end
 
   def travis?
-    file = fetch_github_file('.travis.yml')
-    true if file
+    !!fetch_github_file('.travis.yml')
   end
 
   def renovate_config

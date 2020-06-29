@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
@@ -11,12 +13,10 @@ namespace :cron do
   end
 
   task refresh_project_data: :environment do
-    if Horizon.config[:github_access_token]
-      ProjectDataService.refresh_data_for_org(
-        Organization.find(Horizon.config[:default_org_id]) || Organization.first,
-        Horizon.config[:github_access_token]
-      )
-    end
+    ProjectDataService.refresh_data_for_org(
+      Organization.find(Horizon.config[:default_org_id]) || Organization.first,
+      Horizon.config[:github_access_token]
+    )
   end
 end
 
