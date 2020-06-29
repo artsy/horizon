@@ -194,7 +194,7 @@ spec:
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
-  name: horizon-refresh-project-data-cron
+  name: horizon-refresh-components-cron
 spec:
   schedule: "0 0 * * 1"
   concurrencyPolicy: Forbid
@@ -203,9 +203,9 @@ spec:
       template:
         spec:
           containers:
-            - name: horizon-refresh-project-data-cron
+            - name: horizon-refresh-components-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
-              args: ["bundle", "exec", "rake", "cron:refresh_project_data"]
+              args: ["bundle", "exec", "rake", "cron:refresh_components"]
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:
