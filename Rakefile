@@ -11,6 +11,13 @@ namespace :cron do
   task refresh_comparisons: :environment do
     ComparisonService.refresh_all_comparisons
   end
+
+  task refresh_components: :environment do
+    ProjectDataService.refresh_data_for_org(
+      Organization.find(Horizon.config[:default_org_id]) || Organization.first,
+      Horizon.config[:github_access_token]
+    )
+  end
 end
 
 if Rails.env.development? || Rails.env.test?

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CheckIcon,
+  CloseIcon,
   EditIcon,
   Flex,
   Link,
@@ -10,7 +11,7 @@ import {
   Separator,
   Tags,
 } from "@artsy/palette"
-import { Project, Stage, TagsList, Tags as TagsType } from "Typings"
+import { Dependency, Project, Stage, TagsList, Tags as TagsType } from "Typings"
 import {
   deployBlockPath,
   projectEditPath,
@@ -21,6 +22,7 @@ import React from "react"
 import { StageWithComparison } from "../../components/Stage/StageWithComparison"
 import styled from "styled-components"
 
+const titleizeStyles = { textTransform: "capitalize" }
 export interface ProjectShowProps {
   project: Project
   tags: TagsType
@@ -28,14 +30,18 @@ export interface ProjectShowProps {
 
 export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
   const {
+    block,
+    ci_provider,
     comparedStages,
+    dependencies,
     description,
     gitRemote,
-    block,
     isKubernetes,
     name,
-    severity,
+    orbs,
     orderedStages,
+    renovate,
+    severity,
   } = project
   const isAgedClass = (severity >= 500 && "aged") || ""
   const blockLink = block && deployBlockPath(block.id)
@@ -52,7 +58,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         className={isAgedClass}
       >
         <Box mb={1}>
-          <Sans size="10" element="h1" style={{ textTransform: "capitalize" }}>
+          <Sans size="10" element="h1" style={titleizeStyles}>
             {name}
           </Sans>
           <Sans size="3">{description}</Sans>
@@ -131,6 +137,24 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
             </Flex>
           )}
 
+          {dependencies && dependencies.length > 0 && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Dependencies
+              </Sans>
+              <Tags tags={formattedDependencies(dependencies)} />
+            </Flex>
+          )}
+
+          {orbs && orbs.length > 0 && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Orbs
+              </Sans>
+              <Tags tags={formattedTags(orbs)} />
+            </Flex>
+          )}
+
           {isKubernetes && (
             <Flex my={1} alignItems="center">
               <Sans size="3t" weight="medium" pr={1}>
@@ -139,6 +163,36 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
               <Flex my={1}>
                 <CheckIcon fill="green100" />
                 <Sans size="3t">Kubernetes</Sans>
+              </Flex>
+            </Flex>
+          )}
+
+          {ci_provider && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                CI Provider
+              </Sans>
+              <Flex my={1}>
+                {ci_provider === "circleci" ? (
+                  <CheckIcon fill="green100" />
+                ) : (
+                  <CloseIcon fill="red100" />
+                )}
+                <Sans size="3t" style={titleizeStyles}>
+                  {ci_provider}
+                </Sans>
+              </Flex>
+            </Flex>
+          )}
+
+          {renovate && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Bots
+              </Sans>
+              <Flex my={1}>
+                <CheckIcon fill="green100" />
+                <Sans size="3t">Renovate</Sans>
               </Flex>
             </Flex>
           )}
@@ -152,6 +206,14 @@ export const formattedTags = (tags: TagsType): TagsList => {
   return tags.map((tag) => ({
     href: tagPath(tag),
     name: tag,
+  }))
+}
+
+export const formattedDependencies = (dependencies: Dependency[]): TagsList => {
+  // FIXME: should go to a href
+  return dependencies.map((dependency) => ({
+    href: "",
+    name: `${dependency.name} ${dependency.version}`,
   }))
 }
 

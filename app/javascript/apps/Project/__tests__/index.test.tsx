@@ -75,4 +75,26 @@ describe("ProjectShow", () => {
     const component = getWrapper()
     expect(component.text()).toMatch("Kubernetes")
   })
+
+  it("renders CI provider if present", () => {
+    const component = getWrapper()
+    expect(component.text()).toMatch("circleci")
+  })
+
+  it("renders orbs if present", () => {
+    const component = getWrapper()
+    expect(component.text()).toMatch("hokusai")
+    expect(component.text()).toMatch("yarn")
+  })
+
+  it("renders dependencies if present", () => {
+    const component = getWrapper()
+    expect(component.text()).toMatch("ruby 2.6.5")
+    expect(component.text()).toMatch("node ^10.15.1")
+  })
+
+  it("renders if renovate is enabled", () => {
+    const component = getWrapper()
+    expect(component.text()).toMatch("Renovate")
+  })
 })

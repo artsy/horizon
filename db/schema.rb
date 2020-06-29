@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_26_194714) do
+ActiveRecord::Schema.define(version: 2020_06_22_183704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 2020_05_26_194714) do
     t.index ["ahead_stage_id"], name: "index_comparisons_on_ahead_stage_id"
     t.index ["behind_stage_id"], name: "index_comparisons_on_behind_stage_id"
     t.index ["snapshot_id"], name: "index_comparisons_on_snapshot_id"
+  end
+
+  create_table "dependencies", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "name"
+    t.string "version"
+    t.index ["project_id"], name: "index_dependencies_on_project_id"
   end
 
   create_table "deploy_blocks", force: :cascade do |t|
@@ -75,6 +82,9 @@ ActiveRecord::Schema.define(version: 2020_05_26_194714) do
     t.bigint "snapshot_id"
     t.string "description"
     t.jsonb "tags"
+    t.string "ci_provider"
+    t.boolean "renovate"
+    t.string "orbs", default: [], array: true
     t.index ["organization_id"], name: "index_projects_on_organization_id"
     t.index ["snapshot_id"], name: "index_projects_on_snapshot_id"
   end
@@ -106,6 +116,7 @@ ActiveRecord::Schema.define(version: 2020_05_26_194714) do
   add_foreign_key "comparisons", "snapshots"
   add_foreign_key "comparisons", "stages", column: "ahead_stage_id"
   add_foreign_key "comparisons", "stages", column: "behind_stage_id"
+  add_foreign_key "dependencies", "projects"
   add_foreign_key "deploy_blocks", "projects"
   add_foreign_key "deploy_strategies", "profiles"
   add_foreign_key "deploy_strategies", "stages"
