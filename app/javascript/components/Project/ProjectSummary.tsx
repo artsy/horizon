@@ -62,7 +62,9 @@ export const ProjectSummary: React.FC<Project> = ({
   )
 }
 
-export const getColorFromSeverity = (severity: number): string | undefined => {
+export const getColorFromSeverity = (
+  severity: number,
+): "red100" | "yellow100" | undefined => {
   if (severity >= 10) {
     return "red100"
   } else if (severity >= 1) {
