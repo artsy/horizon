@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ComparisonService
   attr_accessor :project
 
@@ -30,7 +32,7 @@ class ComparisonService
     contributors = commits.map { |c| c[:email] }.uniq
     now = Time.now
     oldest_commit_at = commits.map { |c| c[:date] }.min&.to_time
-    age = (now - (oldest_commit_at || now))/1.day
+    age = (now - (oldest_commit_at || now)) / 1.day
     commits.size + contributors.size**2 + age**2
   end
 
@@ -71,12 +73,13 @@ class ComparisonService
       c.behind_stage == stage
     end
     return false unless comparison
-    return true
+
+    true
   end
 
   def equivalent_snapshots?(snapshot, result)
     snapshot.comparisons.order(position: :asc).map(&:description) == result.comparisons.map(&:lines) &&
-    snapshot.error_message == result.error&.message
+      snapshot.error_message == result.error&.message
   end
 
   def store_new_snapshot!(project, result, refreshed_at)
@@ -96,6 +99,7 @@ class ComparisonService
   def clean_up_old_snapshots
     ids = project.snapshots.pluck(:id).sort
     return unless ids.size > KEEP_OLD_SNAPSHOTS
+
     project.snapshots.where('id < ?', ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
   end
 end

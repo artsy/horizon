@@ -1,26 +1,27 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.feature "Projects", type: :feature do
+RSpec.feature 'Projects', type: :feature do
   let(:org) { Organization.create! name: 'Artsy' }
   let(:releasecop_comparison) do
     double('Releasecop::Comparison',
-      ahead: double('Releasecop::ManifestItem', name: 'master'),
-      behind: double('Releasecop::ManifestItem', name: 'production'),
-      :unreleased? => true,
-      lines: ['commit foo', 'commit bar']
-    )
+           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           behind: double('Releasecop::ManifestItem', name: 'production'),
+           unreleased?: true,
+           lines: ['commit foo', 'commit bar'])
   end
 
   scenario 'view projects' do
     project = org.projects.create!(name: 'shipping')
-    other = org.projects.create!(name: 'scheduling', tags: ['logistics'])
+    org.projects.create!(name: 'scheduling', tags: ['logistics'])
     project.stages.create!(name: 'master')
     project.stages.create!(name: 'production')
     Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php', tags: nil)
 
     visit '/'
     expect(page).to have_selector 'div[id="projects_data"]'
-    props = find('div[id="projects_data"]')["data-props"].as_json
+    props = find('div[id="projects_data"]')['data-props'].as_json
     expect(props).to have_content('Foo Php')
     expect(props).to have_content('Shipping')
     expect(props).to have_content('Scheduling')
@@ -32,13 +33,13 @@ RSpec.feature "Projects", type: :feature do
     ComparisonService.new(project).refresh_comparisons
     visit projects_path(organization_id: org.id)
     expect(page).to have_selector 'div[id="projects_data"]'
-    props_with_comparison = find('div[id="projects_data"]')["data-props"].as_json
+    props_with_comparison = find('div[id="projects_data"]')['data-props'].as_json
     expect(props_with_comparison).to have_content('"comparedStages":[{"stages":[{"id":')
     expect(props_with_comparison).to have_content('"description":["commit foo","commit bar"]')
-    
+
     # only persist new snapshots upon changes
-    expect {
+    expect do
       ComparisonService.new(project).refresh_comparisons
-    }.not_to change(Snapshot, :count)
+    end.not_to change(Snapshot, :count)
   end
 end

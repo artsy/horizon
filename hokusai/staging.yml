@@ -159,11 +159,53 @@ spec:
     - 104.16.0.0/12
     - 172.64.0.0/13
     - 131.0.72.0/22
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: horizon
+    component: web
+    layer: application
+  name: horizon-web-internal
+  namespace: default
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      name: http
+      targetPort: 8080
+  selector:
+    app: horizon
+    layer: application
+    component: web
+  type: ClusterIP
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: horizon
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/12,172.64.0.0/13,131.0.72.0/22"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+spec:
+  rules:
+    - host: releases-staging.artsy.net
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: horizon-web-internal
+              servicePort: http
+
 ---
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
-  name: horizon-refresh-cron
+  name: horizon-refresh-comparisons-cron
 spec:
   schedule: "0 9 * * *"
   concurrencyPolicy: Forbid
@@ -172,9 +214,40 @@ spec:
       template:
         spec:
           containers:
-            - name: horizon-refresh-cron
+            - name: horizon-refresh-comparisons-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
               args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: horizon-environment
+          restartPolicy: Never
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 1
+                  preference:
+                    matchExpressions:
+                      - key: tier
+                        operator: In
+                        values:
+                          - background
+---
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: horizon-refresh-components-cron
+spec:
+  schedule: "0 0 * * 1"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: horizon-refresh-components-cron
+              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
+              args: ["bundle", "exec", "rake", "cron:refresh_components"]
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.feature "Comparisons", type: :feature do
+RSpec.feature 'Comparisons', type: :feature do
   let(:org) { Organization.create! name: 'Artsy' }
   let(:profile) { org.profiles.create!(basic_password: 'foo') }
   let(:project) do
@@ -11,19 +13,17 @@ RSpec.feature "Comparisons", type: :feature do
   end
   let(:small_comparison) do
     double('Releasecop::Comparison',
-      ahead: double('Releasecop::ManifestItem', name: 'master'),
-      behind: double('Releasecop::ManifestItem', name: 'production'),
-      :unreleased? => true,
-      lines: ['commit foo', 'commit bar']
-    )
+           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           behind: double('Releasecop::ManifestItem', name: 'production'),
+           unreleased?: true,
+           lines: ['commit foo', 'commit bar'])
   end
   let(:large_comparison) do
     double('Releasecop::Comparison',
-      ahead: double('Releasecop::ManifestItem', name: 'master'),
-      behind: double('Releasecop::ManifestItem', name: 'production'),
-      :unreleased? => true,
-      lines: (0..20).map { |i| "commit #{i}" }
-    )
+           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           behind: double('Releasecop::ManifestItem', name: 'production'),
+           unreleased?: true,
+           lines: (0..20).map { |i| "commit #{i}" })
   end
 
   it 'cleans up old snapshots' do
@@ -33,7 +33,8 @@ RSpec.feature "Comparisons", type: :feature do
           ahead_stage: project.stages.first,
           behind_stage: project.stages.last,
           released: false,
-          description: [i])
+          description: [i]
+        )
       end
     end
     expect(project.snapshots.size).to eq(5)

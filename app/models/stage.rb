@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Stage < ApplicationRecord
   belongs_to :project
   belongs_to :profile, optional: true
@@ -7,5 +9,5 @@ class Stage < ApplicationRecord
 
   acts_as_list scope: :project
 
-  scope :ordered, ->{ order('position ASC') }
+  scope :ordered, -> { order('position ASC') }
 end
