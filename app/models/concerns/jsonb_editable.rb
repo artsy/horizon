@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Allows editing (e.g., via ActiveAdmin) of jsonb columns. Use like:
 #
 # class SomeModel
@@ -12,9 +14,9 @@ module JsonbEditable
   extend ActiveSupport::Concern
 
   class_methods do
-    def jsonb_editable(field_name, as: "#{field_name}_input")
+    def jsonb_editable(field_name, as: "#{field_name}_input") # rubocop:disable Naming/MethodParameterName
       define_method("#{as}=") do |val|
-        self.send("#{field_name}=", val.presence && JSON.parse(val))
+        send("#{field_name}=", val.presence && JSON.parse(val))
       end
 
       define_method(as) do

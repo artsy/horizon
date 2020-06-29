@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.feature "Administration", type: :feature do
+RSpec.feature 'Administration', type: :feature do
   scenario 'sets up org and project' do
     visit '/admin'
     expect(page).to have_content('Horizon')

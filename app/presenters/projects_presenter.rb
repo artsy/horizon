@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectsPresenter
   def initialize(params)
     @params = params
@@ -25,4 +27,3 @@ class ProjectsPresenter
     end
   end
 end
-

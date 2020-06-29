@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -32,26 +34,27 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
-#gem 'bootsnap', '>= 1.1.0', require: false
+# gem 'bootsnap', '>= 1.1.0', require: false
 
-gem 'acts_as_list' # order Project#stages
-gem 'releasecop', '>= 0.0.15' # compare release stages
-gem 'activeadmin' # manage models
 gem 'active_admin_datetimepicker'
+gem 'activeadmin' # manage models
+gem 'acts_as_list' # order Project#stages
+gem 'octokit', '~> 4.0' # talk to github api
 gem 'redis' # actioncable adapter
-gem "octokit", "~> 4.0" # talk to github api
+gem 'releasecop', '>= 0.0.15' # compare release stages
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'rspec-rails' # tests!
+  gem 'rubocop', require: false
 end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console', '>= 3.3.0'
 end
 
 group :test do
@@ -59,6 +62,6 @@ group :test do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem "webpacker", "~> 5.1"
+gem 'webpacker', '~> 5.1'

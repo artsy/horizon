@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Comparison < ApplicationRecord
   belongs_to :snapshot
   belongs_to :ahead_stage, class_name: 'Stage'

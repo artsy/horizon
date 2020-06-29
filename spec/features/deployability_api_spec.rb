@@ -17,8 +17,8 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
           project: shipping,
           resolved_at: DateTime.current
         )
-        unresolved_packing_deploy_block = DeployBlock.create(project: packing)
-        resolved_packing_deploy_block = DeployBlock.create(
+        DeployBlock.create(project: packing)
+        DeployBlock.create(
           project: packing,
           resolved_at: DateTime.now
         )
@@ -35,13 +35,13 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         artsy = Organization.create!(name: 'Artsy')
         shipping = artsy.projects.create!(name: 'shipping')
         packing = artsy.projects.create!(name: 'packing')
-        unresolved_shipping_deploy_block = DeployBlock.create!(project: shipping)
+        DeployBlock.create!(project: shipping)
         resolved_shipping_deploy_block = DeployBlock.create!(
           project: shipping,
           resolved_at: DateTime.current
         )
-        unresolved_packing_deploy_block = DeployBlock.create(project: packing)
-        resolved_packing_deploy_block = DeployBlock.create(
+        DeployBlock.create(project: packing)
+        DeployBlock.create(
           project: packing,
           resolved_at: DateTime.now
         )
@@ -52,6 +52,7 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         expect(response.body).to eq([resolved_shipping_deploy_block].to_json)
       end
     end
+
     context 'when querying for unresolved deploy blocks' do
       it 'returns 200 SUCCESS and an empty response if there are no unresolved blocks' do
         artsy = Organization.create!(name: 'Artsy')
@@ -61,7 +62,7 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
 
         expect(response).to have_http_status(:success)
-        expect(response.body).to eq("[]")
+        expect(response.body).to eq('[]')
       end
 
       context 'with unresolved deploy blocks' do
@@ -81,7 +82,7 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
           shipping = artsy.projects.create!(name: 'shipping')
           packing = artsy.projects.create!(name: 'packing')
           shipping_deploy_block = DeployBlock.create!(project: shipping)
-          packing_deploy_block = DeployBlock.create!(project: packing)
+          DeployBlock.create!(project: packing)
 
           headers = { 'ACCEPT' => 'application/json' }
           get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
@@ -94,9 +95,9 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         it 'only returns the unresolved deploy blocks, and not resolved ones' do
           artsy = Organization.create!(name: 'Artsy')
           shipping = artsy.projects.create!(name: 'shipping')
-          packing = artsy.projects.create!(name: 'packing')
+          artsy.projects.create!(name: 'packing')
           unresolved_deploy_block = DeployBlock.create!(project: shipping)
-          resolved_deploy_block = DeployBlock.create!(
+          DeployBlock.create!(
             project: shipping,
             resolved_at: DateTime.current
           )
@@ -116,7 +117,7 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
     it 'returns a 404 if requesting for a project that does not exist' do
       with_exceptions_app do
         headers = { 'ACCEPT' => 'application/json' }
-        get "/api/deploy_blocks?project_id=-2&resolved=false", headers: headers
+        get '/api/deploy_blocks?project_id=-2&resolved=false', headers: headers
         expect(response).to have_http_status(:not_found)
       end
     end
