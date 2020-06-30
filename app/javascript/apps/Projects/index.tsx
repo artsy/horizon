@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { MainLayout } from "../../components/MainLayout"
 import { Project } from "Typings"
 import { ProjectSummary } from "../../components/Project/ProjectSummary"
-import { ProjectsList } from "./ProjectsList"
+import { ProjectsList } from "../../components/Projects/ProjectsList"
 
 export interface ProjectsProps {
   releasedProjects: Project[]
@@ -20,7 +20,7 @@ export const ProjectsIndex: React.FC<ProjectsProps> = ({
   tags,
   params,
 }) => {
-  const [isListView, setListView] = useState(true)
+  const [isListView, setListView] = useState(false)
   const ProjectsViewSwitcher = () => {
     return (
       <Flex justifyContent="flex-end" mb={1}>
@@ -49,7 +49,7 @@ export const ProjectsIndex: React.FC<ProjectsProps> = ({
           <>
             {unreleasedProjects && (
               <Box pb={4}>
-                <Sans size="6">Out of Sync</Sans>
+                <Sans size="6">Out of sync</Sans>
                 <ProjectSummaryGrid projects={unreleasedProjects} />
               </Box>
             )}
