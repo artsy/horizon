@@ -247,8 +247,8 @@ spec:
         spec:
           containers:
             - name: horizon-refresh-components-cron
-            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-            args: ["bundle", "exec", "rake", "cron:refresh_components"]
+              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
+              args: ["bundle", "exec", "rake", "cron:refresh_components"]
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:
