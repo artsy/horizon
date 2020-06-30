@@ -30,7 +30,7 @@ class ProjectPresenter
   end
 
   def auto_deploys?
-    @project.stages.any? { |s| s.deploy_strategies.any? }
+    @project.stages.any? { |s| s.deploy_strategies.any?(&:automatic?) }
   end
 
   def kubernetes?
