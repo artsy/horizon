@@ -34,7 +34,7 @@ class ProjectPresenter
   end
 
   def kubernetes?
-    ordered_stages&.any? { |s| !s.hokusai&.empty? }
+    ordered_stages&.any? { |s| s.hokusai&.length&.positive }
   end
 
   def dependencies_up_to_date?
