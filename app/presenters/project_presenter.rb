@@ -34,7 +34,7 @@ class ProjectPresenter
   end
 
   def kubernetes?
-    ordered_stages&.any? { |s| s.hokusai&.length&.positive }
+    ordered_stages&.any? { |s| s.hokusai&.length&.positive? }
   end
 
   def dependencies_up_to_date?
@@ -60,7 +60,7 @@ class ProjectPresenter
       messages.push "Dependency #{d.name} version unknown, add a version declaration file to the project."
     end
     dependencies_with_update_required&.any? do |d|
-      expectation = Horizon.config.stringify_keys["expected_version_#{d.name}"]
+      expectation = Horizon.config.stringify_keys["minimum_version_#{d.name}"]
       messages.push(
         "Dependency #{d.name} uses an unsupported version.#{expectation && " Update to v#{expectation} or higher."}"
       )
