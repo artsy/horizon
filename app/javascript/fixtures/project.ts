@@ -26,6 +26,7 @@ export const unreleasedProjectFixture: Project = {
       version: "^10.15.1",
     },
   ],
+  dependenciesUpToDate: false,
   comparedStages: [
     {
       stages: [
@@ -211,6 +212,7 @@ export const releasedProjectFixture: Project = {
   tags: ["platform"],
   orbs: ["hokusai", "yarn"],
   dependencies: [],
+  dependenciesUpToDate: true,
   renovate: true,
   comparedStages: [
     {

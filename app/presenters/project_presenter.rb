@@ -37,6 +37,10 @@ class ProjectPresenter
     ordered_stages&.any? { |s| !s.hokusai&.empty? }
   end
 
+  def dependencies_up_to_date?
+    @project.dependencies.none? { |d| d.update_required != false }
+  end
+
   def block
     blocks = deploy_blocks.unresolved.to_a
     blocks.first
@@ -107,6 +111,7 @@ class ProjectPresenter
       block: block,
       comparedStages: compared_stages,
       dependencies: @project.dependencies,
+      dependenciesUpToDate: dependencies_up_to_date?,
       gitRemote: git_remote,
       isAutoDeploy: auto_deploys?,
       isFullyReleased: fully_released?,

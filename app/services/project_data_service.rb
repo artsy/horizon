@@ -59,14 +59,19 @@ class ProjectDataService
 
   def dependency_update_required(name, version)
     expectation = Horizon.config.stringify_keys["expected_version_#{name}"].split('.')
-    return unless expectation && version
+    expected_major = expectation[0].to_i
+    expected_minor = expectation[1]&.to_i
+    return unless expected_major && version
 
     current = version.delete('^0-9.').split('.')
-    return if current.empty?
+    current_major = current[0]&.to_i
+    current_minor = current[1]&.to_i
+    return unless current_major
 
-    major_needs_update = current[0] < expectation[0]
-    minor_needs_update = expectation[1] && current[1] && current[1] < expectation[1]
-    major_needs_update || minor_needs_update
+    return true if current_major < expected_major
+    return true if expected_minor && current_minor < expected_minor
+
+    false
   end
 
   def ruby_version

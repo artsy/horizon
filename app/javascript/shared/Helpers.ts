@@ -1,4 +1,4 @@
-import { Dependency, Tags, TagsList } from "Typings"
+import { Dependency, Project, Tags, TagsList } from "Typings"
 import { tagPath } from "./UrlHelper"
 
 export const getColorFromSeverity = (
@@ -9,6 +9,26 @@ export const getColorFromSeverity = (
   } else if (severity >= 1) {
     return "yellow100"
   }
+}
+
+export const projectRequiresDependencyUpdates = ({
+  dependencies,
+}: Project): boolean => {
+  return dependencies.filter((d) => d.update_required === true).length > 0
+}
+
+export const projectRequiresAutoDeploys = ({
+  isAutoDeploy,
+  isKubernetes,
+}: Project): boolean => {
+  return !isAutoDeploy && isKubernetes
+}
+
+export const projectRequiresRenovate = ({
+  orbs,
+  isKubernetes,
+}: Project): boolean => {
+  return orbs?.length > 0 || isKubernetes
 }
 
 export const formattedTags = (tags: Tags): TagsList => {

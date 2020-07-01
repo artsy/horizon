@@ -31,6 +31,7 @@ export interface Dependency {
   name: string
   project_id: number
   version: string
+  update_required?: boolean
 }
 
 export interface Project {
@@ -40,6 +41,7 @@ export interface Project {
   created_at: string
   description?: string
   dependencies: Dependency[]
+  dependenciesUpToDate: boolean
   gitRemote?: string
   id: number
   isAutoDeploy: boolean

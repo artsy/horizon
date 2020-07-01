@@ -106,7 +106,7 @@ RSpec.describe ProjectDataService, type: :service do
     end
 
     it 'can identify out of date node versions' do
-      needs_update = ProjectDataService.new(project).dependency_update_required('node', '^10.15.1')
+      needs_update = ProjectDataService.new(project).dependency_update_required('node', '>=8.12.x')
       expect(needs_update).to be_truthy
     end
 

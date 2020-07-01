@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   CircleBlackCheckIcon,
   Col,
@@ -15,6 +16,9 @@ import {
   formattedDependencies,
   formattedTags,
   getColorFromSeverity,
+  projectRequiresAutoDeploys,
+  projectRequiresDependencyUpdates,
+  projectRequiresRenovate,
 } from "../../shared/Helpers"
 import { Project } from "Typings"
 import React from "react"
@@ -85,6 +89,7 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
   const {
     block,
     dependencies,
+    dependenciesUpToDate,
     id,
     isAutoDeploy,
     isKubernetes,
@@ -95,8 +100,9 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
     tags,
   } = project
   const releaseColor = getColorFromSeverity(severity)
-  const requiresAutoDeploys = !isAutoDeploy && isKubernetes
-  const requiresRenovate = orbs?.length || isKubernetes
+  const requiresAutoDeploys = projectRequiresAutoDeploys(project)
+  const requiresRenovate = projectRequiresRenovate(project)
+  const requiresDependencyUpdates = projectRequiresDependencyUpdates(project)
 
   return (
     <Row alignItems="center">
@@ -131,7 +137,17 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
 
       <Col xs={2} sm={2}>
         {dependencies?.length > 0 && (
-          <Tags tags={formattedDependencies(dependencies)} />
+          <Flex alignItems="center">
+            {dependenciesUpToDate ? (
+              <CircleBlackCheckIcon fill="green100" />
+            ) : (
+              <XCircleIcon
+                fill={requiresDependencyUpdates ? "red100" : "yellow100"}
+              />
+            )}
+            <Box pr={1} />
+            <Tags tags={formattedDependencies(dependencies)} />
+          </Flex>
         )}
       </Col>
 
