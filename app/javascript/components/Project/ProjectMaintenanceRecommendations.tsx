@@ -2,7 +2,7 @@ import { Box, Sans } from "@artsy/palette"
 import { Project } from "Typings"
 import React from "react"
 
-export const ProjectMaintenanceRecomendations: React.FC<{
+export const ProjectMaintenanceRecommendations: React.FC<{
   project: Project
 }> = ({ project: { maintenanceMessages } }) => {
   return (

@@ -52,13 +52,13 @@ class ProjectDataService
   end
 
   def update_dependency(name, version)
-    update_required = dependency_update_required(name, version)
+    update_required = dependency_update_required?(name, version)
     @project.dependencies.find_or_initialize_by(name: name)
             .update!(version: version, update_required: update_required)
   end
 
-  def dependency_update_required(name, version)
-    expectation = Horizon.config.stringify_keys["expected_version_#{name}"].split('.')
+  def dependency_update_required?(name, version)
+    expectation = Horizon.config.stringify_keys["expected_version_#{name}"]&.split('.')
     expected_major = expectation[0].to_i
     expected_minor = expectation[1]&.to_i
     return unless expected_major && version
