@@ -38,12 +38,44 @@ class ProjectPresenter
   end
 
   def dependencies_up_to_date?
-    @project.dependencies.none? { |d| d.update_required != false }
+    dependencies_with_unknown_status.empty? && dependencies_with_update_required.empty?
+  end
+
+  def dependencies_with_unknown_status
+    @project.dependencies.select { |d| d.version.include?('unknown') }
+  end
+
+  def dependencies_with_update_required
+    @project.dependencies.select(&:update_required)
   end
 
   def block
     blocks = deploy_blocks.unresolved.to_a
     blocks.first
+  end
+
+  def maintenance_messages
+    messages = []
+    dependencies_with_unknown_status&.any? do |d|
+      messages.push "Dependency #{d.name} version unknown, add a version declaration file."
+    end
+    dependencies_with_update_required&.any? do |d|
+      expectation = Horizon.config.stringify_keys["expected_version_#{d.name}"]
+      messages.push(
+        "Dependency #{d.name} uses an unsupported version.#{expectation && " Update to v#{expectation} or higher."}"
+      )
+    end
+    if !auto_deploys? && kubernetes?
+      messages.push(
+        "Create deploy strategies with 'automated: true' to enable automated deploy PRs"
+      )
+    end
+    if @project.orbs.any? && kubernetes?
+      messages.push(
+        'Enable Renovate to receive automatic PRs when orb versions change.'
+      )
+    end
+    messages
   end
 
   # enumerates pairs of stages, the corresponding comparison object, and severity score
@@ -116,6 +148,7 @@ class ProjectPresenter
       isAutoDeploy: auto_deploys?,
       isFullyReleased: fully_released?,
       isKubernetes: kubernetes?,
+      maintenanceMessages: maintenance_messages,
       name: name.titleize,
       orderedStages: ordered_stages,
       severity: severity

@@ -155,6 +155,7 @@ export const unreleasedProjectFixture: Project = {
   isAutoDeploy: false,
   isFullyReleased: false,
   isKubernetes: true,
+  maintenanceMessages: [],
   orderedStages: [
     {
       id: 27,
@@ -308,6 +309,7 @@ export const releasedProjectFixture: Project = {
   isAutoDeploy: true,
   isFullyReleased: true,
   isKubernetes: true,
+  maintenanceMessages: [],
   orderedStages: [
     {
       id: 67,

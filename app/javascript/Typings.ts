@@ -47,6 +47,7 @@ export interface Project {
   isAutoDeploy: boolean
   isFullyReleased: boolean
   isKubernetes: boolean
+  maintenanceMessages: string[]
   name: string
   orbs: Orb[]
   orderedStages: Stage[]
