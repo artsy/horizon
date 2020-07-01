@@ -54,7 +54,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/usr/sbin/nginx", "-s", "quit"]
+                command: ["sh", "-c", "sleep 10"]
       dnsPolicy: Default
       affinity:
         nodeAffinity:
