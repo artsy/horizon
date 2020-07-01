@@ -3,6 +3,7 @@ import { Project, Stage } from "Typings"
 import { CommitsMessage } from "../Stage/StageCommitsMessage"
 import React from "react"
 import { StageName } from "../Stage/StageName"
+import { getColorFromSeverity } from "../../shared/Helpers"
 import { projectPath } from "../../shared/UrlHelper"
 
 export const ProjectSummary: React.FC<Project> = ({
@@ -60,12 +61,4 @@ export const ProjectSummary: React.FC<Project> = ({
       </Link>
     </BorderBox>
   )
-}
-
-export const getColorFromSeverity = (severity: number): string | undefined => {
-  if (severity >= 10) {
-    return "red100"
-  } else if (severity >= 1) {
-    return "yellow100"
-  }
 }

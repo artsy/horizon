@@ -1,8 +1,9 @@
-import { Box, CSSGrid, Sans } from "@artsy/palette"
+import { Box, Button, Flex, Sans } from "@artsy/palette"
+import React, { useState } from "react"
 import { MainLayout } from "../../components/MainLayout"
 import { Project } from "Typings"
-import { ProjectSummary } from "../../components/Project/ProjectSummary"
-import React from "react"
+import { ProjectsGrid } from "../../components/Projects/ProjectsGrid"
+import { ProjectsList } from "../../components/Projects/ProjectsList"
 
 export interface ProjectsProps {
   releasedProjects: Project[]
@@ -15,50 +16,40 @@ export interface ProjectsProps {
 export const ProjectsIndex: React.FC<ProjectsProps> = ({
   releasedProjects,
   unreleasedProjects,
+  projects,
   tags,
   params,
 }) => {
+  const [isListView, setListView] = useState(false)
+
   return (
     <MainLayout tags={tags}>
       <Box px={3} pt={2}>
-        {params.tags && (
-          <Sans size="8" pb={4} style={{ textTransform: "capitalize" }}>
-            Team: {params.tags[0]}
-          </Sans>
-        )}
-        {unreleasedProjects && (
-          <Box pb={4}>
-            <Sans size="6">Out of sync</Sans>
-            <ProjectSummaryGrid projects={unreleasedProjects} />
+        <Flex justifyContent="space-between" mb={1}>
+          <Box>
+            {params.tags && (
+              <Sans size="8" pb={4} style={{ textTransform: "capitalize" }}>
+                Team: {params.tags[0]}
+              </Sans>
+            )}
           </Box>
-        )}
-        {releasedProjects && (
-          <Box pb={4}>
-            <Sans size="6">Up to date</Sans>
-            <ProjectSummaryGrid projects={releasedProjects} />
-          </Box>
+          <Button
+            variant="secondaryOutline"
+            onClick={() => setListView(!isListView)}
+          >
+            {isListView ? "Grid" : "List"} view
+          </Button>
+        </Flex>
+
+        {isListView ? (
+          <ProjectsList projects={projects} />
+        ) : (
+          <ProjectsGrid
+            releasedProjects={releasedProjects}
+            unreleasedProjects={unreleasedProjects}
+          />
         )}
       </Box>
     </MainLayout>
-  )
-}
-
-export const ProjectSummaryGrid: React.FC<{
-  projects: Project[]
-}> = ({ projects }) => {
-  return (
-    <CSSGrid
-      gridTemplateColumns={[
-        "repeat(2, 1fr)",
-        "repeat(3, 1fr)",
-        "repeat(4, 1fr)",
-      ]}
-      gridGap={[2, 4]}
-      my={2}
-    >
-      {projects.map((project, i) => (
-        <ProjectSummary key={i} {...project} />
-      ))}
-    </CSSGrid>
   )
 }

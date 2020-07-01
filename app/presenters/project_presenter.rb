@@ -29,6 +29,10 @@ class ProjectPresenter
     stage&.git_remote
   end
 
+  def auto_deploys?
+    @project.stages.any? { |s| s.deploy_strategies.any?(&:automatic?) }
+  end
+
   def kubernetes?
     ordered_stages&.any? { |s| !s.hokusai&.empty? }
   end
@@ -104,6 +108,7 @@ class ProjectPresenter
       comparedStages: compared_stages,
       dependencies: @project.dependencies,
       gitRemote: git_remote,
+      isAutoDeploy: auto_deploys?,
       isFullyReleased: fully_released?,
       isKubernetes: kubernetes?,
       name: name.titleize,

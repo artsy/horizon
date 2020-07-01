@@ -11,15 +11,12 @@ import {
   Separator,
   Tags,
 } from "@artsy/palette"
-import { Dependency, Project, Stage, TagsList, Tags as TagsType } from "Typings"
-import {
-  deployBlockPath,
-  projectEditPath,
-  tagPath,
-} from "../../shared/UrlHelper"
+import { Project, Stage, Tags as TagsType } from "Typings"
+import { deployBlockPath, projectEditPath } from "../../shared/UrlHelper"
+import { formattedDependencies, formattedTags } from "../../shared/Helpers"
 import { MainLayout } from "../../components/MainLayout"
-import React from "react"
 import { StageWithComparison } from "../../components/Stage/StageWithComparison"
+import React from "react"
 import styled from "styled-components"
 
 const titleizeStyles = { textTransform: "capitalize" }
@@ -200,21 +197,6 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
       </Box>
     </MainLayout>
   )
-}
-
-export const formattedTags = (tags: TagsType): TagsList => {
-  return tags.map((tag) => ({
-    href: tagPath(tag),
-    name: tag,
-  }))
-}
-
-export const formattedDependencies = (dependencies: Dependency[]): TagsList => {
-  // FIXME: should go to a href
-  return dependencies.map((dependency) => ({
-    href: "",
-    name: `${dependency.name} ${dependency.version}`,
-  }))
 }
 
 export const EditLink = styled(Link)``

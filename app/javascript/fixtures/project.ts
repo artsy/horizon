@@ -151,6 +151,7 @@ export const unreleasedProjectFixture: Project = {
     created_at: "2020-06-11T14:26:01.935-04:00",
     updated_at: "2020-06-17T12:59:25.006-04:00",
   },
+  isAutoDeploy: false,
   isFullyReleased: false,
   isKubernetes: true,
   orderedStages: [
@@ -302,6 +303,7 @@ export const releasedProjectFixture: Project = {
     },
   ],
   gitRemote: "https://github.com/artsy/radiation.git",
+  isAutoDeploy: true,
   isFullyReleased: true,
   isKubernetes: true,
   orderedStages: [
