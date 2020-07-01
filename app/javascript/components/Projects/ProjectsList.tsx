@@ -90,10 +90,13 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
     isKubernetes,
     name,
     orbs,
+    renovate,
     severity,
     tags,
   } = project
   const releaseColor = getColorFromSeverity(severity)
+  const requiresAutoDeploys = !isAutoDeploy && isKubernetes
+  const requiresRenovate = orbs?.length || isKubernetes
 
   return (
     <Row alignItems="center">
@@ -105,12 +108,14 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
           <XCircleIcon fill={releaseColor} />
         )}
       </Flex>
+
       <Col xs={2} sm={2}>
         <Link href={`/projects/${id}`} underlineBehavior="none">
           <Flex alignItems="center">
             <Sans size="5t" my={1}>
               {name}
             </Sans>
+
             {block && (
               <Button size="small" ml={1}>
                 Blocked
@@ -119,24 +124,29 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
           </Flex>
         </Link>
       </Col>
+
       <Col xs={2} sm={2}>
         {tags && <Tags tags={formattedTags(tags)} />}
       </Col>
+
       <Col xs={2} sm={2}>
-        {dependencies && dependencies.length > 0 && (
+        {dependencies?.length > 0 && (
           <Tags tags={formattedDependencies(dependencies)} />
         )}
       </Col>
+
       <Col xs={1} sm={1}>
         {isKubernetes && <Sans size="3t">Kubernetes</Sans>}
       </Col>
+
       <Col xs={1} sm={1} data-test="isAutoDeploy">
         {isAutoDeploy && <CircleBlackCheckIcon fill="green100" />}
-        {!isAutoDeploy && isKubernetes && <XCircleIcon fill="red100" />}
+        {requiresAutoDeploys && <XCircleIcon fill="red100" />}
       </Col>
+
       <Col xs={1} sm={1} data-test="renovate">
-        {(orbs && orbs.length) || isKubernetes ? (
-          project.renovate ? (
+        {requiresRenovate ? (
+          renovate ? (
             <CircleBlackCheckIcon fill="green100" />
           ) : (
             <XCircleIcon fill="red100" />
@@ -147,11 +157,14 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
           </Sans>
         )}
       </Col>
+
       <Col xs={1} sm={1}>
-        {orbs && orbs.length > 0 && (
+        {orbs?.length > 0 ? (
           <Flex my={1} alignItems="center">
             <Tags tags={formattedTags(orbs)} />
           </Flex>
+        ) : (
+          isKubernetes && <XCircleIcon fill="red100" />
         )}
       </Col>
     </Row>

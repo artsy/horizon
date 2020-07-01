@@ -1,10 +1,11 @@
-import { ProjectSummaryGrid, ProjectsIndex, ProjectsProps } from "../index"
+import { ProjectsIndex, ProjectsProps } from "../index"
 import {
   releasedProjectFixture,
   unreleasedProjectFixture,
 } from "../../../fixtures/project"
 import { Button } from "@artsy/palette"
 import { NavBar } from "../../../components/MainLayout"
+import { ProjectSummaryGrid } from "../../../components/Projects/ProjectsGrid"
 import { ProjectsList } from "../../../components/Projects/ProjectsList"
 import React from "react"
 import { mount } from "enzyme"
