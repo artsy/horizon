@@ -20,7 +20,7 @@ export const ProjectsIndex: React.FC<ProjectsProps> = ({
   tags,
   params,
 }) => {
-  const [isListView, setListView] = useState(false)
+  const [isListView, setListView] = useState(params.view == "list" || false)
 
   return (
     <MainLayout tags={tags}>

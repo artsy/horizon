@@ -70,7 +70,7 @@ class ProjectPresenter
         "Create deploy strategies with 'automated: true' to enable automated deploy PRs"
       )
     end
-    if @project.orbs.any? && kubernetes?
+    if @project.orbs.any? && kubernetes? && !@project.renovate
       messages.push(
         'Enable Renovate to receive automatic PRs when orb versions change.'
       )

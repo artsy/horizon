@@ -14,6 +14,7 @@ import {
 } from "@artsy/palette"
 import {
   formattedDependencies,
+  formattedOrbs,
   formattedTags,
   getColorFromSeverity,
   projectRequiresAutoDeploys,
@@ -88,6 +89,7 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
 }) => {
   const {
     block,
+    ci_provider,
     dependencies,
     dependenciesUpToDate,
     id,
@@ -161,12 +163,10 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
       </Col>
 
       <Col xs={1} sm={1} data-test="renovate">
-        {requiresRenovate ? (
-          renovate ? (
-            <CircleBlackCheckIcon fill="green100" />
-          ) : (
-            <XCircleIcon fill="red100" />
-          )
+        {renovate ? (
+          <CircleBlackCheckIcon fill="green100" />
+        ) : requiresRenovate ? (
+          <XCircleIcon fill="red100" />
         ) : (
           <Sans size="2" color="black60">
             N/A
@@ -177,10 +177,16 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
       <Col xs={1} sm={1}>
         {orbs?.length > 0 ? (
           <Flex my={1} alignItems="center">
-            <Tags tags={formattedTags(orbs)} />
+            <Tags tags={formattedOrbs(orbs)} />
           </Flex>
+        ) : isKubernetes ? (
+          <XCircleIcon fill="red100" />
         ) : (
-          isKubernetes && <XCircleIcon fill="red100" />
+          ci_provider !== "circleci" && (
+            <Sans size="2" color="black60">
+              N/A
+            </Sans>
+          )
         )}
       </Col>
     </Row>

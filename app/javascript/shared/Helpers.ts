@@ -38,6 +38,14 @@ export const formattedTags = (tags: Tags): TagsList => {
   }))
 }
 
+export const formattedOrbs = (tags: string[]): TagsList => {
+  // FIXME: should go to a href
+  return tags.map((tag) => ({
+    href: "",
+    name: tag,
+  }))
+}
+
 export const formattedDependencies = (dependencies: Dependency[]): TagsList => {
   // FIXME: should go to a href
   return dependencies.map((dependency) => ({
