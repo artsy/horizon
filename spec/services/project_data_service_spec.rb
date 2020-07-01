@@ -56,7 +56,7 @@ RSpec.describe ProjectDataService, type: :service do
         .with({
                 ci_provider: 'circleci',
                 renovate: true,
-                orbs: %w[hokusai yarn]
+                orbs: %w[hokusai release yarn]
               })
       expect(project.dependencies.first.name).to eq('ruby')
       expect(project.dependencies.first.version).to eq('2.5.7')
@@ -144,7 +144,7 @@ RSpec.describe ProjectDataService, type: :service do
   describe 'orbs' do
     it 'returns an array with orbs if present in ci config' do
       orbs = ProjectDataService.new(project).orbs
-      expect(orbs).to eq(%w[hokusai yarn])
+      expect(orbs).to eq(%w[hokusai release yarn])
     end
   end
 end
