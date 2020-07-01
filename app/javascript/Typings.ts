@@ -42,6 +42,7 @@ export interface Project {
   dependencies: Dependency[]
   gitRemote?: string
   id: number
+  isAutoDeploy: boolean
   isFullyReleased: boolean
   isKubernetes: boolean
   name: string
