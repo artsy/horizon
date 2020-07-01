@@ -28,9 +28,9 @@ describe("ProjectsIndex", () => {
   })
 
   it("can toggle between views", () => {
-    expect(component.find(ProjectSummaryGrid).first()).toBeTruthy()
+    expect(component.find(ProjectSummaryGrid).first()).toHaveLength(1)
     component.find(Button).first().simulate("click")
-    expect(component.find(ProjectsList).first()).toBeTruthy()
+    expect(component.find(ProjectsList).first()).toHaveLength(1)
   })
 
   describe("grid view", () => {
@@ -61,7 +61,7 @@ describe("ProjectsIndex", () => {
   describe("list view", () => {
     it("shows all projects", () => {
       component.find(Button).first().simulate("click")
-      expect(component.find(ProjectsList).first()).toBeTruthy()
+      expect(component.find(ProjectsList).first()).toHaveLength(1)
       expect(component.text()).toMatch(releasedProjectFixture.name)
       expect(component.text()).toMatch(unreleasedProjectFixture.name)
     })

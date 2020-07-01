@@ -41,7 +41,9 @@ describe("ProjectsList", () => {
       .find("[data-test='severity']")
     expect(releasedProject.find(CircleBlackCheckIcon).length).toBe(1)
     expect(unreleasedProject.find(XCircleIcon).length).toBe(1)
-    expect(unreleasedProject.find(XCircleIcon).props().fill).toBe("yellow100")
+    expect(unreleasedProject.find(XCircleIcon).prop("fill")).toEqual(
+      "yellow100",
+    )
   })
 
   describe("auto deploy prs", () => {
