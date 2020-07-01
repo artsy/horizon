@@ -135,7 +135,7 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
         {tags && <Tags tags={formattedTags(tags)} />}
       </Col>
 
-      <Col xs={2} sm={2}>
+      <Col xs={2} sm={2} data-test="dependencies">
         {dependencies?.length > 0 && (
           <Flex alignItems="center">
             {dependenciesUpToDate ? (

@@ -15,7 +15,7 @@ import { Project, Stage, Tags as TagsType } from "Typings"
 import { deployBlockPath, projectEditPath } from "../../shared/UrlHelper"
 import { formattedDependencies, formattedTags } from "../../shared/Helpers"
 import { MainLayout } from "../../components/MainLayout"
-import { ProjectMaintenanceRecomendations } from "components/Project/MaintenanceRecommendations"
+import { ProjectMaintenanceRecomendations } from "../../components/Project/MaintenanceRecommendations"
 import React from "react"
 import { StageWithComparison } from "../../components/Stage/StageWithComparison"
 import styled from "styled-components"
@@ -113,7 +113,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
           )}
         </Box>
 
-        {maintenanceMessages?.length > 0 && (
+        {maintenanceMessages.length > 0 && (
           <>
             <Separator mb={3} />
             <ProjectMaintenanceRecomendations project={project} />

@@ -155,7 +155,9 @@ export const unreleasedProjectFixture: Project = {
   isAutoDeploy: false,
   isFullyReleased: false,
   isKubernetes: true,
-  maintenanceMessages: [],
+  maintenanceMessages: [
+    "Enable Renovate to receive automatic PRs when orb versions change.",
+  ],
   orderedStages: [
     {
       id: 27,

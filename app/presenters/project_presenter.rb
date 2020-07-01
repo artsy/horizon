@@ -57,7 +57,7 @@ class ProjectPresenter
   def maintenance_messages
     messages = []
     dependencies_with_unknown_status&.any? do |d|
-      messages.push "Dependency #{d.name} version unknown, add a version declaration file."
+      messages.push "Dependency #{d.name} version unknown, add a version declaration file to the project."
     end
     dependencies_with_update_required&.any? do |d|
       expectation = Horizon.config.stringify_keys["expected_version_#{d.name}"]
