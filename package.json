@@ -9,7 +9,7 @@
     "type-check": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "@artsy/palette": "11.5.0",
+    "@artsy/palette": "11.6.0",
     "@rails/actioncable": "6.0.3-1",
     "@rails/activestorage": "6.0.3-1",
     "@rails/ujs": "6.0.3-1",
