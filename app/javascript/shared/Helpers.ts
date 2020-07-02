@@ -14,7 +14,7 @@ export const getColorFromSeverity = (
 export const projectRequiresDependencyUpdates = ({
   dependencies,
 }: Project): boolean => {
-  return dependencies.filter((d) => d.update_required === true).length > 0
+  return dependencies.filter((d) => d.updateRequired === true).length > 0
 }
 
 export const projectRequiresAutoDeploys = ({
@@ -29,6 +29,10 @@ export const projectRequiresRenovate = ({
   isKubernetes,
 }: Project): boolean => {
   return orbs?.length > 0 || isKubernetes
+}
+
+export const isCircleCi = ({ ciProvider }: Project): boolean => {
+  return ciProvider === "Circleci"
 }
 
 export const formattedTags = (tags: Tags): TagsList => {

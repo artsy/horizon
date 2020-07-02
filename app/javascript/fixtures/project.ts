@@ -3,30 +3,27 @@ import { Project } from "Typings"
 export const unreleasedProjectFixture: Project = {
   id: 11,
   name: "Force",
-  ci_provider: "circleci",
-  organization_id: 1,
+  ciProvider: "Circleci",
   renovate: true,
-  created_at: "2018-11-14T17:26:37.086-05:00",
-  updated_at: "2020-06-17T05:02:36.347-04:00",
-  snapshot_id: 19463,
   description: "Artsy.net web front-end",
   tags: ["platform"],
   orbs: ["hokusai", "yarn"],
   dependencies: [
     {
       id: 36,
-      project_id: 31,
       name: "ruby",
       version: "2.6.5",
+      updateRequired: true,
     },
     {
       id: 37,
-      project_id: 31,
       name: "node",
       version: "^10.15.1",
+      updateRequired: true,
     },
   ],
   dependenciesUpToDate: false,
+  deploymentType: "Kubernetes",
   comparedStages: [
     {
       stages: [
@@ -158,7 +155,7 @@ export const unreleasedProjectFixture: Project = {
   maintenanceMessages: [
     "Enable Renovate to receive automatic PRs when orb versions change.",
   ],
-  orderedStages: [
+  stages: [
     {
       id: 27,
       name: "master",
@@ -206,11 +203,7 @@ export const releasedProjectFixture: Project = {
   block: null,
   id: 25,
   name: "Radiation",
-  ci_provider: "circleci",
-  organization_id: 1,
-  created_at: "2018-11-14T22:26:37.395Z",
-  updated_at: "2020-06-15T18:52:09.790Z",
-  snapshot_id: 19401,
+  ciProvider: "Circleci",
   description: "Inquiry email relaying",
   tags: ["platform"],
   orbs: ["hokusai", "yarn"],
@@ -312,7 +305,7 @@ export const releasedProjectFixture: Project = {
   isFullyReleased: true,
   isKubernetes: true,
   maintenanceMessages: [],
-  orderedStages: [
+  stages: [
     {
       id: 67,
       name: "master",

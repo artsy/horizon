@@ -69,7 +69,7 @@ describe("ProjectsList", () => {
       props.projects[0].dependencies = [
         {
           name: "ruby",
-          update_required: false,
+          updateRequired: false,
           version: "2.6.6",
         },
       ]
@@ -86,7 +86,7 @@ describe("ProjectsList", () => {
       props.projects[0].dependencies = [
         {
           name: "ruby",
-          update_required: null,
+          updateRequired: null,
           version: "unknown version",
         },
       ]
@@ -104,7 +104,7 @@ describe("ProjectsList", () => {
       props.projects[0].dependencies = [
         {
           name: "ruby",
-          update_required: true,
+          updateRequired: true,
           version: "2.4.5",
         },
       ]

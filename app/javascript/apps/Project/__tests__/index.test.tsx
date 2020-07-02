@@ -73,12 +73,12 @@ describe("ProjectShow", () => {
     expect(component.find(Tags).at(0).text()).toMatch("platform")
   })
 
-  it("renders deployments if kubernetes", () => {
+  it("renders deployment type if present", () => {
     expect(component.text()).toMatch("Kubernetes")
   })
 
   it("renders CI provider if present", () => {
-    expect(component.text()).toMatch("circleci")
+    expect(component.text()).toMatch("Circleci")
   })
 
   it("renders orbs if present", () => {

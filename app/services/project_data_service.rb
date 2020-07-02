@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'base64'
-require 'semantic'
-require 'semantic/core_ext'
 
 class ProjectDataService
   def initialize(project)
@@ -54,31 +52,8 @@ class ProjectDataService
   end
 
   def update_dependency(name, version)
-    update_required = dependency_update_required?(name, version)
     @project.dependencies.find_or_initialize_by(name: name)
-            .update!(version: version, update_required: update_required)
-  end
-
-  def dependency_update_required?(name, version)
-    required_version = Horizon.config.stringify_keys["minimum_version_#{name}"]
-    expectation = Semantic::Version.new(required_version) if required_version
-    return unless expectation && version
-
-    if version.is_version?
-      current = version.to_version
-      current < expectation
-    else
-      # FIXME: handle non-semantic version syntax files
-      current = version.delete('^0-9.').split('.')
-      current_major = current[0]&.to_i
-      current_minor = current[1]&.to_i
-      return unless current_major
-
-      return true if current_major < expectation.major
-      return true if current_minor && current_minor < expectation.minor
-
-      false
-    end
+            .update!(version: version)
   end
 
   def ruby_version

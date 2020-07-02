@@ -13,14 +13,18 @@ import {
 } from "@artsy/palette"
 import { Project, Stage, Tags as TagsType } from "Typings"
 import { deployBlockPath, projectEditPath } from "../../shared/UrlHelper"
-import { formattedDependencies, formattedTags } from "../../shared/Helpers"
+import {
+  formattedDependencies,
+  formattedOrbs,
+  formattedTags,
+  isCircleCi,
+} from "../../shared/Helpers"
 import { MainLayout } from "../../components/MainLayout"
 import { ProjectMaintenanceRecommendations } from "../../components/Project/ProjectMaintenanceRecommendations"
 import React from "react"
 import { StageWithComparison } from "../../components/Stage/StageWithComparison"
 import styled from "styled-components"
 
-const titleizeStyles = { textTransform: "capitalize" }
 export interface ProjectShowProps {
   project: Project
   tags: TagsType
@@ -29,20 +33,22 @@ export interface ProjectShowProps {
 export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
   const {
     block,
-    ci_provider,
+    ciProvider,
     comparedStages,
     dependencies,
+    deploymentType,
     description,
     gitRemote,
     isKubernetes,
     maintenanceMessages,
     name,
     orbs,
-    orderedStages,
+    stages,
     renovate,
     severity,
   } = project
   const isAgedClass = (severity >= 500 && "aged") || ""
+  const isCircle = isCircleCi(project)
   const blockLink = block && deployBlockPath(block.id)
   const gitLink = gitRemote && gitRemote.replace(".git", "")
 
@@ -57,7 +63,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         className={isAgedClass}
       >
         <Box mb={1}>
-          <Sans size="10" element="h1" style={titleizeStyles}>
+          <Sans size="10" element="h1">
             {name}
           </Sans>
           <Sans size="3">{description}</Sans>
@@ -121,7 +127,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         )}
 
         <Box mb={3}>
-          {orderedStages.map((stage: Stage, i: number) => {
+          {stages.map((stage: Stage, i: number) => {
             const comparison = i > 0 ? comparedStages[i - 1] : undefined
             return (
               <StageWithComparison
@@ -157,36 +163,38 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
               <Sans size="3t" weight="medium" pr={1}>
                 Orbs
               </Sans>
-              <Tags tags={formattedTags(orbs)} />
+              <Tags tags={formattedOrbs(orbs)} />
             </Flex>
           )}
 
-          {isKubernetes && (
+          {deploymentType && (
             <Flex my={1} alignItems="center">
               <Sans size="3t" weight="medium" pr={1}>
                 Deployment
               </Sans>
               <Flex my={1}>
-                <CheckIcon fill="green100" />
-                <Sans size="3t">Kubernetes</Sans>
+                {isKubernetes ? (
+                  <CheckIcon fill="green100" />
+                ) : (
+                  <CloseIcon fill="red100" />
+                )}
+                <Sans size="3t">{deploymentType}</Sans>
               </Flex>
             </Flex>
           )}
 
-          {ci_provider && (
+          {ciProvider && (
             <Flex my={1} alignItems="center">
               <Sans size="3t" weight="medium" pr={1}>
                 CI Provider
               </Sans>
               <Flex my={1}>
-                {ci_provider === "circleci" ? (
+                {isCircle ? (
                   <CheckIcon fill="green100" />
                 ) : (
                   <CloseIcon fill="red100" />
                 )}
-                <Sans size="3t" style={titleizeStyles}>
-                  {ci_provider}
-                </Sans>
+                <Sans size="3t">{ciProvider}</Sans>
               </Flex>
             </Flex>
           )}

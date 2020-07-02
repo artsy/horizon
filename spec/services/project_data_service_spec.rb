@@ -78,7 +78,7 @@ RSpec.describe ProjectDataService, type: :service do
       ProjectDataService.new(project).update_dependency('ruby', '2.4.3')
       expect(Dependency.count).to eq(1)
       expect(project.dependencies.first.version).to eq('2.4.3')
-      expect(project.dependencies.first.update_required).to be_truthy
+      expect(project.dependencies.first.update_required?).to be_truthy
     end
 
     it 'creates a dependency if none exists' do
@@ -87,7 +87,7 @@ RSpec.describe ProjectDataService, type: :service do
       expect(Dependency.count).to eq(2)
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('v12')
-      expect(project.dependencies.first.update_required).to be_falsey
+      expect(project.dependencies.last.update_required?).to be_falsey
     end
   end
 
@@ -98,33 +98,6 @@ RSpec.describe ProjectDataService, type: :service do
       expect(project.dependencies.first.version).to eq('2.5.7')
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('12')
-    end
-  end
-
-  describe 'dependency_update_required?' do
-    it 'can identify out of date ruby versions' do
-      needs_update = ProjectDataService.new(project).dependency_update_required?('ruby', '2.4.3')
-      expect(needs_update).to be_truthy
-    end
-
-    it 'can verify ruby version is up to date' do
-      needs_update = ProjectDataService.new(project).dependency_update_required?('ruby', '2.6.6')
-      expect(needs_update).to be_falsey
-    end
-
-    it 'can identify out of date node versions' do
-      needs_update = ProjectDataService.new(project).dependency_update_required?('node', '>=8.12.x')
-      expect(needs_update).to be_truthy
-    end
-
-    it 'can verify node version is up to date' do
-      needs_update = ProjectDataService.new(project).dependency_update_required?('node', 'v13')
-      expect(needs_update).to be_falsey
-    end
-
-    it 'can handle unknown versions' do
-      needs_update = ProjectDataService.new(project).dependency_update_required?('ruby', 'unknown version')
-      expect(needs_update).to be_falsey
     end
   end
 
