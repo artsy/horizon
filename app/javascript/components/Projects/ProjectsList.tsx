@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   CircleBlackCheckIcon,
   Col,
@@ -13,8 +14,13 @@ import {
 } from "@artsy/palette"
 import {
   formattedDependencies,
+  formattedOrbs,
   formattedTags,
   getColorFromSeverity,
+  isCircleCi,
+  projectRequiresAutoDeploys,
+  projectRequiresDependencyUpdates,
+  projectRequiresRenovate,
 } from "../../shared/Helpers"
 import { Project } from "Typings"
 import React from "react"
@@ -82,31 +88,13 @@ export const ProjectsList: React.FC<ProjectsProps> = ({ projects }) => {
 export const ProjectsListRow: React.FC<{ project: Project }> = ({
   project,
 }) => {
-  const {
-    block,
-    dependencies,
-    id,
-    isAutoDeploy,
-    isKubernetes,
-    name,
-    orbs,
-    renovate,
-    severity,
-    tags,
-  } = project
-  const releaseColor = getColorFromSeverity(severity)
-  const requiresAutoDeploys = !isAutoDeploy && isKubernetes
-  const requiresRenovate = orbs?.length || isKubernetes
+  const { block, deploymentType, id, name, severity, tags } = project
 
   return (
     <Row alignItems="center">
       <Separator />
       <Flex width="100px" data-test="severity">
-        {severity === 0 ? (
-          <CircleBlackCheckIcon fill="green100" />
-        ) : (
-          <XCircleIcon fill={releaseColor} />
-        )}
+        <SeverityIcon severity={severity} />
       </Flex>
 
       <Col xs={2} sm={2}>
@@ -129,44 +117,103 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
         {tags && <Tags tags={formattedTags(tags)} />}
       </Col>
 
-      <Col xs={2} sm={2}>
-        {dependencies?.length > 0 && (
-          <Tags tags={formattedDependencies(dependencies)} />
-        )}
+      <Col xs={2} sm={2} data-test="dependencies">
+        <DependenciesList {...project} />
       </Col>
 
       <Col xs={1} sm={1}>
-        {isKubernetes && <Sans size="3t">Kubernetes</Sans>}
-      </Col>
-
-      <Col xs={1} sm={1} data-test="isAutoDeploy">
-        {isAutoDeploy && <CircleBlackCheckIcon fill="green100" />}
-        {requiresAutoDeploys && <XCircleIcon fill="red100" />}
-      </Col>
-
-      <Col xs={1} sm={1} data-test="renovate">
-        {requiresRenovate ? (
-          renovate ? (
-            <CircleBlackCheckIcon fill="green100" />
-          ) : (
-            <XCircleIcon fill="red100" />
-          )
-        ) : (
+        {deploymentType && (
           <Sans size="2" color="black60">
-            N/A
+            {deploymentType}
           </Sans>
         )}
       </Col>
 
+      <Col xs={1} sm={1} data-test="isAutoDeploy">
+        <AutoDeployIcon {...project} />
+      </Col>
+
+      <Col xs={1} sm={1} data-test="renovate">
+        <RenovateIcon {...project} />
+      </Col>
+
       <Col xs={1} sm={1}>
-        {orbs?.length > 0 ? (
-          <Flex my={1} alignItems="center">
-            <Tags tags={formattedTags(orbs)} />
-          </Flex>
-        ) : (
-          isKubernetes && <XCircleIcon fill="red100" />
-        )}
+        <OrbsList {...project} />
       </Col>
     </Row>
   )
+}
+
+const DependenciesList: React.FC<Project> = (props) => {
+  const { dependencies, dependenciesUpToDate } = props
+  const requiresDependencyUpdates = projectRequiresDependencyUpdates(props)
+  const hasDependencies = dependencies?.length > 0
+
+  if (!hasDependencies) return null
+
+  return (
+    <Flex alignItems="center">
+      {dependenciesUpToDate ? (
+        <CircleBlackCheckIcon fill="green100" />
+      ) : (
+        <XCircleIcon
+          fill={requiresDependencyUpdates ? "red100" : "yellow100"}
+        />
+      )}
+      <Box pr={1} />
+      <Tags tags={formattedDependencies(dependencies)} />
+    </Flex>
+  )
+}
+
+const OrbsList: React.FC<Project> = (props) => {
+  const { orbs, isKubernetes } = props
+  const isCircle = isCircleCi(props)
+  const hasOrbs = orbs?.length > 0
+
+  return hasOrbs ? (
+    <Tags tags={formattedOrbs(orbs)} />
+  ) : isKubernetes ? (
+    <XCircleIcon fill="red100" />
+  ) : (
+    <Sans size="2" color="black60">
+      {isCircle && "N/A"}
+    </Sans>
+  )
+}
+
+const RenovateIcon: React.FC<Project> = (props) => {
+  const { renovate } = props
+  const requiresRenovate = projectRequiresRenovate(props)
+
+  return renovate ? (
+    <CircleBlackCheckIcon fill="green100" />
+  ) : requiresRenovate ? (
+    <XCircleIcon fill="red100" />
+  ) : (
+    <Sans size="2" color="black60">
+      N/A
+    </Sans>
+  )
+}
+
+const SeverityIcon: React.FC<{ severity: number }> = ({ severity }) => {
+  const releaseColor = getColorFromSeverity(severity)
+
+  return severity === 0 ? (
+    <CircleBlackCheckIcon fill="green100" />
+  ) : (
+    <XCircleIcon fill={releaseColor} />
+  )
+}
+
+const AutoDeployIcon: React.FC<Project> = (props) => {
+  const { isAutoDeploy } = props
+  const requiresAutoDeploys = projectRequiresAutoDeploys(props)
+
+  return isAutoDeploy ? (
+    <CircleBlackCheckIcon fill="green100" />
+  ) : requiresAutoDeploys ? (
+    <XCircleIcon fill="red100" />
+  ) : null
 }

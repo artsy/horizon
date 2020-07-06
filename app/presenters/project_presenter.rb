@@ -24,22 +24,28 @@ class ProjectPresenter
     scores.compact.max || 0
   end
 
-  def git_remote
-    stage = ordered_stages&.detect { |s| s.name == 'master' }
-    stage&.git_remote
-  end
-
-  def auto_deploys?
-    @project.stages.any? { |s| s.deploy_strategies.any?(&:automatic?) }
-  end
-
-  def kubernetes?
-    ordered_stages&.any? { |s| !s.hokusai&.empty? }
-  end
-
-  def block
-    blocks = deploy_blocks.unresolved.to_a
-    blocks.first
+  def maintenance_messages
+    messages = []
+    @project.dependencies_with_unknown_status&.any? do |d|
+      messages.push "Dependency #{d.name} version unknown, add a version declaration file to the project."
+    end
+    @project.dependencies_with_update_required&.any? do |d|
+      expectation = Horizon.config.stringify_keys["minimum_version_#{d.name}"]
+      messages.push(
+        "Dependency #{d.name} uses an unsupported version.#{expectation && " Update to v#{expectation} or higher."}"
+      )
+    end
+    if !@project.auto_deploys? && @project.kubernetes?
+      messages.push(
+        "Create deploy strategies with 'automated: true' to enable automated deploy PRs"
+      )
+    end
+    if @project.orbs.any? && @project.kubernetes? && !@project.renovate
+      messages.push(
+        'Enable Renovate to receive automatic PRs when orb versions change.'
+      )
+    end
+    messages
   end
 
   # enumerates pairs of stages, the corresponding comparison object, and severity score
@@ -104,15 +110,9 @@ class ProjectPresenter
   def as_json(_options = nil)
     attributes = @project.as_json
     computed_attributes = {
-      block: block,
       comparedStages: compared_stages,
-      dependencies: @project.dependencies,
-      gitRemote: git_remote,
-      isAutoDeploy: auto_deploys?,
       isFullyReleased: fully_released?,
-      isKubernetes: kubernetes?,
-      name: name.titleize,
-      orderedStages: ordered_stages,
+      maintenanceMessages: maintenance_messages,
       severity: severity
     }
     attributes.merge(computed_attributes)

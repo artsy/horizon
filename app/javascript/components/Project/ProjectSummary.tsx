@@ -12,7 +12,7 @@ export const ProjectSummary: React.FC<Project> = ({
   id,
   block,
   name,
-  orderedStages,
+  stages,
   severity,
 }) => {
   const borderColor = getColorFromSeverity(severity)
@@ -39,7 +39,7 @@ export const ProjectSummary: React.FC<Project> = ({
         </Box>
 
         <Box pt={1}>
-          {orderedStages.map((stage: Stage, i: number) => {
+          {stages.map((stage: Stage, i: number) => {
             if (i === 0) {
               return null
             }

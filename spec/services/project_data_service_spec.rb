@@ -46,6 +46,13 @@ RSpec.describe ProjectDataService, type: :service do
     allow_any_instance_of(Octokit::Client).to receive(:contents)
       .with(project.github_repo.to_s, path: 'renovate.json')
       .and_return({ content: '' })
+
+    allow(Horizon)
+      .to receive(:config)
+      .and_return({
+                    minimum_version_ruby: '2.6.6',
+                    minimum_version_node: '12.0.0'
+                  })
   end
 
   describe 'refresh_data_for_org' do
@@ -71,6 +78,7 @@ RSpec.describe ProjectDataService, type: :service do
       ProjectDataService.new(project).update_dependency('ruby', '2.4.3')
       expect(Dependency.count).to eq(1)
       expect(project.dependencies.first.version).to eq('2.4.3')
+      expect(project.dependencies.first.update_required?).to be_truthy
     end
 
     it 'creates a dependency if none exists' do
@@ -79,6 +87,7 @@ RSpec.describe ProjectDataService, type: :service do
       expect(Dependency.count).to eq(2)
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('v12')
+      expect(project.dependencies.last.update_required?).to be_falsey
     end
   end
 

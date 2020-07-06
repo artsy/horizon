@@ -1,4 +1,4 @@
-import { Dependency, Tags, TagsList } from "Typings"
+import { Dependency, Project, Tags, TagsList } from "Typings"
 import { tagPath } from "./UrlHelper"
 
 export const getColorFromSeverity = (
@@ -11,9 +11,41 @@ export const getColorFromSeverity = (
   }
 }
 
+export const projectRequiresDependencyUpdates = ({
+  dependencies,
+}: Project): boolean => {
+  return dependencies.filter((d) => d.updateRequired === true).length > 0
+}
+
+export const projectRequiresAutoDeploys = ({
+  isAutoDeploy,
+  isKubernetes,
+}: Project): boolean => {
+  return !isAutoDeploy && isKubernetes
+}
+
+export const projectRequiresRenovate = ({
+  orbs,
+  isKubernetes,
+}: Project): boolean => {
+  return orbs?.length > 0 || isKubernetes
+}
+
+export const isCircleCi = ({ ciProvider }: Project): boolean => {
+  return ciProvider === "Circleci"
+}
+
 export const formattedTags = (tags: Tags): TagsList => {
   return tags.map((tag) => ({
     href: tagPath(tag),
+    name: tag,
+  }))
+}
+
+export const formattedOrbs = (tags: string[]): TagsList => {
+  // FIXME: should go to a href
+  return tags.map((tag) => ({
+    href: "",
     name: tag,
   }))
 }
