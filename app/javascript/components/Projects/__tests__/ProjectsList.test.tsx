@@ -64,6 +64,60 @@ describe("ProjectsList", () => {
     })
   })
 
+  describe("dependencies", () => {
+    it("shows dependencies are up to date", () => {
+      props.projects[0].dependencies = [
+        {
+          name: "ruby",
+          updateRequired: false,
+          version: "2.6.6",
+        },
+      ]
+      component = getWrapper(props)
+      const project = component
+        .find(ProjectsListRow)
+        .first()
+        .find("[data-test='dependencies']")
+      expect(project.find(CircleBlackCheckIcon).length).toBe(1)
+    })
+
+    it("shows dependencies are out of date", () => {
+      props.projects[0].dependenciesUpToDate = false
+      props.projects[0].dependencies = [
+        {
+          name: "ruby",
+          updateRequired: null,
+          version: "unknown version",
+        },
+      ]
+      component = getWrapper(props)
+      const project = component
+        .find(ProjectsListRow)
+        .first()
+        .find("[data-test='dependencies']")
+      expect(project.find(XCircleIcon).length).toBe(1)
+      expect(project.find(XCircleIcon).prop("fill")).toBe("yellow100")
+    })
+
+    it("shows dependencies lack version declarations", () => {
+      props.projects[0].dependenciesUpToDate = false
+      props.projects[0].dependencies = [
+        {
+          name: "ruby",
+          updateRequired: true,
+          version: "2.4.5",
+        },
+      ]
+      component = getWrapper(props)
+      const project = component
+        .find(ProjectsListRow)
+        .first()
+        .find("[data-test='dependencies']")
+      expect(project.find(XCircleIcon).length).toBe(1)
+      expect(project.find(XCircleIcon).prop("fill")).toBe("red100")
+    })
+  })
+
   describe("renovate", () => {
     it("shows renovate is enabled", () => {
       const project = component

@@ -42,6 +42,7 @@ gem 'acts_as_list' # order Project#stages
 gem 'octokit', '~> 4.0' # talk to github api
 gem 'redis' # actioncable adapter
 gem 'releasecop', '>= 0.0.15' # compare release stages
+gem 'semantic'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
