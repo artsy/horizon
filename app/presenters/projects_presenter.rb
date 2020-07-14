@@ -22,6 +22,7 @@ class ProjectsPresenter
   def projects
     @projects ||= begin
       query = Project.includes(:stages, snapshot: [:comparisons]).where(@params.permit(:organization_id))
+      query = query.where(criticality: @params[:criticality]) if @params[:criticality]
       query = query.where('tags ?| array[:tags]', tags: @params[:tags]) if @params[:tags]&.any?
       query.entries.map { |p| ProjectPresenter.new(p) }
     end

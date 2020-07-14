@@ -60,6 +60,7 @@ class Project < ApplicationRecord
     {
       block: block,
       ciProvider: ci_provider&.titleize,
+      criticality: criticality,
       description: description,
       dependencies: dependencies.sort_by(&:name),
       dependenciesUpToDate: dependencies_up_to_date?,

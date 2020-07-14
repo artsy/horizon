@@ -44,6 +44,11 @@ export const ProjectsList: React.FC<ProjectsProps> = ({ projects }) => {
               Project name
             </Sans>
           </Col>
+          <Col xs={1} sm={1}>
+            <Sans size="3t" weight="medium">
+              Criticality
+            </Sans>
+          </Col>
           <Col xs={2} sm={2}>
             <Sans size="3t" weight="medium">
               Teams
@@ -111,6 +116,10 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
             )}
           </Flex>
         </Link>
+      </Col>
+
+      <Col xs={1} sm={1} data-test="criticality">
+        <CriticalityTag {...project} />
       </Col>
 
       <Col xs={2} sm={2}>
@@ -216,4 +225,33 @@ const AutoDeployIcon: React.FC<Project> = (props) => {
   ) : requiresAutoDeploys ? (
     <XCircleIcon fill="red100" />
   ) : null
+}
+
+export const CriticalityTag: React.FC<Project> = ({ criticality }) => {
+  let name
+  switch (criticality) {
+    case 3:
+      name = "3: Critical"
+      break
+    case 2:
+      name = "2: Important"
+      break
+    case 1:
+      name = "1: Supported"
+      break
+    case 0:
+      name = "0: Unsupported"
+      break
+  }
+
+  return (
+    <Tags
+      tags={[
+        {
+          href: `/?criticality=${criticality}`,
+          name: name,
+        },
+      ]}
+    />
+  )
 }
