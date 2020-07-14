@@ -46,6 +46,21 @@ describe("ProjectsList", () => {
     )
   })
 
+  it("shows project criticality", () => {
+    const releasedProject = component
+      .find(ProjectsListRow)
+      .first()
+      .find("[data-test='criticality']")
+      .first()
+    const unreleasedProject = component
+      .find(ProjectsListRow)
+      .last()
+      .find("[data-test='criticality']")
+      .first()
+    expect(releasedProject.text()).toMatch("3: Critical")
+    expect(unreleasedProject.text()).toMatch("2: Important")
+  })
+
   describe("auto deploy prs", () => {
     it("shows auto deploys are enabled", () => {
       const project = component

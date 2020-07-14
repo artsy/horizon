@@ -69,8 +69,12 @@ describe("ProjectShow", () => {
     )
   })
 
+  it("renders criticality", () => {
+    expect(component.find(Tags).at(0).text()).toMatch("2: Important")
+  })
+
   it("renders teams", () => {
-    expect(component.find(Tags).at(0).text()).toMatch("platform")
+    expect(component.find(Tags).at(1).text()).toMatch("platform")
   })
 
   it("renders deployment type if present", () => {
