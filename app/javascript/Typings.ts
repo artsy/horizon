@@ -37,7 +37,7 @@ export interface Project {
   block?: Block | null
   ciProvider: CiProvider
   comparedStages: ComparedStage[]
-  criticality: 0 | 1 | 2 | 3
+  criticality?: 0 | 1 | 2 | 3
   description?: string
   dependencies: Dependency[]
   dependenciesUpToDate: boolean

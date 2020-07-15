@@ -12,6 +12,8 @@ class Project < ApplicationRecord
 
   jsonb_editable :tags
 
+  validates :criticality, inclusion: { in: [0, 1, 2, 3] }
+
   def github_repo
     [organization.name, name].join('/')
   end

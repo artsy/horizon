@@ -36,6 +36,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
     block,
     ciProvider,
     comparedStages,
+    criticality,
     dependencies,
     deploymentType,
     description,
@@ -141,12 +142,14 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         </Box>
 
         <Box>
-          <Flex my={1} alignItems="center">
-            <Sans size="3t" weight="medium" pr={1}>
-              Criticality
-            </Sans>
-            <CriticalityTag {...project} />
-          </Flex>
+          {criticality && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Criticality
+              </Sans>
+              <CriticalityTag {...project} />
+            </Flex>
+          )}
           {project.tags && project.tags.length > 0 && (
             <Flex my={1} alignItems="center">
               <Sans size="3t" weight="medium" pr={1}>

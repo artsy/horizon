@@ -93,7 +93,15 @@ export const ProjectsList: React.FC<ProjectsProps> = ({ projects }) => {
 export const ProjectsListRow: React.FC<{ project: Project }> = ({
   project,
 }) => {
-  const { block, deploymentType, id, name, severity, tags } = project
+  const {
+    block,
+    criticality,
+    deploymentType,
+    id,
+    name,
+    severity,
+    tags,
+  } = project
 
   return (
     <Row alignItems="center">
@@ -119,7 +127,7 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
       </Col>
 
       <Col xs={1} sm={1} data-test="criticality">
-        <CriticalityTag {...project} />
+        {criticality && <CriticalityTag {...project} />}
       </Col>
 
       <Col xs={2} sm={2}>
