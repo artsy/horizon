@@ -12,6 +12,8 @@ class Project < ApplicationRecord
 
   jsonb_editable :tags
 
+  validates :criticality, inclusion: { in: [0, 1, 2, 3] }, unless: proc { |a| a.criticality.blank? }
+
   def github_repo
     [organization.name, name].join('/')
   end
@@ -60,6 +62,7 @@ class Project < ApplicationRecord
     {
       block: block,
       ciProvider: ci_provider&.titleize,
+      criticality: criticality,
       description: description,
       dependencies: dependencies.sort_by(&:name),
       dependenciesUpToDate: dependencies_up_to_date?,

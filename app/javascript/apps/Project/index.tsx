@@ -19,6 +19,7 @@ import {
   formattedTags,
   isCircleCi,
 } from "../../shared/Helpers"
+import { CriticalityTag } from "../../components/Projects/ProjectsList"
 import { MainLayout } from "../../components/MainLayout"
 import { ProjectMaintenanceRecommendations } from "../../components/Project/ProjectMaintenanceRecommendations"
 import React from "react"
@@ -35,6 +36,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
     block,
     ciProvider,
     comparedStages,
+    criticality,
     dependencies,
     deploymentType,
     description,
@@ -140,6 +142,14 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         </Box>
 
         <Box>
+          {criticality && (
+            <Flex my={1} alignItems="center">
+              <Sans size="3t" weight="medium" pr={1}>
+                Criticality
+              </Sans>
+              <CriticalityTag {...project} />
+            </Flex>
+          )}
           {project.tags && project.tags.length > 0 && (
             <Flex my={1} alignItems="center">
               <Sans size="3t" weight="medium" pr={1}>
