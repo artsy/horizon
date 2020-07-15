@@ -12,7 +12,7 @@ class Project < ApplicationRecord
 
   jsonb_editable :tags
 
-  validates :criticality, inclusion: { in: [0, 1, 2, 3] }
+  validates :criticality, inclusion: { in: [0, 1, 2, 3] }, unless: proc { |a| a.criticality.blank? }
 
   def github_repo
     [organization.name, name].join('/')
