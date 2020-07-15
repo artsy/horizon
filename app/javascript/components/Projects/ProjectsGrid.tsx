@@ -14,13 +14,13 @@ export const ProjectsGrid: React.FC<ProjectsGridProps> = ({
 }) => {
   return (
     <Box>
-      {unreleasedProjects && (
+      {unreleasedProjects.length > 0 && (
         <Box pb={4}>
           <Sans size="6">Out of sync</Sans>
           <ProjectSummaryGrid projects={unreleasedProjects} />
         </Box>
       )}
-      {releasedProjects && (
+      {releasedProjects.length > 0 && (
         <Box pb={4}>
           <Sans size="6">Up to date</Sans>
           <ProjectSummaryGrid projects={releasedProjects} />

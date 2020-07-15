@@ -20,7 +20,7 @@ ActiveAdmin.register Project do
     end
   end
 
-  permit_params :organization_id, :name, :description, :tags_input
+  permit_params :organization_id, :name, :description, :tags_input, :criticality
 
   form do |f|
     f.semantic_errors(*f.object.errors.keys)
@@ -29,6 +29,7 @@ ActiveAdmin.register Project do
       f.input :name
       f.input :description
       f.input :tags_input, label: 'Tags (JSON array)'
+      f.input :criticality, as: :select, collection: [0, 1, 2, 3]
     end
     f.actions
   end
