@@ -32,7 +32,7 @@ export interface ProjectsProps {
 export const ProjectsList: React.FC<ProjectsProps> = ({ projects }) => {
   return (
     projects && (
-      <Grid fluid pb={4}>
+      <Grid fluid pb={4} maxWidth="100%">
         <Row>
           <Flex width="100px">
             <Sans size="3t" weight="medium">
