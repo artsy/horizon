@@ -68,4 +68,25 @@ RSpec.feature 'Deploys', type: :feature do
     expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with('artsy/candela', 42, 'jane')
     DeployService.new(strategy).start
   end
+
+  it 'adds assignees to existing deploy PRs when unassigned' do
+    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_raise(Octokit::UnprocessableEntity)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([double(number: 42, assignee: nil)])
+    allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
+      .with('artsy/candela', 42)
+      .and_return([
+                    double(author: renovate, committer: renovate),
+                    double(author: joe, committer: jane),
+                    double(author: jane, committer: web_flow),
+                    double(author: renovate, committer: jane)
+                  ])
+    expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
+    expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with('artsy/candela', 42, 'jane')
+
+    DeployService.new(strategy).start
+  end
 end

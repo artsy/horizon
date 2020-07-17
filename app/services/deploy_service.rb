@@ -28,7 +28,16 @@ class DeployService
     assignee = choose_assignee(pull_request)
     github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
   rescue Octokit::UnprocessableEntity
-    # PR already exists
+    # PR already exists, so assign if unassigned
+    pull_request = github_client.pull_requests(
+      github_repo,
+      base: deploy_strategy.arguments['base'],
+      head: deploy_strategy.arguments['head']
+    ).first
+    if pull_request && pull_request.assignee.blank?
+      assignee = choose_assignee(pull_request)
+      github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
+    end
   end
 
   def github_client
