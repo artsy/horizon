@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 2020_07_13_215815) do
     t.string "ci_provider"
     t.boolean "renovate"
     t.string "orbs", default: [], array: true
-    t.integer "criticality", default: 1
+    t.integer "criticality"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
     t.index ["snapshot_id"], name: "index_projects_on_snapshot_id"
   end
