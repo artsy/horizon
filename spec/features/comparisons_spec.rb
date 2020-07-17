@@ -57,7 +57,7 @@ RSpec.feature 'Comparisons', type: :feature do
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
       )
-      expect(DeployService).to receive(:start)
+      expect_any_instance_of(DeployService).to receive(:start)
       ComparisonService.new(project).refresh_comparisons
     end
 
@@ -71,7 +71,7 @@ RSpec.feature 'Comparisons', type: :feature do
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
       )
-      expect(DeployService).not_to receive(:start)
+      expect_any_instance_of(DeployService).not_to receive(:start)
       ComparisonService.new(project).refresh_comparisons
     end
 
@@ -86,7 +86,7 @@ RSpec.feature 'Comparisons', type: :feature do
         Releasecop::Result.new('shipping', [large_comparison])
       )
       project.deploy_blocks.create!(description: 'staging broken')
-      expect(DeployService).not_to receive(:start)
+      expect_any_instance_of(DeployService).not_to receive(:start)
       ComparisonService.new(project).refresh_comparisons
     end
   end
