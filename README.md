@@ -18,12 +18,16 @@ Visual representations of release pipelines.
 
 ## Setup
 
-    # via hokusai
+With docker:
+
     hokusai dev run 'bundle exec rake db:migrate'
     hokusai dev start
-    # or
-    dotenv bundle exec rails db:prepare
-    dotenv bundle exec rails server
+
+Or on localhost:
+
+    bundle exec rails db:prepare
+    yarn install
+    bundle exec rails server
 
     # run the webpack-dev-server in a seperate terminal window for hot reloading:
     ./bin/webpack-dev-server
