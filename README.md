@@ -13,7 +13,7 @@ Visual representations of release pipelines.
 
 - [Releases: dashboard view](https://releases.artsy.net/projects?organization_id=1&view=dashboard)
 - [Releases: detailed view](https://releases.artsy.net/projects?organization_id=1)
-- [View deploy blocks](https://releases.artsy.net/admin/deploy_blocks) or [create a new one](https://releases.artsy.net/admin/deploy_blocks)
+- [View deploy blocks](https://releases.artsy.net/admin/deploy_blocks) or [create a new one](https://releases.artsy.net/admin/deploy_blocks/new)
 - [View projects](https://releases.artsy.net/admin/projects) or [create a new one](https://releases.artsy.net/admin/projects/new)
 
 ## Setup
@@ -42,34 +42,36 @@ Artsy developers can use the db setup script to dump our staging data to a local
 
 Alternatively, here's an example using the console:
 
-    org = Organization.create!(name: 'Acme')
-    website = org.projects.create!(name: 'acme.org')
-    heroku = org.profiles.create!(
-      name: 'heroku',
-      basic_username: 'heroku',
-      basic_password: '<heroku_token>'
-    )
-    github_aws = org.profiles.create!(
-      name: 'github/aws',
-      basic_username: 'github',
-      basic_password: '<github_token>',
-      environment: {'AWS_ACCESS_KEY_ID' => '<aws_id>', 'AWS_SECRET_ACCESS_KEY' => '<aws_secret>'}
-    )
-    website.stages.create!(
-      name: 'master',
-      git_remote: 'https://github.com/acme/website.git',
-      profile: github_aws
-    )
-    website.stages.create!(
-      name: 'staging',
-      git_remote: 'https://git.heroku.com/acme-website-staging.git',
-      profile: heroku
-    )
-    website.stages.create!(
-      name: 'production',
-      git_remote: 'https://git.heroku.com/acme-website-production.git',
-      profile: heroku
-    )
+```ruby
+org = Organization.create!(name: 'Acme')
+website = org.projects.create!(name: 'acme.org')
+heroku = org.profiles.create!(
+  name: 'heroku',
+  basic_username: 'heroku',
+  basic_password: '<heroku_token>'
+)
+github_aws = org.profiles.create!(
+  name: 'github/aws',
+  basic_username: 'github',
+  basic_password: '<github_token>',
+  environment: {'AWS_ACCESS_KEY_ID' => '<aws_id>', 'AWS_SECRET_ACCESS_KEY' => '<aws_secret>'}
+)
+website.stages.create!(
+  name: 'master',
+  git_remote: 'https://github.com/acme/website.git',
+  profile: github_aws
+)
+website.stages.create!(
+  name: 'staging',
+  git_remote: 'https://git.heroku.com/acme-website-staging.git',
+  profile: heroku
+)
+website.stages.create!(
+  name: 'production',
+  git_remote: 'https://git.heroku.com/acme-website-production.git',
+  profile: heroku
+)
+```
 
 Once the cron has run, its snapshots are visible from the `/projects` page.
 
