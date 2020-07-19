@@ -29,7 +29,7 @@ Or on localhost:
     yarn install
     bundle exec rails server
 
-    # run the webpack-dev-server in a seperate terminal window for hot reloading:
+    # run the webpack-dev-server in a seperate terminal window for hot reloading and faster compilation:
     ./bin/webpack-dev-server
 
 The administrative UI can then be found at http://localhost:3000/admin. Create organizations, projects, profiles, and stages from there.
