@@ -1,10 +1,11 @@
-import $ from "jquery"
 import consumer from "./consumer"
 
 consumer.subscriptions.create(
   {
     channel: "ProjectChannel",
-    organization_id: $("#organization_subscription_identifier").val(),
+    organization_id: document.querySelector(
+      "#organization_subscription_identifier",
+    ).value,
   },
   {
     connected() {
