@@ -1,12 +1,14 @@
 import consumer from "./consumer"
 
 document.addEventListener("DOMContentLoaded", () => {
+  const organization_id_input = document.querySelector(
+    "#organization_subscription_identifier",
+  ) as HTMLInputElement
+
   consumer.subscriptions.create(
     {
       channel: "ProjectChannel",
-      organization_id: document.querySelector(
-        "#organization_subscription_identifier",
-      ).value,
+      organization_id: organization_id_input.value,
     },
     {
       connected() {
