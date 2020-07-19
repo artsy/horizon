@@ -2,6 +2,8 @@
   "name": "horizon",
   "private": true,
   "scripts": {
+    "bundle:stats": "./bin/webpack --profile --progress --json > ./webpack-bundle-stats.json",
+    "bundle:analysis": "webpack-bundle-analyzer ./webpack-bundle-stats.json ./public/packs",
     "lint": "eslint ./app --ext ts,tsx,js,jsx --fix",
     "prettier": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'",
     "test": "jest",
