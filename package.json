@@ -2,6 +2,8 @@
   "name": "horizon",
   "private": true,
   "scripts": {
+    "bundle:stats": "./bin/webpack --profile --progress --json > ./webpack-bundle-stats.json",
+    "bundle:analysis": "webpack-bundle-analyzer ./webpack-bundle-stats.json ./public/packs",
     "lint": "eslint ./app --ext ts,tsx,js,jsx --fix",
     "prettier": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'",
     "test": "jest",
@@ -12,12 +14,11 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@artsy/palette": "11.8.1",
+    "@artsy/palette": "11.9.0",
     "@rails/actioncable": "6.0.3-1",
     "@rails/activestorage": "6.0.3-1",
     "@rails/ujs": "6.0.3-1",
     "@rails/webpacker": "5.1.1",
-    "jquery": "3.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "styled-components": "4.4.1"
@@ -28,7 +29,6 @@
     "@babel/preset-typescript": "7.10.1",
     "@types/actioncable": "5.2.3",
     "@types/jest": "26.0.0",
-    "@types/jquery": "3.3.38",
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.8",
     "@types/styled-components": "4.4.3",
@@ -46,8 +46,9 @@
     "jest": "26.0.1",
     "lint-staged": "10.2.9",
     "prettier": "2.0.5",
-    "typescript": "3.9.6",
+    "typescript": "3.9.7",
     "webpack": "4.43.0",
+    "webpack-bundle-analyzer": "3.8.0",
     "webpack-dev-server": "3.11.0"
   },
   "jest": {
