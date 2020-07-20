@@ -7,7 +7,12 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 secrets_path = "#{ENV['HOME']}/.artsy/secrets.yml"
-secrets = File.exist?(secrets_path) ? YAML.load(File.read(secrets_path)) : {}
+secrets = if File.exist?(secrets_path)
+  $stderr.puts "Loading configuration from #{secrets_path}..."
+  YAML.load(File.read(secrets_path))
+else
+  {}
+end
 
 artsy_org = Organization.create!(name: 'artsy')
 

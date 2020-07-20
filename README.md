@@ -36,8 +36,8 @@ The administrative UI can then be found at http://localhost:3000/admin.
 
 To load representative data for development, you have several options:
 * Create organizations, projects, profiles, and stages from the administrative UI.
+* Run the `db:seed` rake task (or `db:seed:replant` to re-seed). The same command can be run via `hokusai dev run ...` for docker-based development.
 * Use the `./bin/pull_data` script to copy data from staging (requires VPN and Artsy developer credentials).
-* Run the `db:seed` rake task (or `db:seed:replant` to re-seed).
 
 Once the cron has run, its snapshots are visible from the `/projects` page.
 

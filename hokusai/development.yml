@@ -16,6 +16,7 @@ services:
       - 8443:8443
     volumes:
       - ../:/app
+      - ~/.artsy:/home/deploy/.artsy
     depends_on:
       - horizon-postgres
       - horizon-redis
