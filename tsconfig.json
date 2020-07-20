@@ -15,7 +15,7 @@
     "strict": true,
     "target": "es2016",
     "jsx": "react",
-    "types": ["node", "webpack-env", "jquery", "actioncable", "jest"]
+    "types": ["node", "webpack-env", "actioncable", "jest"]
   },
   "exclude": ["node_modules", "public"]
 }
