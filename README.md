@@ -32,46 +32,12 @@ Or on localhost:
     # run the webpack-dev-server in a seperate terminal window for hot reloading and faster compilation:
     ./bin/webpack-dev-server
 
-The administrative UI can then be found at http://localhost:3000/admin. Create organizations, projects, profiles, and stages from there.
+The administrative UI can then be found at http://localhost:3000/admin.
 
-Artsy developers can use the db setup script to dump our staging data to a local development environment (requires VPN):
-
-```bash
-./bin/pull_data
-```
-
-Alternatively, here's an example using the console:
-
-```ruby
-org = Organization.create!(name: 'Acme')
-website = org.projects.create!(name: 'acme.org')
-heroku = org.profiles.create!(
-  name: 'heroku',
-  basic_username: 'heroku',
-  basic_password: '<heroku_token>'
-)
-github_aws = org.profiles.create!(
-  name: 'github/aws',
-  basic_username: 'github',
-  basic_password: '<github_token>',
-  environment: {'AWS_ACCESS_KEY_ID' => '<aws_id>', 'AWS_SECRET_ACCESS_KEY' => '<aws_secret>'}
-)
-website.stages.create!(
-  name: 'master',
-  git_remote: 'https://github.com/acme/website.git',
-  profile: github_aws
-)
-website.stages.create!(
-  name: 'staging',
-  git_remote: 'https://git.heroku.com/acme-website-staging.git',
-  profile: heroku
-)
-website.stages.create!(
-  name: 'production',
-  git_remote: 'https://git.heroku.com/acme-website-production.git',
-  profile: heroku
-)
-```
+To load representative data for development, you have several options:
+* Create organizations, projects, profiles, and stages from the administrative UI.
+* Use the `./bin/pull_data` script to copy data from staging (requires VPN and Artsy developer credentials).
+* Run the `db:seed` rake task (or `db:seed:replant` to re-seed).
 
 Once the cron has run, its snapshots are visible from the `/projects` page.
 
