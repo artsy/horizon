@@ -6,10 +6,10 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-secrets_path = "#{ENV['HOME']}/.artsy/secrets.yml"
-secrets = if File.exist?(secrets_path)
-  $stderr.puts "Loading configuration from #{secrets_path}..."
-  YAML.load(File.read(secrets_path))
+shared_path = "#{ENV['HOME']}/.artsy/shared.yml"
+shared = if File.exist?(shared_path)
+  $stderr.puts "Loading shared configuration from #{shared_path}..."
+  YAML.load(File.read(shared_path))
 else
   {}
 end
@@ -19,16 +19,16 @@ artsy_org = Organization.create!(name: 'artsy')
 github_aws_profile = artsy_org.profiles.create!(
   name: 'github/aws',
   basic_username: 'github',
-  basic_password: secrets.fetch('github_token', '<github_token>'),
+  basic_password: shared.fetch('github_token', '<github_token>'),
   environment: {
-    'AWS_ACCESS_KEY_ID' => secrets.fetch('aws_access_key_id', '<aws_id>'),
-    'AWS_SECRET_ACCESS_KEY' => secrets.fetch('aws_secret_access_key', '<aws_secret>')
+    'AWS_ACCESS_KEY_ID' => shared.fetch('aws_access_key_id', '<aws_id>'),
+    'AWS_SECRET_ACCESS_KEY' => shared.fetch('aws_secret_access_key', '<aws_secret>')
   }
 )
 heroku_profile = artsy_org.profiles.create!(
   name: 'heroku',
   basic_username: 'heroku',
-  basic_password: secrets.fetch('heroku_token', '<heroku_token>')
+  basic_password: shared.fetch('heroku_token', '<heroku_token>')
 )
 
 candela_project = artsy_org.projects.create!(
