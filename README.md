@@ -18,16 +18,19 @@ Visual representations of release pipelines.
 
 ## Setup
 
-With docker:
+The setup script will install prerequisites and create seed data:
 
-    hokusai dev run 'bundle exec rake db:migrate'
+    ./bin/setup
+
+Then, to develop with docker:
+
+    hokusai dev run 'bundle exec rake db:prepare db:seed:replant'
     hokusai dev start
 
 Or on localhost:
 
-    bundle exec rails db:prepare
     yarn install
-    bundle exec rails server
+    foreman run --env .env.shared,.env bundle exec rails server
 
     # run the webpack-dev-server in a seperate terminal window for hot reloading and faster compilation:
     ./bin/webpack-dev-server
@@ -36,8 +39,8 @@ The administrative UI can then be found at http://localhost:3000/admin.
 
 To load representative data for development, you have several options:
 * Create organizations, projects, profiles, and stages from the administrative UI.
+* Run the `db:seed` rake task (or `db:seed:replant` to re-seed). The same command can be run via `hokusai dev run ...` for docker-based development.
 * Use the `./bin/pull_data` script to copy data from staging (requires VPN and Artsy developer credentials).
-* Run the `db:seed` rake task (or `db:seed:replant` to re-seed).
 
 Once the cron has run, its snapshots are visible from the `/projects` page.
 

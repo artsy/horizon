@@ -6,18 +6,27 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+if ENV['ARTSY_ENV']
+  $stderr.puts 'Sourcing seed data from shared Artsy environment variables.'
+else
+  $stderr.puts 'No shared Artsy environment found. Falling back to defaults.'
+end
+
 artsy_org = Organization.create!(name: 'artsy')
 
 github_aws_profile = artsy_org.profiles.create!(
   name: 'github/aws',
   basic_username: 'github',
-  basic_password: '<github_token>',
-  environment: {'AWS_ACCESS_KEY_ID' => '<aws_id>', 'AWS_SECRET_ACCESS_KEY' => '<aws_secret>'}
+  basic_password: ENV['ARTSY_GITHUB_TOKEN'] || '<github_token>',
+  environment: {
+    'AWS_ACCESS_KEY_ID' => ENV['ARTSY_AWS_ACCESS_KEY_ID'] || '<aws_id>',
+    'AWS_SECRET_ACCESS_KEY' => ENV['ARTSY_AWS_SECRET_ACCESS_KEY'] || '<aws_secret>'
+  }
 )
 heroku_profile = artsy_org.profiles.create!(
   name: 'heroku',
   basic_username: 'heroku',
-  basic_password: '<heroku_token>'
+  basic_password: ENV['ARTSY_HEROKU_TOKEN'] || '<heroku_token>'
 )
 
 candela_project = artsy_org.projects.create!(
