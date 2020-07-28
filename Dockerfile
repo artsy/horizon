@@ -1,33 +1,40 @@
-FROM ruby:2.6.6-alpine
+FROM ruby:2.6.6-alpine AS base
+RUN apk update && apk --no-cache --quiet add --update \
+    python2-dev \
+    py2-setuptools && \
+    adduser -D -g '' deploy
+
+# support hokusai registry commands
+# needed to compare production/staging envs of other apps
+RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install && \
+    easy_install pip && \
+    pip install --upgrade pip && \
+    pip install --upgrade --no-cache-dir hokusai
+
+FROM base AS builder
 ENV LANG C.UTF-8
 ENV PORT 3000
 EXPOSE 3000
 
-WORKDIR /app
-
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    dumb-init \
     nodejs \
     postgresql-dev \
     postgresql-client \
-    python2-dev \
-    py2-setuptools \
     tzdata \
     yarn \
-    git && \
-    adduser -D -g '' deploy
-
-# support hokusai registry commands
-RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install
-RUN easy_install pip
-RUN pip install --upgrade pip
-RUN pip install --upgrade --no-cache-dir hokusai
+    git
 
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
 
-# Set up gems
+WORKDIR /app
+
+RUN chown deploy:deploy $(pwd)
+USER deploy
+
+# Set up gems 
+# TODO: look into buildkit to prevent re-installing node modules after changing gems
 COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install -j4
 
@@ -36,18 +43,30 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --quiet && \
     yarn cache clean --force
 
-# Create directories for Puma/Nginx & give deploy user access
-RUN mkdir -p /shared/pids /shared/sockets && \
-    chown -R deploy:deploy /shared
-
 # Copy application code
 COPY . ./
 
 # Precompile Rails assets
-RUN bundle exec rake assets:precompile && \
-    chown -R deploy:deploy ./
+RUN bundle exec rake assets:precompile
 
-# Switch to less privelidged user
+FROM base AS production
+ENV PORT 3000
+EXPOSE 3000
+WORKDIR /app
+
+RUN apk update && apk --no-cache --quiet add --update \
+    dumb-init
+
+# copy app files
+COPY --chown=deploy:deploy --from=builder /app .
+
+# Create directories for Puma/Nginx & give deploy user access
+RUN mkdir -p /shared/pids /shared/sockets && \
+    chown -R deploy:deploy /shared
+
+# TODO: dump dev dependencies
+RUN rm -rf node_modules
+
 USER deploy
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
