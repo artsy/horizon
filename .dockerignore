@@ -25,6 +25,7 @@
 !db
 !lib
 !log/.keep
+!Rakefile
 !spec
 !storage/.keep
 !tmp/.keep

@@ -36,18 +36,18 @@ USER deploy
 
 # Set up gems
 # TODO: look into buildkit to prevent re-installing node modules after changing gems
-COPY Gemfile Gemfile.lock .ruby-version ./
+COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
 # RUN bundle install -j4 --path /usr/local/bundle-prod --without development test && \
 RUN bundle install -j4 --path /usr/local/bundle
 # bundle clean
 
 # Set up packages, empty cache to save space
-COPY package.json yarn.lock ./
+COPY --chown=deploy:deploy package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --quiet && \
     yarn cache clean --force
 
 # Copy application code
-COPY . ./
+COPY --chown=deploy:deploy . ./
 
 # Precompile Rails assets
 RUN bundle exec rake assets:precompile
