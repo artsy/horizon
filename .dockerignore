@@ -10,6 +10,7 @@
 !Gemfile
 !bin
 !lib
+!log/.keep
 !Gemfile.lock
 !config
 !renovate.json
@@ -17,10 +18,11 @@
 !Rakefile
 !config.ru
 !spec
-!vendor
+!vendor/.keep
+!tmp/.keep
 !app
 !db
 !package.json
-!storage
+!storage/.keep
 !yarn.lock
 !.ruby-version

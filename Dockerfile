@@ -1,8 +1,11 @@
 FROM ruby:2.6.6-alpine AS base
 RUN apk update && apk --no-cache --quiet add --update \
+    nodejs \
+    postgresql-dev \
+    py2-setuptools \
     python2-dev \
-    py2-setuptools && \
-    adduser -D -g '' deploy
+    tzdata \
+    && adduser -D -g '' deploy
 
 # support hokusai registry commands
 # needed to compare production/staging envs of other apps
@@ -18,12 +21,9 @@ EXPOSE 3000
 
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    nodejs \
-    postgresql-dev \
+    git \
     postgresql-client \
-    tzdata \
-    yarn \
-    git
+    yarn
 
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
@@ -31,12 +31,15 @@ RUN gem install bundler -v '<2' && \
 WORKDIR /app
 
 RUN chown deploy:deploy $(pwd)
+RUN chown -R deploy:deploy /usr/local
 USER deploy
 
-# Set up gems 
+# Set up gems
 # TODO: look into buildkit to prevent re-installing node modules after changing gems
 COPY Gemfile Gemfile.lock .ruby-version ./
-RUN bundle install -j4
+# RUN bundle install -j4 --path /usr/local/bundle-prod --without development test && \
+RUN bundle install -j4 --path /usr/local/bundle
+    # bundle clean
 
 # Set up packages, empty cache to save space
 COPY package.json yarn.lock ./
@@ -59,6 +62,7 @@ RUN apk update && apk --no-cache --quiet add --update \
 
 # copy app files
 COPY --chown=deploy:deploy --from=builder /app .
+COPY --chown=deploy:deploy --from=builder /usr/local/bundle /usr/local/bundle
 
 # Create directories for Puma/Nginx & give deploy user access
 RUN mkdir -p /shared/pids /shared/sockets && \
