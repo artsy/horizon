@@ -8,7 +8,7 @@ RUN apk update && apk --no-cache --quiet add --update \
     && adduser -D -g '' deploy
 
 # support hokusai registry commands
-# needed to compare production/staging envs of other apps
+# horizon needs to compare production/staging envs of projects
 RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install && \
     easy_install pip && \
     pip install --upgrade pip && \
@@ -62,6 +62,7 @@ RUN apk update && apk --no-cache --quiet add --update \
 
 # copy app files
 COPY --chown=deploy:deploy --from=builder /app .
+# copy gems
 COPY --chown=deploy:deploy --from=builder /usr/local/bundle /usr/local/bundle
 
 # Create directories for Puma/Nginx & give deploy user access

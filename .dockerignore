@@ -1,28 +1,32 @@
-# Ignore everything
+# Ignore everything by default:
 *
 
-# Include manually
-!Dockerfile
+# Require files manually:
+
+# config
 !babel.config.js
-!hokusai
 !postcss.config.js
+!renovate.json
 !test.config.js
+!tsconfig.json
+
+# dependencies
+!.ruby-version
 !Gemfile
+!Gemfile.lock
+!yarn.lock
+!package.json
+
+# rails
+!app
 !bin
+!config
+!config.ru
+!db
 !lib
 !log/.keep
-!Gemfile.lock
-!config
-!renovate.json
-!tsconfig.json
-!Rakefile
-!config.ru
 !spec
-!vendor/.keep
-!tmp/.keep
-!app
-!db
-!package.json
 !storage/.keep
-!yarn.lock
-!.ruby-version
+!tmp/.keep
+!vendor
+
