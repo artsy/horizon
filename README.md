@@ -18,7 +18,7 @@ Visual representations of release pipelines.
 
 ## Setup
 
-The setup script will install prerequisites and create seed data:
+Local development depends on a `.env.shared` file (sourced from S3) and a `.env` file for any overrides or additions. The setup script will initialize these in addition to installing prerequisites and generating seed data:
 
     ./bin/setup
 
@@ -30,19 +30,12 @@ Then, to develop with docker:
 Or on localhost:
 
     yarn install
-    foreman run --env .env.shared,.env bundle exec rails server
+    foreman run bundle exec rails server
 
     # run the webpack-dev-server in a seperate terminal window for hot reloading and faster compilation:
     ./bin/webpack-dev-server
 
-The administrative UI can then be found at http://localhost:3000/admin.
-
-To load representative data for development, you have several options:
-* Create organizations, projects, profiles, and stages from the administrative UI.
-* Run the `db:seed` rake task (or `db:seed:replant` to re-seed). The same command can be run via `hokusai dev run ...` for docker-based development.
-* Use the `./bin/pull_data` script to copy data from staging (requires VPN and Artsy developer credentials).
-
-Once the cron has run, its snapshots are visible from the `/projects` page.
+The UI can then be found at http://localhost:3000.
 
 ## Design
 

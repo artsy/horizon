@@ -30,18 +30,12 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp '.env.example', '.env'
   end
 
-  puts "\n== Creating .env.shared (for shared configuration) =="
-  puts "WARNING: No shared Artsy environment found." unless ENV['ARTSY_ENV']
-  File.write '.env.shared', <<-FILE
-ARTSY_AWS_ACCESS_KEY_ID=#{ENV['ARTSY_AWS_ACCESS_KEY_ID']}
-ARTSY_AWS_SECRET_ACCESS_KEY=#{ENV['ARTSY_AWS_SECRET_ACCESS_KEY']}
-ARTSY_GITHUB_TOKEN=#{ENV['ARTSY_GITHUB_TOKEN']}
-ARTSY_HEROKU_TOKEN=#{ENV['ARTSY_HEROKU_TOKEN']}
-  FILE
+  puts "\n== Downloading .env.shared (for shared configuration) =="
+  system! 'aws s3 cp s3://artsy-citadel/dev/.env.horizon .env.shared'
 
   puts "\n== Installing foreman for local development =="
   system! 'gem install foreman'
 
   puts "\n== Preparing database =="
-  system! 'foreman run --env .env.shared,.env bin/rails db:setup db:seed'
+  system! 'foreman run bin/rails db:setup db:seed'
 end
