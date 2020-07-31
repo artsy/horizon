@@ -55,6 +55,6 @@ RSpec.describe DeployStrategy, type: :model do
         provider: 'github pull request',
         arguments: { foo: 'bar' }
       )
-    end.to raise_error(/can only include base, head, and repo/)
+    end.to raise_error(/can only include base, head, repo/)
   end
 end

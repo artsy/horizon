@@ -27,14 +27,21 @@ class DeployService
 
     assignee = choose_assignee(pull_request)
     github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
-  rescue Octokit::UnprocessableEntity
-    # PR already exists, so assign if unassigned
+  rescue Octokit::UnprocessableEntity # release PR already exists
     pull_request = github_client.pull_requests(
       github_repo,
       base: deploy_strategy.arguments['base'],
       head: deploy_strategy.arguments['head']
-    ).first
-    if pull_request && pull_request.assignee.blank?
+    ).first || return
+
+    # merge release PR if merge_after is specified by deploy_strategy
+    if (merge_after = deploy_strategy.arguments['merge_after']) &&
+       Time.now > (pull_request.created_at + merge_after.seconds)
+      github_client.merge_pull_request(github_repo, pull_request.number)
+      return
+    end
+
+    if pull_request.assignee.blank? # try to assign if unassigned
       assignee = choose_assignee(pull_request)
       github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
     end
