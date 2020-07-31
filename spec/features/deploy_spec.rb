@@ -89,4 +89,17 @@ RSpec.feature 'Deploys', type: :feature do
 
     DeployService.new(strategy).start
   end
+
+  it 'merges release PR after designated period of time' do
+    strategy.update!(arguments: strategy.arguments.merge(merge_after: 24.hours.to_i))
+    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_raise(Octokit::UnprocessableEntity)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([double(number: 42, assignee: 'jane', created_at: 25.hours.ago)])
+    expect_any_instance_of(Octokit::Client).to receive(:merge_pull_request).with('artsy/candela', 42)
+
+    DeployService.new(strategy).start
+  end
 end
