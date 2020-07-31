@@ -8,3 +8,7 @@ Horizon.config = {
   minimum_version_ruby: ENV['MINIMUM_VERSION_RUBY'],
   minimum_version_node: ENV['MINIMUM_VERSION_NODE']
 }
+
+if Rails.env.production? # require certain config before booting in production
+  raise 'BASIC_AUTH_PASS is required' if Horizon.config.basic_auth_pass.blank?
+end
