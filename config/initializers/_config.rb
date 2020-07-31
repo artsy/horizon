@@ -10,5 +10,5 @@ Horizon.config = {
 }
 
 if Rails.env.production? # require certain config before booting in production
-  raise 'BASIC_AUTH_PASS is required' if Horizon.config.basic_auth_pass.blank?
+  raise 'BASIC_AUTH_PASS is required' if Horizon.config[:basic_auth_pass].blank?
 end
