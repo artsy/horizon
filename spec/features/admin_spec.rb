@@ -24,4 +24,25 @@ RSpec.feature 'Administration', type: :feature do
     click_button 'Create Project'
     expect(page).to have_content('Shipping')
   end
+
+  scenario 'enforce basic auth on admin areas', type: :feature do
+    allow(Horizon).to receive(:config).and_return(
+      basic_auth_user: 'admin',
+      basic_auth_pass: 'secret'
+    )
+
+    visit '/admin'
+    expect(page.status_code).to eq(401)
+
+    page.driver.header('Authorization', ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'pass'))
+    visit '/admin'
+    expect(page.status_code).to eq(401)
+
+    page.driver.header(
+      'Authorization',
+      ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'secret')
+    )
+    visit '/admin'
+    expect(page.status_code).to eq(200)
+  end
 end
