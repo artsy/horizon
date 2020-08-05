@@ -41,9 +41,12 @@ class DeployService
       if Time.now > merge_at # merge release PR automatically
         github_client.merge_pull_request(github_repo, pull_request.number)
         return
-      elsif Time.now > (merge_at - MERGE_PRIOR_WARNING) &&
-            (webhook_url = deploy_strategy.arguments['slack_webhook_url']) &&
-            deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url
+      end
+
+      warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
+      if Time.now > warn_at &&
+         (webhook_url = deploy_strategy.arguments['slack_webhook_url']) &&
+         deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url
         deliver_slack_webhook(pull_request, webhook_url)
         deploy_strategy.update!(
           arguments: deploy_strategy.arguments.merge(warned_pull_request_url: pull_request.html_url)
