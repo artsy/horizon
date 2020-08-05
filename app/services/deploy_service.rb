@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DeployService
+  include ActionView::Helpers::DateHelper
+
   attr_accessor :deploy_strategy
 
   MERGE_PRIOR_WARNING = 1.hour
@@ -47,7 +49,7 @@ class DeployService
       if Time.now > warn_at &&
          (webhook_url = deploy_strategy.arguments['slack_webhook_url']) &&
          deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url
-        deliver_slack_webhook(pull_request, webhook_url)
+        deliver_slack_webhook(pull_request, webhook_url, merge_at)
         deploy_strategy.update!(
           arguments: deploy_strategy.arguments.merge(warned_pull_request_url: pull_request.html_url)
         )
@@ -74,12 +76,13 @@ class DeployService
       (raise 'A profile and basic_password are required for Github authentication')
   end
 
-  def deliver_slack_webhook(pull_request, webhook_url)
+  def deliver_slack_webhook(pull_request, webhook_url, merge_at)
     uri = URI.parse webhook_url
     request = Net::HTTP::Post.new(uri.request_uri)
     request['Content-Type'] = 'application/json'
     request.body = {
-      text: "The following changes will be released shortly: #{pull_request.html_url}"
+      text: "The following changes will be released in #{distance_of_time_in_words_to_now(merge_at)}: " +
+            pull_request.html_url
     }.to_json
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = (uri.scheme == 'https')

@@ -110,7 +110,7 @@ RSpec.feature 'Deploys', type: :feature do
   it 'notifies Slack prior to automatically merging release PR' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
-      merge_prior_warning: 60.minutes.to_i,
+      merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz'
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
@@ -121,7 +121,9 @@ RSpec.feature 'Deploys', type: :feature do
       .and_return([assigned_github_pull_request])
     expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
     webhook = stub_request(:post, strategy.arguments['slack_webhook_url']).with(
-      body: '{"text":"The following changes will be released shortly: https://github.com/artsy/candela/pull/342"}',
+      body: {
+        text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
+      }.to_json,
       headers: { 'Content-Type' => 'application/json' }
     ).to_return(status: 201)
 
