@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class DeployService
+  include ActionView::Helpers::DateHelper
+
   attr_accessor :deploy_strategy
+
+  MERGE_PRIOR_WARNING = 1.hour
 
   def initialize(deploy_strategy)
     self.deploy_strategy = deploy_strategy
@@ -34,11 +38,22 @@ class DeployService
       head: deploy_strategy.arguments['head']
     ).first || return
 
-    # merge release PR if merge_after is specified by deploy_strategy
-    if (merge_after = deploy_strategy.arguments['merge_after']) &&
-       Time.now > (pull_request.created_at + merge_after.seconds)
-      github_client.merge_pull_request(github_repo, pull_request.number)
-      return
+    if (merge_after = deploy_strategy.arguments['merge_after'])
+      merge_at = pull_request.created_at + merge_after.seconds
+      if Time.now > merge_at # merge release PR automatically
+        github_client.merge_pull_request(github_repo, pull_request.number)
+        return
+      end
+
+      warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
+      if Time.now > warn_at &&
+         (webhook_url = deploy_strategy.arguments['slack_webhook_url']) &&
+         deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url
+        deliver_slack_webhook(pull_request, webhook_url, merge_at)
+        deploy_strategy.update!(
+          arguments: deploy_strategy.arguments.merge(warned_pull_request_url: pull_request.html_url)
+        )
+      end
     end
 
     if pull_request.assignee.blank? # try to assign if unassigned
@@ -59,6 +74,21 @@ class DeployService
     @github_access_token ||=
       deploy_strategy.profile&.basic_password.presence ||
       (raise 'A profile and basic_password are required for Github authentication')
+  end
+
+  def deliver_slack_webhook(pull_request, webhook_url, merge_at)
+    uri = URI.parse webhook_url
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request['Content-Type'] = 'application/json'
+    request.body = {
+      text: "The following changes will be released in #{distance_of_time_in_words_to_now(merge_at)}: " +
+            pull_request.html_url
+    }.to_json
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    http.request(request)
+  rescue StandardError => e
+    Rails.logger.warn "Failed to deliver webhook to #{webhook_url.inspect} (#{e.message})"
   end
 
   def choose_assignee(pull_request)
