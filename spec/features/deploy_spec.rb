@@ -32,6 +32,10 @@ RSpec.feature 'Deploys', type: :feature do
       double('commit', author)
     ]
   end
+  let(:github_pull_request) { double(number: 42, assignee: nil, created_at: 25.hours.ago) }
+  let(:assigned_github_pull_request) do
+    double(number: 42, assignee: 'jane', created_at: 25.hours.ago, html_url: 'https://github.com/artsy/candela/pull/342')
+  end
 
   it 'raises error unless profile.basic_password is present' do
     invalid_strategy = stages.last.deploy_strategies.create!(
@@ -47,7 +51,7 @@ RSpec.feature 'Deploys', type: :feature do
   it 'sends an Octokit request to create pull request' do
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_return(double(number: 42))
+      .and_return(github_pull_request)
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits).and_return([])
     DeployService.new(strategy).start
   end
@@ -55,7 +59,7 @@ RSpec.feature 'Deploys', type: :feature do
   it 'assigns deploy pull request to appropriate user' do
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_return(double(number: 42))
+      .and_return(github_pull_request)
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
       .with('artsy/candela', 42)
       .and_return([
@@ -75,7 +79,7 @@ RSpec.feature 'Deploys', type: :feature do
       .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
-      .and_return([double(number: 42, assignee: nil)])
+      .and_return([github_pull_request])
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
       .with('artsy/candela', 42)
       .and_return([
@@ -97,9 +101,36 @@ RSpec.feature 'Deploys', type: :feature do
       .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
-      .and_return([double(number: 42, assignee: 'jane', created_at: 25.hours.ago)])
+      .and_return([assigned_github_pull_request])
     expect_any_instance_of(Octokit::Client).to receive(:merge_pull_request).with('artsy/candela', 42)
 
     DeployService.new(strategy).start
+  end
+
+  it 'notifies Slack prior to automatically merging release PR' do
+    strategy.update!(arguments: strategy.arguments.merge(
+      merge_after: 26.hours.to_i,
+      merge_prior_warning: 75.minutes.to_i,
+      slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz'
+    ))
+    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_raise(Octokit::UnprocessableEntity)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([assigned_github_pull_request])
+    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
+    webhook = stub_request(:post, strategy.arguments['slack_webhook_url']).with(
+      body: {
+        text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
+      }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    ).to_return(status: 201)
+
+    DeployService.new(strategy).start
+
+    # notification not repeated
+    DeployService.new(strategy).start
+    expect(webhook).to have_been_made.once
   end
 end
