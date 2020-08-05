@@ -8,7 +8,7 @@ class DeployStrategy < ApplicationRecord
     'github pull request' => %w[base head]
   }.freeze
   SUPPORTED_ARGUMENTS = {
-    'github pull request' => %w[base head repo merge_after]
+    'github pull request' => %w[base head repo merge_after slack_webhook_url warned_pull_request_url]
   }.freeze
 
   belongs_to :stage
