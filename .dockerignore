@@ -9,6 +9,7 @@
 !renovate.json
 !test.config.js
 !tsconfig.json
+!.rubocop.yml
 
 # dependencies
 !.ruby-version
@@ -18,16 +19,16 @@
 !package.json
 
 # rails
-!app
-!bin
+!app/
+!bin/
 !config
 !config.ru
-!db
-!lib
+!db/
+!hokusai/
+!lib/
 !log/.keep
 !Rakefile
-!spec
+!spec/
 !storage/.keep
 !tmp/.keep
-!vendor
-
+!vendor/

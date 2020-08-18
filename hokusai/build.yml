@@ -1,9 +1,8 @@
 ---
-version: "2"
+version: "3.8"
 services:
   horizon:
     build:
-      context: ../
+{% include 'templates/docker-compose-build.j2' %}
     environment:
-      - RAILS_LOG_TO_STDOUT=true
-      - RAILS_SERVE_STATIC_FILES=true
+{% include 'templates/docker-compose-environment.j2' %}
