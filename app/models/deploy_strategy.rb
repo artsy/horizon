@@ -8,7 +8,15 @@ class DeployStrategy < ApplicationRecord
     'github pull request' => %w[base head]
   }.freeze
   SUPPORTED_ARGUMENTS = {
-    'github pull request' => %w[base head repo]
+    'github pull request' => [
+      'base', # e.g., "release"
+      'head', # e.g., "staging"
+      'repo', # e.g., "artsy/candela"
+      'merge_after', # seconds after which to automatically merge release PRs (default 86400 or 24 hours)
+      'merge_prior_warning', # when to notify slack about a pending merge, in seconds (default 3600 or 1 hour)
+      'slack_webhook_url', # for notifying prior to merging release PRs
+      'warned_pull_request_url' # used internally to avoid repeat notifications
+    ]
   }.freeze
 
   belongs_to :stage

@@ -171,6 +171,7 @@ ActiveAdmin.setup do |config|
   # https://github.com/svenfuchs/i18n/blob/master/lib%2Fi18n%2Fbackend%2Fbase.rb#L52
   #
   config.localize_format = :long
+  config.before_action :admin_basic_auth
   config.before_action :set_admin_timezone
 
   # == Setting a Favicon
