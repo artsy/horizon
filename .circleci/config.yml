@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hokusai: artsy/hokusai@dev:db6c3edea81dacaabe9916c62be03e87
+  hokusai: artsy/hokusai@0.7.5
   horizon: artsy/release@0.0.1
 
 not_staging_or_release: &not_staging_or_release
