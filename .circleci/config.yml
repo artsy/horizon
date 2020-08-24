@@ -3,6 +3,16 @@ version: 2.1
 orbs:
   hokusai: artsy/hokusai@0.7.5
   horizon: artsy/release@0.0.1
+  artsy-remote-docker: artsy/remote-docker@0.1.5
+
+jobs:
+  test:
+    executor: hokusai/deploy
+    steps:
+      - hokusai/setup-docker
+      - run: hokusai registry pull --tag "$CIRCLE_SHA1"
+      - hokusai/run-tests:
+          flags: --no-build
 
 not_staging_or_release: &not_staging_or_release
   filters:
@@ -31,14 +41,22 @@ workflows:
           context: horizon
           project_id: 38
 
-      - hokusai/test:
+      - artsy-remote-docker/build:
           <<: *not_staging_or_release
+          context: hokusai
+          name: build
+
+      - test:
+          <<: *not_staging_or_release
+          context: hokusai
+          requires:
+            - build
 
       - hokusai/push:
           name: push-staging-image
           <<: *only_master
           requires:
-            - hokusai/test
+            - test
 
       - hokusai/deploy-staging:
           <<: *only_master
