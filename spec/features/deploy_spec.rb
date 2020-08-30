@@ -34,7 +34,13 @@ RSpec.feature 'Deploys', type: :feature do
   end
   let(:github_pull_request) { double(number: 42, assignee: nil, created_at: 25.hours.ago) }
   let(:assigned_github_pull_request) do
-    double(number: 42, assignee: 'jane', created_at: 25.hours.ago, html_url: 'https://github.com/artsy/candela/pull/342')
+    double(
+      number: 42,
+      assignee: 'jane',
+      created_at: 25.hours.ago,
+      html_url: 'https://github.com/artsy/candela/pull/342',
+      mergeable?: true
+    )
   end
 
   it 'raises error unless profile.basic_password is present' do
@@ -102,7 +108,27 @@ RSpec.feature 'Deploys', type: :feature do
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
+    allow_any_instance_of(Octokit::Client).to receive(:pull_request)
+      .with('artsy/candela', 42)
+      .and_return(assigned_github_pull_request)
     expect_any_instance_of(Octokit::Client).to receive(:merge_pull_request).with('artsy/candela', 42)
+
+    DeployService.new(strategy).start
+  end
+
+  it 'does not attempt to merge unmergeable PRs' do
+    strategy.update!(arguments: strategy.arguments.merge(merge_after: 24.hours.to_i))
+    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_raise(Octokit::UnprocessableEntity)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([assigned_github_pull_request])
+    allow_any_instance_of(Octokit::Client).to receive(:pull_request)
+      .with('artsy/candela', 42)
+      .and_return(assigned_github_pull_request)
+    expect(assigned_github_pull_request).to receive(:mergeable?).and_return(false)
+    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
 
     DeployService.new(strategy).start
   end
