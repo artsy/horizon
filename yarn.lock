@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@artsy/palette@12.4.1":
-  version "12.4.1"
-  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-12.4.1.tgz#09a42d6481473ed88f1d16c3bfd1aaea21838e9b"
-  integrity sha512-RpPeO8i69tUBn0D5JmBHpEDa+MuDcp4FlkLWdVmO0tKZ2wz+eSpti2gAIH1/FRNXDthlpWC66gfuGRBKFDyw0g==
+"@artsy/palette@12.4.3":
+  version "12.4.3"
+  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-12.4.3.tgz#253d116e34d073e5dcd3df4e3103e5a5aabd857d"
+  integrity sha512-Oc99HgWK3gHm5LMXw3POMpbFdSZriO5RdpMPXc6OMlOgwXgo6H4qbebkVbk0O7tI7Cecj9K2rRmY50joqzEG8A==
   dependencies:
     "@styled-system/theme-get" "^5.1.2"
     babel-plugin-styled-components "^1.10.0"
