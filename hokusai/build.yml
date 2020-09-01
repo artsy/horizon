@@ -2,7 +2,6 @@
 version: "3.8"
 services:
   horizon:
-    build:
 {% include 'templates/docker-compose-build.j2' %}
     environment:
 {% include 'templates/docker-compose-environment.j2' %}
