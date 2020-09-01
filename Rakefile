@@ -32,10 +32,10 @@ if Rails.env.development? || Rails.env.test?
 
   desc 'run jest'
   task jest: :environment do
-    system 'yarn test'
+    system 'yarn test --runInBand'
     abort 'jest failed' unless $CHILD_STATUS.exitstatus.zero?
   end
 
   Rake::Task[:default].clear
-  task default: %i[prettier rubocop jest spec]
+  task default: %i[rubocop jest spec]
 end

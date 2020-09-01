@@ -2,6 +2,8 @@
 version: "3.8"
 services:
   horizon:
+    image: "hokusai_horizon:${BUILD_TAG:-latest}"
+    build:
 {% include 'templates/docker-compose-build.j2' %}
     environment:
 {% include 'templates/docker-compose-environment.j2' %}
