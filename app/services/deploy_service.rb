@@ -41,8 +41,12 @@ class DeployService
     if (merge_after = deploy_strategy.arguments['merge_after'])
       merge_at = pull_request.created_at + merge_after.seconds
       if Time.now > merge_at # merge release PR automatically
-        github_client.merge_pull_request(github_repo, pull_request.number)
-        return
+        # re-request individual PR so mergeable attribute is available
+        pull_request = github_client.pull_request(github_repo, pull_request.number)
+        if pull_request.mergeable?
+          github_client.merge_pull_request(github_repo, pull_request.number)
+          return
+        end
       end
 
       warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
