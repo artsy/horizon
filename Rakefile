@@ -37,5 +37,5 @@ if Rails.env.development? || Rails.env.test?
   end
 
   Rake::Task[:default].clear
-  task default: %i[rubocop jest spec]
+  task default: %i[rubocop prettier jest spec]
 end
