@@ -60,6 +60,9 @@ workflows:
           <<: *only_master
           requires:
             - test
+          pre-steps:
+            - run:
+                command: echo 'export BUILD_TARGET="production"' >> $BASH_ENV
 
       - hokusai/deploy-staging:
           <<: *only_master
