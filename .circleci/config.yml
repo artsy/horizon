@@ -55,9 +55,10 @@ workflows:
           requires:
             - build
 
-      - hokusai/push:
-          name: push-staging-image
+      - artsy-remote-docker/build:
           <<: *only_master
+          context: hokusai
+          name: push-staging-image
           requires:
             - test
           pre-steps:
