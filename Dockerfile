@@ -1,53 +1,77 @@
-FROM ruby:2.6.6-alpine
+FROM ruby:2.6.6-alpine AS base
+RUN apk update && apk --no-cache --quiet add --update \
+    nodejs \
+    postgresql-dev \
+    py2-setuptools \
+    python2-dev \
+    tzdata \
+    && adduser -D -g '' deploy
+
+# support hokusai registry commands
+# horizon needs to compare production/staging envs of projects
+RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install && \
+    easy_install pip && \
+    pip install --upgrade pip && \
+    pip install --upgrade --no-cache-dir hokusai
+
+FROM base AS builder
 ENV LANG C.UTF-8
 ENV PORT 3000
 EXPOSE 3000
 
-WORKDIR /app
-
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    dumb-init \
-    nodejs \
-    postgresql-dev \
+    git \
     postgresql-client \
-    python2-dev \
-    py2-setuptools \
-    tzdata \
-    yarn \
-    git && \
-    adduser -D -g '' deploy
-
-# support hokusai registry commands
-RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install
-RUN easy_install pip
-RUN pip install --upgrade pip
-RUN pip install --upgrade --no-cache-dir hokusai
+    yarn
 
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
 
+WORKDIR /app
+
+RUN chown deploy:deploy $(pwd)
+RUN chown -R deploy:deploy /usr/local
+USER deploy
+
 # Set up gems
-COPY Gemfile Gemfile.lock .ruby-version ./
-RUN bundle install -j4
+# TODO: look into buildkit to prevent re-installing node modules after changing gems
+COPY --chown=deploy:deploy Gemfile Gemfile.lock .ruby-version ./
+# RUN bundle install -j4 --path /usr/local/bundle-prod --without development test && \
+RUN bundle install -j4 --path /usr/local/bundle
+# bundle clean
 
 # Set up packages, empty cache to save space
-COPY package.json yarn.lock ./
+COPY --chown=deploy:deploy package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --quiet && \
     yarn cache clean --force
+
+# Copy application code
+COPY --chown=deploy:deploy . ./
+
+# Precompile Rails assets
+RUN bundle exec rake assets:precompile
+
+FROM base AS production
+ENV PORT 3000
+EXPOSE 3000
+WORKDIR /app
+
+RUN apk update && apk --no-cache --quiet add --update \
+    dumb-init
+
+# copy app files
+COPY --chown=deploy:deploy --from=builder /app .
+# copy gems
+COPY --chown=deploy:deploy --from=builder /usr/local/bundle /usr/local/bundle
 
 # Create directories for Puma/Nginx & give deploy user access
 RUN mkdir -p /shared/pids /shared/sockets && \
     chown -R deploy:deploy /shared
 
-# Copy application code
-COPY . ./
+# TODO: dump dev bundle
+RUN rm -rf node_modules
 
-# Precompile Rails assets
-RUN bundle exec rake assets:precompile && \
-    chown -R deploy:deploy ./
-
-# Switch to less privelidged user
 USER deploy
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

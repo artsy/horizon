@@ -1,18 +1,15 @@
 ---
-version: "2"
+version: "3.8"
 services:
   horizon:
-    env_file:
-      - ../.env.shared
-      - ../.env
+    build:
+      target: builder
+{% include 'templates/docker-compose-build.j2' %}
     environment:
+{% include 'templates/docker-compose-environment.j2' %}
       - RAILS_ENV=development
-      - RAILS_LOG_TO_STDOUT=true
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
       - REDIS_URL=redis://horizon-redis
-    extends:
-      file: build.yml
-      service: horizon
     ports:
       - 3000:3000
       - 8080:8080
