@@ -27,6 +27,7 @@
 !hokusai/
 !lib/
 !log/.keep
+!public/
 !Rakefile
 !spec/
 !storage/.keep
