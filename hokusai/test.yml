@@ -1,15 +1,16 @@
 ---
-version: "2"
+version: "3.8"
 services:
   horizon:
+    build:
+      target: builder
+{% include 'templates/docker-compose-build.j2' %}
     command: ./hokusai/ci.sh
     environment:
+{% include 'templates/docker-compose-environment.j2' %}
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_test
       - RAILS_ENV=test
       - REDIS_URL=redis://horizon-redis
-    extends:
-      file: build.yml
-      service: horizon
     depends_on:
       - horizon-postgres
       - horizon-redis
