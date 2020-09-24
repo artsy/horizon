@@ -1,5 +1,6 @@
 FROM ruby:2.6.6-alpine AS base
 RUN apk update && apk --no-cache --quiet add --update \
+    git \
     nodejs \
     postgresql-dev \
     py2-setuptools \
@@ -21,7 +22,6 @@ EXPOSE 3000
 
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    git \
     postgresql-client \
     yarn
 
