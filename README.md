@@ -62,6 +62,8 @@ The UI can then be found at http://localhost:3000.
   * Choose a profile granting necessary access (usually `github...`)
   * Check the _Automatic_ box so that new release pull requests are opened automatically upon changes being pushed to staging.
   * Provide arguments specifying the relevant branches (usually `{"base":"release","head":"staging"}`)
+    * `base` is the _branch name_ that this deploy PR will merge _onto_.
+    * `head` is the _horizon stage name_ that this deploy PR will start from.
 * To _merge_ release pull requests automatically, specify the additional `merge_after` (in seconds) and--for an optional notification--`slack_webhook_url` (from [Horizon's slack settings](https://api.slack.com/apps/A0188C16QSZ/incoming-webhooks)). E.g.:
 
 ```JSON
