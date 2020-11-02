@@ -52,6 +52,8 @@ COPY --chown=deploy:deploy . ./
 # Precompile Rails assets
 RUN bundle exec rake assets:precompile
 
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+
 FROM base AS production
 ENV PORT 3000
 EXPOSE 3000

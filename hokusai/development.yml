@@ -1,5 +1,10 @@
 ---
 version: "3.8"
+
+volumes:
+  horizon-node-modules:
+  horizon-public:
+
 services:
   horizon:
     build:
@@ -10,12 +15,17 @@ services:
       - RAILS_ENV=development
       - DATABASE_URL=postgresql://postgres:@horizon-postgres/horizon_development
       - REDIS_URL=redis://horizon-redis
+    env_file:
+      - ../.env.shared
+      - ../.env
     ports:
       - 3000:3000
       - 8080:8080
       - 8443:8443
     volumes:
       - ../:/app
+      - horizon-node-modules:/app/node_modules
+      - horizon-public:/app/public
     depends_on:
       - horizon-postgres
       - horizon-redis
@@ -26,3 +36,4 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
   horizon-redis:
     image: redis:3.2-alpine
+
