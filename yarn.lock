@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@artsy/palette@13.19.0":
-  version "13.19.0"
-  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-13.19.0.tgz#9a72db97b6b6a141fb531a9ee1dec5daf48ec848"
-  integrity sha512-XxyseEMWL2GtgDo1JgxfI5bNYD8ji+c8krfI48QOaWStY4IK5HCiobJXp/MEn4y/Y5/tDVqjS9Ypd7CAd2cx9A==
+"@artsy/palette@13.22.0":
+  version "13.22.0"
+  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-13.22.0.tgz#a0ae6235005715fc3fc2e8e80e86b87528749d11"
+  integrity sha512-pEFnMU11Bw2/OFjevTvavns+V21RYDrkN+VDhM+D4ErSxnIpDM0+ARHsngoLKPq5X5z1p2hGohM6d8ICOcMpVg==
   dependencies:
     "@styled-system/theme-get" "^5.1.2"
     babel-plugin-styled-components "^1.10.0"
@@ -10767,10 +10767,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
-  integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
+typescript@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.2.tgz#6369ef22516fe5e10304aae5a5c4862db55380e9"
+  integrity sha512-thGloWsGH3SOxv1SoY7QojKi0tc+8FnOmiarEGMbd/lar7QOEd3hvlx3Fp5y6FlDUGl9L+pd4n2e+oToGMmhRQ==
 
 ua-parser-js@^0.7.18:
   version "0.7.21"
