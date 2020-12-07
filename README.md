@@ -89,9 +89,10 @@ The UI can then be found at http://localhost:3000.
 - ~~Allow SSH keys to be configured for each org or project (probably like `git config --local core.sshCommand "ssh -i ~/.ssh/some_key_file"`...). (Maybe not necessary given github/heroku tokens in https URLs)~~
 - ~~sanitize URLs with tokens/credentials in them~~
 - ~~instead of including tokens in each git URL, define "profiles" associated with each organization and project~~
-- Experiment with programmatic git/hokusai access instead of shelling out
-- button to refresh project on-demand
 - ~~Fix ugly AWS credentials -> hokusai flow~~
 - ~~Make errors [when refreshing projects] visible and avoid short-circuiting entire cron~~
 - ~~Make sorting and classifying of projects more sophisticated (penalize staleness and number of contributors and not just number of commits)~~
 - ~~Add tags to projects and enable filtering dashboard/list view by them~~
+- re-expose comparison errors in UI
+- Experiment with programmatic git/hokusai access instead of shelling out
+- button to refresh project on-demand
