@@ -48,6 +48,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
     stages,
     renovate,
     severity,
+    errorMessage,
   } = project
   const isAgedClass = (severity >= 500 && "aged") || ""
   const isCircle = isCircleCi(project)
@@ -90,6 +91,14 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
                 <Link href={gitLink} underlineBehavior="hover">
                   {gitLink}
                 </Link>
+              </Sans>
+            </Box>
+          )}
+
+          {errorMessage && (
+            <Box mt={1} mb={3}>
+              <Sans size="3" color="red100">
+                {errorMessage}
               </Sans>
             </Box>
           )}

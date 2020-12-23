@@ -3,6 +3,7 @@ import { ProjectSummary } from "../ProjectSummary"
 import React from "react"
 import { mount } from "enzyme"
 import {
+  erroringProjectFixture,
   releasedProjectFixture,
   unreleasedProjectFixture,
 } from "../../../fixtures/project"
@@ -68,6 +69,13 @@ describe("ProjectSummary", () => {
       props.severity = 500
       const component = getWrapper(props)
       expect(component.find(BorderBox).first().props().className).toBe("aged")
+    })
+  })
+
+  describe("errorMessage", () => {
+    it("Renders if present", () => {
+      const component = getWrapper({ ...erroringProjectFixture })
+      expect(component.text()).toMatch("No such file or directory")
     })
   })
 })

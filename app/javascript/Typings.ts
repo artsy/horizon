@@ -54,6 +54,7 @@ export interface Project {
   renovate: boolean
   severity: number
   tags?: Tags
+  errorMessage?: string
 }
 
 export type Orb = "hokusai" | "yarn"
