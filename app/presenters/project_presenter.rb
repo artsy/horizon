@@ -113,7 +113,8 @@ class ProjectPresenter
       comparedStages: compared_stages,
       isFullyReleased: fully_released?,
       maintenanceMessages: maintenance_messages,
-      severity: severity
+      severity: severity,
+      errorMessage: @project.snapshot&.error_message
     }
     attributes.merge(computed_attributes)
   end

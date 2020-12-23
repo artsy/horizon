@@ -40,6 +40,8 @@ class ComparisonService
     new_snapshots = []
     org.projects.each do |project|
       new_snapshots << new(project).refresh_comparisons
+    rescue StandardError => e
+      Rails.logger.error "Refreshing project ##{project.id} (#{project.name}) failed with: #{e.full_message}"
     end
     new_snapshots.compact!
     ActionCable.server.broadcast(ProjectChannel.channel_name(org.id), newSnapshots: true) if new_snapshots.any?

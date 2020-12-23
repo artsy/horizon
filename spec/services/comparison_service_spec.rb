@@ -4,6 +4,21 @@ require 'rails_helper'
 
 RSpec.describe ComparisonService, type: :model do
   include ActiveSupport::Testing::TimeHelpers
+  let(:org) { Organization.create! name: 'Artsy' }
+  let(:project) do
+    org.projects.create!(name: 'shipping').tap do |p|
+      p.stages.create!(name: 'master')
+      p.stages.create!(name: 'production')
+    end
+  end
+
+  describe 'refresh_all_comparisons' do
+    it 'recovers from releasecop comparison failures' do
+      project # ensure project and org are created
+      allow_any_instance_of(ComparisonService).to receive(:refresh_comparisons).and_raise(ZeroDivisionError)
+      expect { ComparisonService.refresh_all_comparisons }.not_to raise_error
+    end
+  end
 
   describe 'severity_score' do
     before do
