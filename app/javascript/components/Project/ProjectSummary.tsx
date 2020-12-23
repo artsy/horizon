@@ -14,6 +14,7 @@ export const ProjectSummary: React.FC<Project> = ({
   name,
   stages,
   severity,
+  errorMessage,
 }) => {
   const borderColor = getColorFromSeverity(severity)
   const isAgedClass = (severity >= 500 && "aged") || ""
@@ -36,6 +37,11 @@ export const ProjectSummary: React.FC<Project> = ({
         <Box>
           <Sans size="8">{name}</Sans>
           {description && <Sans size="3t">{description}</Sans>}
+          {errorMessage && (
+            <Sans size="3t" color="red100">
+              {errorMessage}
+            </Sans>
+          )}
         </Box>
 
         <Box pt={1}>
