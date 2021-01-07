@@ -144,6 +144,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
         spec:
           containers:
             - name: horizon-refresh-comparisons-cron
