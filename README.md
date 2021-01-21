@@ -3,8 +3,8 @@
 Visual representations of release pipelines.
 
 - **State:** Internal usage
-- **Production:** [https://releases.artsy.net](https://releases.artsy.net) | [k8s](https://kubernetes.artsy.net/#!/search?q=horizon&namespace=default)
-- **Staging:** [https://releases-staging.artsy.net](https://releases-staging.artsy.net) | [k8s](https://kubernetes-staging.artsy.net/#!/search?q=horizon&namespace=default)
+- **Production:** [https://releases.artsy.net](https://releases.artsy.net) | [k8s](https://kubernetes.prd.artsy.systems/#!/search?q=horizon&namespace=default)
+- **Staging:** [https://releases-staging.artsy.net](https://releases-staging.artsy.net) | [k8s](https://kubernetes.stg.artsy.systems/#!/search?q=horizon&namespace=default)
 - **GitHub:** https://github.com/artsy/horizon
 - **CI/Deploys:** [CircleCi](https://circleci.com/gh/artsy/horizon); merged PRs to `artsy/horizon#master` are automatically deployed to staging; PRs from `staging` to `release` are automatically deployed to production. [Start a deploy...](https://github.com/artsy/horizon/compare/release...staging?expand=1)
 - **Point Team:** [Platform](https://artsy.slack.com/messages/product-platform)
