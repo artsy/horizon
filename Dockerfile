@@ -1,7 +1,10 @@
-FROM ruby:2.6.6-alpine AS base
+# ---------------------------------------------------------
+# Base Image
+# ---------------------------------------------------------
+FROM artsy/ruby:2.6.6-node-12-yarn as base
+
 RUN apk update && apk --no-cache --quiet add --update \
     git \
-    nodejs \
     postgresql-dev \
     py2-setuptools \
     python2-dev \
@@ -15,6 +18,9 @@ RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install && \
     pip install --upgrade pip && \
     pip install --upgrade --no-cache-dir hokusai
 
+# ---------------------------------------------------------
+# Build Image
+# ---------------------------------------------------------
 FROM base AS builder
 ENV LANG C.UTF-8
 ENV PORT 3000
@@ -22,8 +28,7 @@ EXPOSE 3000
 
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    postgresql-client \
-    yarn
+    postgresql-client
 
 RUN gem install bundler -v '<2' && \
     bundle config --global frozen 1
@@ -54,6 +59,9 @@ RUN bundle exec rake assets:precompile
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
+# ---------------------------------------------------------
+# Production Image
+# ---------------------------------------------------------
 FROM base AS production
 ENV PORT 3000
 EXPOSE 3000
