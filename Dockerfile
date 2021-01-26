@@ -6,17 +6,16 @@ FROM artsy/ruby:2.6.6-node-12-yarn as base
 RUN apk update && apk --no-cache --quiet add --update \
     git \
     postgresql-dev \
-    py2-setuptools \
-    python2-dev \
     tzdata \
     && adduser -D -g '' deploy
 
 # support hokusai registry commands
 # horizon needs to compare production/staging envs of projects
-RUN ln -sf /usr/bin/easy_install-2.7 /usr/bin/easy_install && \
-    easy_install pip && \
-    pip install --upgrade pip && \
-    pip install --upgrade --no-cache-dir hokusai
+RUN apk update && apk --no-cache --quiet add --update \
+    build-base \
+    python3-dev \
+    py3-pip \
+    && pip install --upgrade --no-cache-dir hokusai
 
 # ---------------------------------------------------------
 # Build Image
