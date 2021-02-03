@@ -14,8 +14,10 @@ RUN apk update && apk --no-cache --quiet add --update \
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     python3-dev \
-    py3-pip \
-    && pip install --upgrade --no-cache-dir hokusai
+    python3 \
+    py3-pip
+
+RUN python3 -m pip install git+https://github.com/artsy/hokusai.git
 
 # ---------------------------------------------------------
 # Build Image
