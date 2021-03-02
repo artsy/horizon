@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Project, type: :model do
   let(:org) { Organization.create! name: 'artsy' }
   let(:profile) { org.profiles.create!(basic_password: 'foo') }
-  let(:project) { org.projects.create!(name: 'eigen') }
+  let(:project) { org.projects.create!(name: 'eigen-ios') }
 
   before do
     (1..2).map do |i|
@@ -29,6 +29,16 @@ RSpec.describe Project, type: :model do
     snapshot.comparisons.create!(ahead_stage: project.stages.first, behind_stage: project.stages.last)
     project.update(snapshot: snapshot)
     expect(project.destroy).to be_present
+  end
+
+  describe 'github_repo' do
+    it 'draws from git remote when possible' do
+      expect(project.github_repo).to eq('artsy/eigen')
+    end
+
+    it 'falls back to org and project name' do
+      expect(Project.new(organization: org, name: 'hubble').github_repo).to eq('artsy/hubble')
+    end
   end
 
   describe 'deployment_type' do
