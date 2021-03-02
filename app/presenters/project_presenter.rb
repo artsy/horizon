@@ -5,14 +5,8 @@ class ProjectPresenter
 
   delegate :name, :snapshot, :id, :description, :tags, :deploy_blocks, to: :project
 
-  GITHUB_REMOTE_EXPR = %r{https://github.com/(?<org>[^/]+)/(?<project>[^.]+).git}.freeze
-
   def initialize(project)
     @project = project
-  end
-
-  def ordered_stages
-    @ordered_stages ||= project.stages.sort_by(&:position)
   end
 
   def fully_released?
@@ -50,7 +44,7 @@ class ProjectPresenter
 
   # enumerates pairs of stages, the corresponding comparison object, and severity score
   def compared_stages
-    @compared_stages ||= ordered_stages.each_cons(2).map do |ahead, behind|
+    @compared_stages ||= project.stages.ordered.each_cons(2).map do |ahead, behind|
       comparison = snapshot&.comparisons&.detect { |c| c.behind_stage_id == behind.id && c.ahead_stage_id == ahead.id }
       {
         stages: [ahead, behind],
@@ -94,10 +88,7 @@ class ProjectPresenter
   end
 
   def link_from_log_line(line)
-    github_match = ordered_stages.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
-    return unless github_match
-
-    "https://github.com/#{github_match[:org]}/#{github_match[:project]}/commit/#{line[:sha]}"
+    "#{project.github_repo_url}/commit/#{line[:sha]}"
   end
 
   def gravatar_from_log_line(line)

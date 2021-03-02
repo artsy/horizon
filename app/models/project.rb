@@ -3,6 +3,8 @@
 class Project < ApplicationRecord
   include JsonbEditable
 
+  GITHUB_REMOTE_EXPR = %r{https://github.com/(?<org>[^/]+)/(?<project>[^.]+).git}.freeze
+
   belongs_to :organization
   has_many :stages, dependent: :destroy
   has_many :snapshots, dependent: :destroy
@@ -15,7 +17,14 @@ class Project < ApplicationRecord
   validates :criticality, inclusion: { in: [0, 1, 2, 3] }, unless: proc { |a| a.criticality.blank? }
 
   def github_repo
-    [organization.name, name].join('/')
+    github_match = stages.ordered.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
+    return [organization.name, name].join('/') unless github_match
+
+    "#{github_match[:org]}/#{github_match[:project]}"
+  end
+
+  def github_repo_url
+    "https://github.com/#{github_repo}"
   end
 
   def git_remote
