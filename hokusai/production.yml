@@ -32,7 +32,21 @@ spec:
           env:
             - name: PORT
               value: "8080"
-            - name: TRACE_AGENT_HOSTNAME
+            - name: PUMA_WORKERS
+              value: "1"
+            - name: PUMA_THREAD_MIN
+              value: "5"
+            - name: PUMA_THREAD_MAX
+              value: "5"
+            - name: RAILS_SERVE_STATIC_FILES
+              value: 'true'
+            - name: RAILS_LOG_TO_STDOUT
+              value: 'true'
+            - name: PUMA_BIND
+              value: 'tcp://0.0.0.0:8080'
+            - name: MALLOC_ARENA_MAX
+              value: "2"
+            - name: DATADOG_TRACE_AGENT_HOSTNAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
@@ -60,11 +74,11 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sh", "-c", "sleep 10"]
-      dnsPolicy: Default
+      dnsPolicy: ClusterFirst
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -105,7 +119,7 @@ spec:
     - port: 8080
       protocol: TCP
       name: http
-      targetPort: 8080
+      targetPort: horizon-http
   selector:
     app: horizon
     layer: application
@@ -134,7 +148,7 @@ spec:
               servicePort: http
 
 ---
-apiVersion: batch/v2alpha1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: horizon-refresh-comparisons-cron
@@ -143,6 +157,7 @@ spec:
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 0
       template:
         metadata:
           annotations:
@@ -159,16 +174,16 @@ spec:
           restartPolicy: Never
           affinity:
             nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 1
-                  preference:
-                    matchExpressions:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
                       - key: tier
                         operator: In
                         values:
                           - background
+
 ---
-apiVersion: batch/v2alpha1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: horizon-refresh-components-cron
@@ -177,7 +192,11 @@ spec:
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 3
       template:
+        metadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
         spec:
           containers:
             - name: horizon-refresh-components-cron
@@ -190,10 +209,9 @@ spec:
           restartPolicy: Never
           affinity:
             nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 1
-                  preference:
-                    matchExpressions:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
                       - key: tier
                         operator: In
                         values:
