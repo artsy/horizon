@@ -13,7 +13,7 @@ RUN apk update && apk --no-cache --quiet add --update \
 # horizon needs to compare production/staging envs of projects
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
-    openssl-dev
+    openssl-dev \
     python3-dev \
     py3-pip \
     && pip install --upgrade --no-cache-dir hokusai
