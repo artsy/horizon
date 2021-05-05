@@ -23,7 +23,7 @@ RUN cd /tmp && \
     make install 2>&1 > /dev/null && \
     rm -rf /tmp/Python-3.5.8*
 
-RUN python3 -m pip install git+https://github.com/artsy/hokusai.git
+RUN python3 -m pip install hokusai
 
 # ---------------------------------------------------------
 # Build Image
