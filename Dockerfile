@@ -14,16 +14,9 @@ RUN apk update && apk --no-cache --quiet add --update \
 RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     openssl-dev
-
-RUN cd /tmp && \
-    wget -q https://www.python.org/ftp/python/3.5.8/Python-3.5.8.tgz && \
-    tar -xzf Python-3.5.8.tgz && \
-    cd Python-3.5.8 && \
-     ./configure 2>&1 > /dev/null && \
-    make install 2>&1 > /dev/null && \
-    rm -rf /tmp/Python-3.5.8*
-
-RUN python3 -m pip install hokusai
+    python3-dev \
+    py3-pip \
+    && pip install --upgrade --no-cache-dir hokusai
 
 # ---------------------------------------------------------
 # Build Image
