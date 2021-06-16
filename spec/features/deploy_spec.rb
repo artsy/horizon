@@ -79,6 +79,21 @@ RSpec.feature 'Deploys', type: :feature do
     DeployService.new(strategy).start
   end
 
+  it 'handles unsigned commits' do
+    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_return(github_pull_request)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
+      .with('artsy/candela', 42)
+      .and_return([
+                    double(author: nil, committer: renovate),
+                    double(author: jane, committer: web_flow)
+                  ])
+    expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
+    expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with('artsy/candela', 42, 'jane')
+    DeployService.new(strategy).start
+  end
+
   it 'adds assignees to existing deploy PRs when unassigned' do
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
