@@ -15,8 +15,10 @@ RUN apk update && apk --no-cache --quiet add --update \
     build-base \
     openssl-dev \
     python3-dev \
-    py3-pip \
-    && pip install --upgrade --no-cache-dir hokusai
+    py3-pip
+
+RUN pip3 install --upgrade --no-cache-dir pip \
+    && pip3 install --upgrade --no-cache-dir hokusai
 
 # ---------------------------------------------------------
 # Build Image
