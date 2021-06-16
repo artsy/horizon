@@ -99,7 +99,7 @@ class DeployService
     github_client
       .pull_request_commits(github_repo, pull_request.number)
       .flat_map { |c| [c.author, c.committer] }
-      .reject { |c| c.type == 'Bot' || c.login == 'web-flow' || c.login == 'artsyit' || c.login[/\bbot\b/] }
+      .reject { |c| c.nil? || c.type == 'Bot' || c.login == 'web-flow' || c.login == 'artsyit' || c.login[/\bbot\b/] }
       .group_by(&:login).map { |k, v| [v.size, k] }.sort.reverse.map(&:last)
       .detect { |l| github_client.check_assignee(github_repo, l) }
   end
