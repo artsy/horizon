@@ -31,7 +31,7 @@ RSpec.describe ReleasecopService, type: :service do
       Dir.mktmpdir(['for_spec_only']) do |dir| # dir name must different from code
         allow(Horizon)
           .to receive(:config)
-          .and_return({perform_comparison_workdir: dir})
+          .and_return({ perform_comparison_workdir: dir })
         obj = ReleasecopService.new(project)
         expect(obj).to receive(:perform_comparison_in_dir).with(dir)
         obj.perform_comparison
