@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec::Matchers.define :a_tmp_dir do |expected|
+RSpec::Matchers.define :a_tmp_dir do
   match do |actual|
     /.*releasecop.*/ =~ actual
   end
