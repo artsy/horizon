@@ -16,13 +16,15 @@ class ReleasecopService
   end
 
   def perform_comparison
-    Dir.mktmpdir(['releasecop', project.name]) do |dir|
-      checker = Releasecop::Checker.new(
-        project.name,
-        project.stages.order(position: :asc).map { |s| build_manifest_item(s) },
-        dir
-      )
-      ResultWrapper.new(checker) # build comparisons
+    working_dir = Horizon.config[:working_dir]
+
+    if working_dir
+      Dir.mkdir(working_dir) unless Dir.exist?(working_dir)
+      perform_comparison_in_dir(working_dir)
+    else
+      Dir.mktmpdir(['releasecop', project.name]) do |dir|
+        perform_comparison_in_dir(dir)
+      end
     end
   end
 
@@ -63,5 +65,14 @@ class ReleasecopService
       'aws_access_key_id' => stage.profile&.environment&.fetch('AWS_ACCESS_KEY_ID'),
       'aws_secret_access_key' => stage.profile&.environment&.fetch('AWS_SECRET_ACCESS_KEY')
     }
+  end
+
+  def perform_comparison_in_dir(working_dir)
+    checker = Releasecop::Checker.new(
+      project.name,
+      project.stages.order(position: :asc).map { |s| build_manifest_item(s) },
+      working_dir
+    )
+    ResultWrapper.new(checker) # build comparisons
   end
 end
