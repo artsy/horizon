@@ -16,11 +16,11 @@ class ReleasecopService
   end
 
   def perform_comparison
-    env_dir = Horizon.config[:perform_comparison_workdir]
+    working_dir = Horizon.config[:working_dir]
 
-    if env_dir
-      Dir.mkdir(env_dir) unless Dir.exist?(env_dir)
-      perform_comparison_in_dir(env_dir)
+    if working_dir
+      Dir.mkdir(working_dir) unless Dir.exist?(working_dir)
+      perform_comparison_in_dir(working_dir)
     else
       Dir.mktmpdir(['releasecop', project.name]) do |dir|
         perform_comparison_in_dir(dir)
@@ -67,11 +67,11 @@ class ReleasecopService
     }
   end
 
-  def perform_comparison_in_dir(dir)
+  def perform_comparison_in_dir(working_dir)
     checker = Releasecop::Checker.new(
       project.name,
       project.stages.order(position: :asc).map { |s| build_manifest_item(s) },
-      dir
+      working_dir
     )
     ResultWrapper.new(checker) # build comparisons
   end

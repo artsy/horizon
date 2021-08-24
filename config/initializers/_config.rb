@@ -7,7 +7,7 @@ Horizon.config = {
   basic_auth_pass: ENV['BASIC_AUTH_PASS'],
   minimum_version_ruby: ENV['MINIMUM_VERSION_RUBY'],
   minimum_version_node: ENV['MINIMUM_VERSION_NODE'],
-  perform_comparison_workdir: ENV['PERFORM_COMPARISON_WORKDIR']
+  working_dir: ENV['WORKING_DIR']
 }
 
 if Rails.env.production? # require certain config before booting in production

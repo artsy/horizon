@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec::Matchers.define :a_tmp_dir do
   match do |actual|
-    /.*releasecop.*/ =~ actual
+    actual =~ /.*releasecop.*/ # pattern used by ReleasecopService
   end
 end
 
@@ -18,20 +18,20 @@ RSpec.describe ReleasecopService, type: :service do
     end
   end
 
-  describe 'dir not set by user' do
-    it 'uses temp dir' do
+  describe 'working dir not set by user' do
+    it 'uses a temp dir' do
       obj = ReleasecopService.new(project)
       expect(obj).to receive(:perform_comparison_in_dir).with(a_tmp_dir)
       obj.perform_comparison
     end
   end
 
-  describe 'dir set by user' do
+  describe 'working dir set by user' do
     it 'uses user-specified dir' do
-      Dir.mktmpdir(['for_spec_only']) do |dir| # dir name must different from code
+      Dir.mktmpdir(['user_specified_dir']) do |dir| # using mktmpdir b/c it cleans up after
         allow(Horizon)
           .to receive(:config)
-          .and_return({ perform_comparison_workdir: dir })
+          .and_return({ working_dir: dir })
         obj = ReleasecopService.new(project)
         expect(obj).to receive(:perform_comparison_in_dir).with(dir)
         obj.perform_comparison
