@@ -207,7 +207,7 @@ spec:
                       - key: tier
                         operator: In
                         values:
-                          - background
+                          - api
 
 ---
 apiVersion: batch/v1beta1
