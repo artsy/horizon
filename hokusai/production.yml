@@ -152,6 +152,19 @@ spec:
               servicePort: http
 
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: horizon-refresh-comparisons-cron-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp2
+  resources:
+    requests:
+      storage: 10Gi
+
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -170,12 +183,22 @@ spec:
           containers:
             - name: horizon-refresh-comparisons-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-              args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
               imagePullPolicy: Always
+              args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
               envFrom:
                 - configMapRef:
                     name: horizon-environment
+              env:
+                - name: WORKING_DIR
+                  value: /home/deploy/data
           restartPolicy: Never
+          volumeMounts:
+            - name: data
+              mountPath: /home/deploy/data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: horizon-refresh-comparisons-cron-data
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
