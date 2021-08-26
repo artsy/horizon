@@ -185,6 +185,9 @@ spec:
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
               imagePullPolicy: Always
               args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
+              volumeMounts:
+                - name: data
+                  mountPath: /home/deploy/data
               envFrom:
                 - configMapRef:
                     name: horizon-environment
@@ -192,9 +195,6 @@ spec:
                 - name: WORKING_DIR
                   value: /home/deploy/data
           restartPolicy: Never
-          volumeMounts:
-            - name: data
-              mountPath: /home/deploy/data
           volumes:
             - name: data
               persistentVolumeClaim:
