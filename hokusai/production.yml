@@ -180,6 +180,18 @@ spec:
           annotations:
             "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
         spec:
+          initContainers:
+            - name: fix-the-volume-permission
+              image: busybox
+              command:
+              - sh
+              - -c
+              - chown -R 1001:1001 /home/deploy/data
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: data
+                  mountPath: /home/deploy/data
           containers:
             - name: horizon-refresh-comparisons-cron
               image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
