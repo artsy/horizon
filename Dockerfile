@@ -81,6 +81,10 @@ COPY --chown=deploy:deploy --from=builder /usr/local/bundle /usr/local/bundle
 RUN mkdir -p /shared/pids /shared/sockets && \
     chown -R deploy:deploy /shared
 
+# Create directories for cron.
+RUN mkdir /home/deploy/data && \
+    chown -R deploy:deploy /home/deploy/data
+
 # TODO: dump dev bundle
 RUN rm -rf node_modules
 
