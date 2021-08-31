@@ -184,9 +184,16 @@ spec:
             - name: fix-the-volume-permission
               image: busybox
               command:
-              - sh
+              - /bin/sh
               - -c
-              - chown -R 1001:1001 /home/deploy/data
+              - |
+                DEPLOY_USER_UID=1001
+                MOUNT_DIR=/home/deploy/data
+                MOUNT_DIR_UID=$(stat -c %u $MOUNT_DIR)
+                if [ "$MOUNT_DIR_UID" != "$DEPLOY_USER_UID" ]
+                then
+                  chown -R "$DEPLOY_USER_UID":"$DEPLOY_USER_UID" $MOUNT_DIR
+                fi
               securityContext:
                 privileged: true
               volumeMounts:
