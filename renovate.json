@@ -1,4 +1,4 @@
 {
   "extends": ["@artsy:app", "schedule:nonOfficeHours"],
-  "assignees": ["eessex"]
+  "assignees": ["mc-jones"]
 }
