@@ -80,7 +80,11 @@ class DeployService
       (raise 'A profile and basic_password are required for Github authentication')
   end
 
-  def deliver_slack_webhook(pull_request, webhook_url, merge_at)
+  def deliver_slack_webhook(pull_request, webhook_urls, merge_at)
+    webhook_urls.split(',').each { |webhook_url| send_slack_alert(pull_request, webhook_url, merge_at) }
+  end
+
+  def send_slack_alert(pull_request, webhook_url, merge_at)
     uri = URI.parse webhook_url
     request = Net::HTTP::Post.new(uri.request_uri)
     request['Content-Type'] = 'application/json'
@@ -91,7 +95,7 @@ class DeployService
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = (uri.scheme == 'https')
     http.request(request)
-  rescue StandardError => e
+  rescue
     Rails.logger.warn "Failed to deliver webhook to #{webhook_url.inspect} (#{e.message})"
   end
 
