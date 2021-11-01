@@ -95,7 +95,7 @@ class DeployService
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = (uri.scheme == 'https')
     http.request(request)
-  rescue
+  rescue StandardError => e
     Rails.logger.warn "Failed to deliver webhook to #{webhook_url.inspect} (#{e.message})"
   end
 
