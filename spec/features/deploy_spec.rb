@@ -152,7 +152,7 @@ RSpec.feature 'Deploys', type: :feature do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
-      slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz'
+      slack_webhook_url: ['https://hooks.slack.com/services/foo/bar/baz']
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
@@ -161,25 +161,25 @@ RSpec.feature 'Deploys', type: :feature do
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
     expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
-    webhook = stub_request(:post, strategy.arguments['slack_webhook_url'].split(',')[0].strip).with(
-      body: {
-        text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
-      }.to_json,
-      headers: { 'Content-Type' => 'application/json' }
-    ).to_return(status: 201)
-
-    DeployService.new(strategy).start
-
-    # notification not repeated
-    DeployService.new(strategy).start
-    expect(webhook).to have_been_made.once
+    strategy.arguments['slack_webhook_url'].each do |webhook_url|
+      webhook = stub_request(:post, webhook_url.strip).with(
+        body: {
+          text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
+        }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      ).to_return(status: 201)
+      DeployService.new(strategy).start
+      # notification not repeated
+      DeployService.new(strategy).start
+      expect(webhook).to have_been_made.once
+    end
   end
 
   it 'notifies multiple Slack prior to automatically merging release PR' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
-      slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz, https://hooks.slack.com/services/foo/bar/azb'
+      slack_webhook_url: ['https://hooks.slack.com/services/foo/bar/baz', 'https://hooks.slack.com/services/foo/bar/azb']
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
@@ -188,14 +188,15 @@ RSpec.feature 'Deploys', type: :feature do
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
     expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
-    webhook = stub_request(:post, strategy.arguments['slack_webhook_url'].split(',')[0].strip).with(
+
+    webhook = stub_request(:post, strategy.arguments['slack_webhook_url'].first.strip).with(
       body: {
         text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
       }.to_json,
       headers: { 'Content-Type' => 'application/json' }
     ).to_return(status: 201)
-
-    secondwebhook = stub_request(:post, strategy.arguments['slack_webhook_url'].split(',')[1].strip).with(
+    
+    secondwebhook = stub_request(:post, strategy.arguments['slack_webhook_url'].second.strip).with(
       body: {
         text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
       }.to_json,
@@ -203,10 +204,10 @@ RSpec.feature 'Deploys', type: :feature do
     ).to_return(status: 201)
 
     DeployService.new(strategy).start
-
     # notification not repeated
     DeployService.new(strategy).start
     expect(webhook).to have_been_made.once
     expect(secondwebhook).to have_been_made.once
+    
   end
 end
