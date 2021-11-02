@@ -81,7 +81,7 @@ class DeployService
   end
 
   def deliver_slack_webhook(pull_request, webhook_urls, merge_at)
-    webhook_urls.split(',').each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) sleep 1 }
+    webhook_urls.split(',').each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) }
   end
 
   def send_slack_alert(pull_request, webhook_url, merge_at)
