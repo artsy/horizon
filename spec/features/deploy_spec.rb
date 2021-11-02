@@ -152,7 +152,7 @@ RSpec.feature 'Deploys', type: :feature do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
-      slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz, https://hooks.slack.com/services/bar/foo/cbzz'
+      slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz'
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
