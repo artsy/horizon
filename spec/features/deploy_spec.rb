@@ -195,7 +195,7 @@ RSpec.feature 'Deploys', type: :feature do
       }.to_json,
       headers: { 'Content-Type' => 'application/json' }
     ).to_return(status: 201)
-    
+
     secondwebhook = stub_request(:post, strategy.arguments['slack_webhook_url'].second.strip).with(
       body: {
         text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
@@ -208,6 +208,5 @@ RSpec.feature 'Deploys', type: :feature do
     DeployService.new(strategy).start
     expect(webhook).to have_been_made.once
     expect(secondwebhook).to have_been_made.once
-    
   end
 end
