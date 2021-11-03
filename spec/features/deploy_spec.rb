@@ -236,32 +236,6 @@ RSpec.feature 'Deploys', type: :feature do
     expect(secondwebhook).to have_been_made.once
   end
 
-  it 'tries to notifies one Slack prior to automatically merging release PR, invalid webhook_url attr' do
-    strategy.update!(arguments: strategy.arguments.merge(
-      merge_after: 26.hours.to_i,
-      merge_prior_warning: 75.minutes.to_i,
-      slack_webhook_url: 100
-    ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
-    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
-      .with('artsy/candela', base: 'release', head: 'staging')
-      .and_return([assigned_github_pull_request])
-    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
-
-    webhook = stub_request(:post, strategy.arguments['slack_webhook_url'].to_s).with(
-      body: {
-        text: 'The following changes will be released in about 1 hour: https://github.com/artsy/candela/pull/342'
-      }.to_json,
-      headers: { 'Content-Type' => 'application/json' }
-    ).to_return(status: 201)
-    DeployService.new(strategy).start
-    # notification not repeated
-    DeployService.new(strategy).start
-    expect(webhook).not_to have_been_made
-  end
-
   it 'fail due invalid http protocol notifies one Slack prior to automatically merging release PR' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,

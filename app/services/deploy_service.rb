@@ -89,13 +89,7 @@ class DeployService
   end
 
   def deliver_slack_webhook(pull_request, webhook_urls, merge_at)
-    if webhook_urls.is_a?(String)
-      send_slack_alert(pull_request, webhook_urls.strip, merge_at)
-    elsif webhook_urls.is_a?(Array)
-      webhook_urls.each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) }
-    else
-      Rails.logger.warn "Failed to deliver webhook to #{webhook_urls.inspect}"
-    end
+    Array(webhook_urls).each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) }
   end
 
   def send_slack_alert(pull_request, webhook_url, merge_at)
