@@ -13,6 +13,7 @@ jobs:
       - run: hokusai registry pull --tag "$CIRCLE_SHA1"
       - hokusai/run-tests:
           flags: --no-build
+      - run: mkdir test-results
       - store_test_results:
           path: test-results
 
