@@ -236,7 +236,7 @@ RSpec.feature 'Deploys', type: :feature do
     expect(secondwebhook).to have_been_made.once
   end
 
-  it 'tries to notifies one Slack prior to automatically merging release PR, invalid webhook_url attr' do
+  it 'fails to notifies one Slack prior to automatically merging release PR due invalid non String||Array attr' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
@@ -262,7 +262,7 @@ RSpec.feature 'Deploys', type: :feature do
     expect(webhook).not_to have_been_made
   end
 
-  it 'fail due invalid http protocol notifies one Slack prior to automatically merging release PR' do
+  it 'fails to notifies one Slack prior to automatically merging release PR due invalid protocol' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
@@ -289,7 +289,7 @@ RSpec.feature 'Deploys', type: :feature do
     end
   end
 
-  it 'fail due invalid invalid url string protocol notifies one Slack prior to automatically merging release PR' do
+  it 'fails to notifies one Slack prior to automatically merging release PR due invalid url string' do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
