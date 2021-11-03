@@ -89,6 +89,8 @@ class DeployService
   end
 
   def deliver_slack_webhook(pull_request, webhook_urls, merge_at)
+    return unless webhook_urls.is_a?(String) || webhook_urls.is_a?(Array)
+
     Array(webhook_urls).each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) }
   end
 
