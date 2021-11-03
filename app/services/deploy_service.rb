@@ -80,17 +80,33 @@ class DeployService
       (raise 'A profile and basic_password are required for Github authentication')
   end
 
-  def deliver_slack_webhook(pull_request, webhook_url, merge_at)
-    uri = URI.parse webhook_url
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request['Content-Type'] = 'application/json'
-    request.body = {
-      text: "The following changes will be released in #{distance_of_time_in_words_to_now(merge_at)}: " +
-            pull_request.html_url
-    }.to_json
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == 'https')
-    http.request(request)
+  def validate_slack_webhook_url?(webhook_url)
+    uri = URI.parse(webhook_url)
+    uri.is_a?(URI::HTTPS) && !uri.host.nil?
+  rescue URI::InvalidURIError
+    Rails.logger.warn "Failed to deliver webhook to #{webhook_urls.inspect}, invalid url pattern"
+    false
+  end
+
+  def deliver_slack_webhook(pull_request, webhook_urls, merge_at)
+    Array(webhook_urls).each { |webhook_url| send_slack_alert(pull_request, webhook_url.strip, merge_at) }
+  rescue StandardError => e
+    Rails.logger.warn "Failed to deliver webhook to #{webhook_urls.inspect} (#{e.message})"
+  end
+
+  def send_slack_alert(pull_request, webhook_url, merge_at)
+    if validate_slack_webhook_url?(webhook_url)
+      uri = URI.parse webhook_url
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request['Content-Type'] = 'application/json'
+      request.body = {
+        text: "The following changes will be released in #{distance_of_time_in_words_to_now(merge_at)}: " +
+              pull_request.html_url
+      }.to_json
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      http.request(request)
+    end
   rescue StandardError => e
     Rails.logger.warn "Failed to deliver webhook to #{webhook_url.inspect} (#{e.message})"
   end
