@@ -43,7 +43,7 @@ class DeployService
       if Time.now > merge_at # merge release PR automatically
         # re-request individual PR so mergeable attribute is available
         pull_request = github_client.pull_request(github_repo, pull_request.number)
-        if pull_request.mergeable?
+        if can_release_now?(deploy_strategy.arguments['bocked_time_buckets']) && pull_request.mergeable?
           github_client.merge_pull_request(github_repo, pull_request.number)
           return
         end
@@ -118,5 +118,14 @@ class DeployService
       .reject { |c| c.nil? || c.type == 'Bot' || c.login == 'web-flow' || c.login == 'artsyit' || c.login[/\bbot\b/] }
       .group_by(&:login).map { |k, v| [v.size, k] }.sort.reverse.map(&:last)
       .detect { |l| github_client.check_assignee(github_repo, l) }
+  end
+
+  def can_release_now?(blocked_buckets)
+    cur_time = Time.now.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
+    return false if blocked_buckets.map { |blocked_bucket| cron_match(cur_time, blocked_bucket) }.reduce(:|)
+  end
+
+  def cron_match?(reference_time, blocked_bucket)
+    return true if Fugit::Cron.parse(blocked_bucket).match?(reference_time)
   end
 end
