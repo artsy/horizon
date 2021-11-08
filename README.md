@@ -71,7 +71,9 @@ The UI can then be found at http://localhost:3000.
   "base": "release",
   "head": "staging",
   "merge_after": 86400,
-  "slack_webhook_url": ["https://hooks.slack.com/services/T.../B.../Q...", "https://hooks.slack.com/services/O.../C.../U..."]
+  "slack_webhook_url": ["https://hooks.slack.com/services/T.../B.../Q...", "https://hooks.slack.com/services/O.../C.../U..."],
+  "blocked_time_buckets": ["* 1-2 * * *"]
+
 }
 ```
 
