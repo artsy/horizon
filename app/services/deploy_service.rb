@@ -21,17 +21,17 @@ class DeployService
   private
 
   def create_github_pull_request
-    can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], Time.now)
-    pull_request = github_client.create_pull_request(
-      github_repo,
-      deploy_strategy.arguments['base'],
-      deploy_strategy.arguments['head'],
-      'Deploy',
-      'This is an automatically generated release PR!'
-    )
-
-    assignee = choose_assignee(pull_request)
-    github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
+    if can_release_now?(deploy_strategy.arguments['blocked_time_buckets'] || [], Time.now)
+      pull_request = github_client.create_pull_request(
+        github_repo,
+        deploy_strategy.arguments['base'],
+        deploy_strategy.arguments['head'],
+        'Deploy',
+        'This is an automatically generated release PR!'
+      )
+      assignee = choose_assignee(pull_request)
+      github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
+    end
   rescue Octokit::UnprocessableEntity # release PR already exists
     pull_request = github_client.pull_requests(
       github_repo,
@@ -122,14 +122,7 @@ class DeployService
   end
 
   def can_release_now?(buckets, reference_time)
-    buckets = Array(buckets)
-    return if !buckets || buckets.empty? || !reference_time
-
     time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
-    buckets.map { |blocked_bucket| cron_match?(time_wa, blocked_bucket) }.reduce(:|) || (raise 'Merge time blocked')
-  end
-
-  def cron_match?(reference_time, blocked_bucket)
-    return false if Fugit::Cron.parse(blocked_bucket).match?(reference_time)
+    buckets.none? { |bucket| Fugit::Cron.parse(bucket).match?(time_wa) }
   end
 end

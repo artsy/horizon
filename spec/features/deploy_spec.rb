@@ -323,15 +323,7 @@ RSpec.feature 'Deploys', type: :feature do
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
-    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
-      .with('artsy/candela', base: 'release', head: 'staging')
-      .and_return([assigned_github_pull_request])
-    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
-    expect do
-      DeployService.new(strategy).start
-    end.to raise_error('Merge time blocked')
+    expect_any_instance_of(Octokit::Client).not_to receive(:create_pull_request)
+    DeployService.new(strategy).start
   end
 end
