@@ -21,6 +21,7 @@ class DeployService
   private
 
   def create_github_pull_request
+    can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], Time.now)
     pull_request = github_client.create_pull_request(
       github_repo,
       deploy_strategy.arguments['base'],
@@ -48,7 +49,6 @@ class DeployService
           return
         end
       end
-      can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], merge_at)
 
       warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
       if Time.now > warn_at &&
