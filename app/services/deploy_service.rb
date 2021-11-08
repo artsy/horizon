@@ -125,6 +125,8 @@ class DeployService
     return if !buckets || buckets.empty? || !reference_time
 
     time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
+    pp time_wa
+    pp buckets
     buckets.map { |blocked_bucket| cron_match?(time_wa, blocked_bucket) }.reduce(:|) || (raise 'Merge time blocked')
   end
 
