@@ -121,12 +121,11 @@ class DeployService
       .detect { |l| github_client.check_assignee(github_repo, l) }
   end
 
-  def can_release_now?(blocked_buckets, reference_time)
-    return if !blocked_buckets || !reference_time
+  def can_release_now?(buckets, reference_time)
+    return if !buckets || !reference_time
 
     time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
-    (raise "Merge time is blocked") 
-      if blocked_buckets.map { |blocked_bucket| cron_match(time_wa, blocked_bucket) }.reduce(:|)
+    buckets.map { |blocked_bucket| cron_match(time_wa, blocked_bucket) }.reduce(:|) || (raise 'Merge time blocked')
   end
 
   def cron_match?(reference_time, blocked_bucket)

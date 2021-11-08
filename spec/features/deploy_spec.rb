@@ -19,7 +19,8 @@ RSpec.feature 'Deploys', type: :feature do
       provider: 'github pull request',
       automatic: true,
       arguments: { base: 'release', head: 'staging' },
-      profile: profile
+      profile: profile,
+      blocked_time_buckets: []
     )
   end
   let(:renovate) { double('user', type: 'Bot', login: 'renovate') }
@@ -293,7 +294,8 @@ RSpec.feature 'Deploys', type: :feature do
     strategy.update!(arguments: strategy.arguments.merge(
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i,
-      slack_webhook_url: ['invalidstring']
+      slack_webhook_url: ['invalidstring'],
+      blocked_time_buckets: []
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
@@ -314,5 +316,17 @@ RSpec.feature 'Deploys', type: :feature do
       DeployService.new(strategy).start
       expect(webhook).not_to have_been_made
     end
+  end
+
+  it 'failed to release due blocked time' do
+    invalid_strategy = stages.last.deploy_strategies.create!(
+      provider: 'github pull request',
+      automatic: true,
+      arguments: { base: 'release', head: 'staging' },
+      blocked_time_buckets: ['* 1-23 * * *']
+    )
+    expect do
+      DeployService.new(invalid_strategy).start
+    end.to raise_error('Merge time is blocked')
   end
 end
