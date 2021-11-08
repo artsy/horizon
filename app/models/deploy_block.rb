@@ -3,8 +3,8 @@
 class DeployBlock < ApplicationRecord
   belongs_to :project
 
-  scope :unresolved, -> { where(resolved_at: nil) }
-  scope :resolved, -> { where.not(resolved_at: nil) }
+  scope :unresolved, -> { where(resolved_at: nil).or(where('resolved_at >= ?', DateTime.current)) }
+  scope :resolved, -> { where.not(resolved_at: nil).and(where('resolved_at <= ?', DateTime.current)) }
 
   after_save :broadcast_updates
 
