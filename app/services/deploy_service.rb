@@ -40,7 +40,6 @@ class DeployService
 
     if (merge_after = deploy_strategy.arguments['merge_after'])
       merge_at = pull_request.created_at + merge_after.seconds
-      can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], merge_at)
       if Time.now > merge_at # merge release PR automatically
         # re-request individual PR so mergeable attribute is available
         pull_request = github_client.pull_request(github_repo, pull_request.number)
@@ -49,6 +48,7 @@ class DeployService
           return
         end
       end
+      can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], merge_at)
 
       warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
       if Time.now > warn_at &&
@@ -122,13 +122,13 @@ class DeployService
   end
 
   def can_release_now?(buckets, reference_time)
-    return if !buckets || !reference_time
+    return if !buckets || buckets.empty? || !reference_time
 
     time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
-    buckets.map { |blocked_bucket| cron_match(time_wa, blocked_bucket) }.reduce(:|) || (raise 'Merge time blocked')
+    buckets.map { |blocked_bucket| cron_match?(time_wa, blocked_bucket) }.reduce(:|) || (raise 'Merge time blocked')
   end
 
   def cron_match?(reference_time, blocked_bucket)
-    return true if Fugit::Cron.parse(blocked_bucket).match?(reference_time)
+    return false if Fugit::Cron.parse(blocked_bucket).match?(reference_time)
   end
 end

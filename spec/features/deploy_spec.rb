@@ -18,9 +18,8 @@ RSpec.feature 'Deploys', type: :feature do
     stages.last.deploy_strategies.create!(
       provider: 'github pull request',
       automatic: true,
-      arguments: { base: 'release', head: 'staging' },
-      profile: profile,
-      blocked_time_buckets: []
+      arguments: { base: 'release', head: 'staging', blocked_time_buckets: [] },
+      profile: profile
     )
   end
   let(:renovate) { double('user', type: 'Bot', login: 'renovate') }
@@ -319,14 +318,20 @@ RSpec.feature 'Deploys', type: :feature do
   end
 
   it 'failed to release due blocked time' do
-    invalid_strategy = stages.last.deploy_strategies.create!(
-      provider: 'github pull request',
-      automatic: true,
-      arguments: { base: 'release', head: 'staging' },
-      blocked_time_buckets: ['* 1-23 * * *']
-    )
+    strategy.update!(arguments: strategy.arguments.merge(
+      blocked_time_buckets: ['* 1-23 * * *'],
+      merge_after: 26.hours.to_i,
+      merge_prior_warning: 75.minutes.to_i,
+    ))
+    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
+      .with('artsy/candela', 'release', 'staging', anything, anything)
+      .and_raise(Octokit::UnprocessableEntity)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([assigned_github_pull_request])
+    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
     expect do
-      DeployService.new(invalid_strategy).start
-    end.to raise_error('Merge time is blocked')
+      DeployService.new(strategy).start
+    end.to raise_error('Merge time blocked')
   end
 end
