@@ -321,7 +321,7 @@ RSpec.feature 'Deploys', type: :feature do
     strategy.update!(arguments: strategy.arguments.merge(
       blocked_time_buckets: ['* 1-23 * * *'],
       merge_after: 26.hours.to_i,
-      merge_prior_warning: 75.minutes.to_i,
+      merge_prior_warning: 75.minutes.to_i
     ))
     allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
