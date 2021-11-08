@@ -26,7 +26,8 @@ ActiveAdmin.register DeployStrategy do
       f.input :arguments_input,
               label: 'Arguments (JSON)',
               hint: 'Supported properties: base (branch), head (branch), repo (e.g., org/project), " +
-              "merge_after (sec.), merge_prior_warning (sec., default 3600) slack_webhook_url, warned_pull_request_url'
+              "merge_after (sec.), merge_prior_warning (sec., default 3600) slack_webhook_url, warned_pull_request_url
+              blocked_time_buckets'
     end
     f.actions
   end

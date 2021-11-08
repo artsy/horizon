@@ -40,10 +40,11 @@ class DeployService
 
     if (merge_after = deploy_strategy.arguments['merge_after'])
       merge_at = pull_request.created_at + merge_after.seconds
+      can_release_now?(deploy_strategy.arguments['blocked_time_buckets'], merge_at)
       if Time.now > merge_at # merge release PR automatically
         # re-request individual PR so mergeable attribute is available
         pull_request = github_client.pull_request(github_repo, pull_request.number)
-        if can_release_now?(deploy_strategy.arguments['bocked_time_buckets']) && pull_request.mergeable?
+        if pull_request.mergeable?
           github_client.merge_pull_request(github_repo, pull_request.number)
           return
         end
@@ -120,9 +121,12 @@ class DeployService
       .detect { |l| github_client.check_assignee(github_repo, l) }
   end
 
-  def can_release_now?(blocked_buckets)
-    cur_time = Time.now.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
-    return false if blocked_buckets.map { |blocked_bucket| cron_match(cur_time, blocked_bucket) }.reduce(:|)
+  def can_release_now?(blocked_buckets, reference_time)
+    return if !blocked_buckets || !reference_time
+
+    time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
+    (raise "Merge time is blocked") 
+      if blocked_buckets.map { |blocked_bucket| cron_match(time_wa, blocked_bucket) }.reduce(:|)
   end
 
   def cron_match?(reference_time, blocked_bucket)
