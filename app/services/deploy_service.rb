@@ -21,7 +21,7 @@ class DeployService
   private
 
   def create_github_pull_request
-    if can_release_now?(deploy_strategy.arguments['blocked_time_buckets'] || [], Time.now)
+    if can_release_now?(deploy_strategy.arguments['blocked_time_buckets'] || [])
       pull_request = github_client.create_pull_request(
         github_repo,
         deploy_strategy.arguments['base'],
@@ -121,8 +121,7 @@ class DeployService
       .detect { |l| github_client.check_assignee(github_repo, l) }
   end
 
-  def can_release_now?(buckets, reference_time)
-    time_wa = reference_time.beginning_of_minute.strftime('%a, %d %b %Y %H:%M')
-    buckets.none? { |bucket| Fugit::Cron.parse(bucket).match?(time_wa) }
+  def can_release_now?(buckets, reference_time = Time.now)
+    buckets.none? { |bucket| Fugit::Cron.parse(bucket).match?(reference_time.beginning_of_minute) }
   end
 end
