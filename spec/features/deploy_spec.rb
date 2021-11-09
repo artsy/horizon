@@ -319,7 +319,7 @@ RSpec.feature 'Deploys', type: :feature do
 
   it 'failed to release due blocked time' do
     strategy.update!(arguments: strategy.arguments.merge(
-      blocked_time_buckets: ['* 1-23 * * *'],
+      blocked_time_buckets: ['* 0-23 * * *'],
       merge_after: 26.hours.to_i,
       merge_prior_warning: 75.minutes.to_i
     ))
