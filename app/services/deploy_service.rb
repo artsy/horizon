@@ -21,16 +21,17 @@ class DeployService
   private
 
   def create_github_pull_request
-    pull_request = github_client.create_pull_request(
-      github_repo,
-      deploy_strategy.arguments['base'],
-      deploy_strategy.arguments['head'],
-      'Deploy',
-      'This is an automatically generated release PR!'
-    )
-
-    assignee = choose_assignee(pull_request)
-    github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
+    if can_release_now?(deploy_strategy.arguments['blocked_time_buckets'] || [])
+      pull_request = github_client.create_pull_request(
+        github_repo,
+        deploy_strategy.arguments['base'],
+        deploy_strategy.arguments['head'],
+        'Deploy',
+        'This is an automatically generated release PR!'
+      )
+      assignee = choose_assignee(pull_request)
+      github_client.add_assignees(github_repo, pull_request.number, assignee) if assignee
+    end
   rescue Octokit::UnprocessableEntity # release PR already exists
     pull_request = github_client.pull_requests(
       github_repo,
@@ -118,5 +119,9 @@ class DeployService
       .reject { |c| c.nil? || c.type == 'Bot' || c.login == 'web-flow' || c.login == 'artsyit' || c.login[/\bbot\b/] }
       .group_by(&:login).map { |k, v| [v.size, k] }.sort.reverse.map(&:last)
       .detect { |l| github_client.check_assignee(github_repo, l) }
+  end
+
+  def can_release_now?(buckets, reference_time = Time.now)
+    buckets.none? { |bucket| Fugit::Cron.parse(bucket).match?(reference_time.beginning_of_minute) }
   end
 end
