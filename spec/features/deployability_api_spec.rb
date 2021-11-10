@@ -91,6 +91,32 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         end
       end
 
+      context 'with unresolved deploy blocks based on future release timespan' do
+        it 'returns 200 SUCCESS and the deploy block in the response' do
+          artsy = Organization.create!(name: 'Artsy')
+          shipping = artsy.projects.create!(name: 'shipping')
+          shipping_deploy_block = DeployBlock.create!(project: shipping, resolved_at: DateTime.current + 10.days)
+
+          headers = { 'ACCEPT' => 'application/json' }
+          get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
+
+          expect(response.body).to eq([shipping_deploy_block].to_json)
+        end
+
+        it 'only returns deploy blocks for the project' do
+          artsy = Organization.create!(name: 'Artsy')
+          shipping = artsy.projects.create!(name: 'shipping')
+          packing = artsy.projects.create!(name: 'packing')
+          shipping_deploy_block = DeployBlock.create!(project: shipping)
+          DeployBlock.create!(project: packing)
+
+          headers = { 'ACCEPT' => 'application/json' }
+          get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
+
+          expect(response.body).to eq([shipping_deploy_block].to_json)
+        end
+      end
+
       context 'with resolved deploy blocks' do
         it 'only returns the unresolved deploy blocks, and not resolved ones' do
           artsy = Organization.create!(name: 'Artsy')
