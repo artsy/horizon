@@ -55,6 +55,9 @@ RSpec.feature 'Deploys', type: :feature do
   end
 
   it 'sends an Octokit request to create pull request' do
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([])
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
       .and_return(github_pull_request)
@@ -63,6 +66,9 @@ RSpec.feature 'Deploys', type: :feature do
   end
 
   it 'assigns deploy pull request to appropriate user' do
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([])
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
       .and_return(github_pull_request)
@@ -80,6 +86,9 @@ RSpec.feature 'Deploys', type: :feature do
   end
 
   it 'handles unsigned commits' do
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([])
     expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
       .with('artsy/candela', 'release', 'staging', anything, anything)
       .and_return(github_pull_request)
@@ -95,9 +104,6 @@ RSpec.feature 'Deploys', type: :feature do
   end
 
   it 'adds assignees to existing deploy PRs when unassigned' do
-    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([github_pull_request])
@@ -117,9 +123,6 @@ RSpec.feature 'Deploys', type: :feature do
 
   it 'merges release PR after designated period of time' do
     strategy.update!(arguments: strategy.arguments.merge(merge_after: 24.hours.to_i))
-    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -133,9 +136,6 @@ RSpec.feature 'Deploys', type: :feature do
 
   it 'does not attempt to merge unmergeable PRs' do
     strategy.update!(arguments: strategy.arguments.merge(merge_after: 24.hours.to_i))
-    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -154,9 +154,6 @@ RSpec.feature 'Deploys', type: :feature do
       merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: ['https://hooks.slack.com/services/foo/bar/baz']
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -181,9 +178,6 @@ RSpec.feature 'Deploys', type: :feature do
       merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: 'https://hooks.slack.com/services/foo/bar/baz'
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -207,9 +201,6 @@ RSpec.feature 'Deploys', type: :feature do
       merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: ['https://hooks.slack.com/services/foo/bar/baz', 'https://hooks.slack.com/services/foo/bar/azb']
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -242,9 +233,6 @@ RSpec.feature 'Deploys', type: :feature do
       merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: 100
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -268,9 +256,6 @@ RSpec.feature 'Deploys', type: :feature do
       merge_prior_warning: 75.minutes.to_i,
       slack_webhook_url: ['http://hooks.slack.com/services/foo/bar/baz']
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
@@ -296,9 +281,6 @@ RSpec.feature 'Deploys', type: :feature do
       slack_webhook_url: ['invalidstring'],
       blocked_time_buckets: []
     ))
-    allow_any_instance_of(Octokit::Client).to receive(:create_pull_request)
-      .with('artsy/candela', 'release', 'staging', anything, anything)
-      .and_raise(Octokit::UnprocessableEntity)
     allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
       .with('artsy/candela', base: 'release', head: 'staging')
       .and_return([assigned_github_pull_request])
