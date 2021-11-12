@@ -71,12 +71,9 @@ class ComparisonService
   private
 
   def warrants_deploy?(stage)
-    comparison = stage.project.snapshot.comparisons.detect do |c|
+    stage.project.snapshot.comparisons.any? do |c|
       c.behind_stage == stage
     end
-    return false unless comparison
-
-    true
   end
 
   def equivalent_snapshots?(snapshot, result)

@@ -32,6 +32,12 @@ class DeployStrategy < ApplicationRecord
     arguments['repo'] || [stage.project.organization.name, stage.project.name].join('/')
   end
 
+  def can_release?(at = Time.now)
+    arguments.fetch('blocked_time_buckets', []).none? do |bucket|
+      Fugit::Cron.parse(bucket).match?(at.beginning_of_minute)
+    end
+  end
+
   private
 
   def validate_arguments
