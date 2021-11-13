@@ -7,6 +7,8 @@ class Comparison < ApplicationRecord
 
   acts_as_list scope: :snapshot
 
+  scope :released, ->(released = true) { where(released: released) }
+
   def comparison_size
     description.length
   end
