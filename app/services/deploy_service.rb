@@ -21,11 +21,9 @@ class DeployService
   private
 
   def create_or_update_github_pull_request
-    return unless deploy_strategy.can_release?
-
     pull_request = find_pull_request || create_pull_request
     assign_pull_request(pull_request) if pull_request.assignee.blank?
-    return unless deploy_strategy.arguments['merge_after']
+    return unless deploy_strategy.arguments['merge_after'] && deploy_strategy.can_release?
 
     merge_at = pull_request.created_at + deploy_strategy.arguments['merge_after'].seconds
     warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
