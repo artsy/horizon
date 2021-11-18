@@ -299,13 +299,28 @@ RSpec.feature 'Deploys', type: :feature do
     end
   end
 
-  it 'failed to release due blocked time' do
+  it 'creates release PR, but does not merge during blocked period' do
     strategy.update!(arguments: strategy.arguments.merge(
       blocked_time_buckets: ['* 0-23 * * *'],
-      merge_after: 26.hours.to_i,
+      merge_after: 23.hours.to_i,
       merge_prior_warning: 75.minutes.to_i
     ))
-    expect_any_instance_of(Octokit::Client).not_to receive(:create_pull_request)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([])
+    expect_any_instance_of(Octokit::Client).to receive(:create_pull_request).and_return(github_pull_request)
+    allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
+      .with('artsy/candela', 42)
+      .and_return([double(author: jane, committer: web_flow)])
+    expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
+    expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with('artsy/candela', 42, 'jane')
+    DeployService.new(strategy).start
+
+    # next run...
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([assigned_github_pull_request])
+    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
     DeployService.new(strategy).start
   end
 end
