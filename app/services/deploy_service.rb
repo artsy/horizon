@@ -30,7 +30,8 @@ class DeployService
 
     if warn_at.past? &&
        (webhook_urls = deploy_strategy.arguments['slack_webhook_url']) &&
-       deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url
+       deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url &&
+       (merge_at.past? || deploy_strategy.can_release?(merge_at))
       deliver_slack_webhooks(pull_request, webhook_urls, merge_at)
       deploy_strategy.update!(
         arguments: deploy_strategy.arguments.merge(warned_pull_request_url: pull_request.html_url)
