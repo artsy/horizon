@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Deploys', type: :feature do
+  include ActiveSupport::Testing::TimeHelpers
   let(:org) { Organization.create!(name: 'artsy') }
   let(:project) { org.projects.create!(name: 'candela') }
   let(:stages) do
@@ -170,6 +171,22 @@ RSpec.feature 'Deploys', type: :feature do
       DeployService.new(strategy).start
       expect(webhook).to have_been_made.once
     end
+  end
+
+  it 'postpones Slack notification if prospective merge will be during blocked period' do
+    travel_to Time.zone.local(2021, 9, 10, 11, 20) # 60 minutes before blocked period
+    strategy.update!(arguments: strategy.arguments.merge(
+      merge_after: 26.hours.to_i,
+      merge_prior_warning: 61.minutes.to_i,
+      slack_webhook_url: ['https://hooks.slack.com/services/foo/bar/baz'],
+      blocked_time_buckets: ['20 12 10 * *']
+    ))
+    allow_any_instance_of(Octokit::Client).to receive(:pull_requests)
+      .with('artsy/candela', base: 'release', head: 'staging')
+      .and_return([assigned_github_pull_request])
+    expect_any_instance_of(Octokit::Client).not_to receive(:merge_pull_request)
+    expect_any_instance_of(Net::HTTP).not_to receive(:request)
+    DeployService.new(strategy).start
   end
 
   it 'notifies one Slack prior to automatically merging release PR, backwards String based config compatible' do
