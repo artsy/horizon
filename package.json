@@ -19,13 +19,15 @@
     "@rails/actioncable": "6.0.3-1",
     "@rails/activestorage": "6.0.3-1",
     "@rails/ujs": "6.0.3-1",
-    "@rails/webpacker": "5.1.1",
+    "@rails/webpacker": "5.4.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "styled-components": "4.4.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "7.10.1",
     "@babel/preset-typescript": "7.10.1",
     "@types/actioncable": "5.2.3",
