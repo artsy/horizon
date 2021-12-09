@@ -41,6 +41,13 @@ RSpec.describe Project, type: :model do
     end
   end
 
+  describe 'default: main' do
+    it 'can still find the git remote' do
+      project.stages.first.update(name: 'main')
+      expect(project.git_remote).to eq 'https://github.com/artsy/eigen.git'
+    end
+  end
+
   describe 'deployment_type' do
     it 'returns kubernetes when project uses hokusai' do
       project.stages.first.update(hokusai: 'staging')
