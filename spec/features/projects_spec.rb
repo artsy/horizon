@@ -6,7 +6,7 @@ RSpec.feature 'Projects', type: :feature do
   let(:org) { Organization.create! name: 'Artsy' }
   let(:releasecop_comparison) do
     double('Releasecop::Comparison',
-           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           ahead: double('Releasecop::ManifestItem', name: 'main'),
            behind: double('Releasecop::ManifestItem', name: 'production'),
            unreleased?: true,
            lines: ['commit foo', 'commit bar'])
@@ -15,7 +15,7 @@ RSpec.feature 'Projects', type: :feature do
   scenario 'view projects' do
     project = org.projects.create!(name: 'shipping')
     org.projects.create!(name: 'scheduling', tags: ['logistics'])
-    project.stages.create!(name: 'master')
+    project.stages.create!(name: 'main')
     project.stages.create!(name: 'production')
     Organization.create!(name: 'Etsy').projects.create!(name: 'foo_php', tags: nil)
 

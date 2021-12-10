@@ -34,8 +34,8 @@ candela_project = artsy_org.projects.create!(
   description: 'send analytics data based on warehouse data',
   tags: ['galleries', 'auctions']
 )
-master_stage = candela_project.stages.create!(
-  name: 'master',
+main_stage = candela_project.stages.create!(
+  name: 'main',
   git_remote: 'https://github.com/artsy/candela.git',
   profile: github_aws_profile
 )
@@ -69,7 +69,7 @@ snapshot.comparisons.create!(
 )
 snapshot.comparisons.create!(
   behind_stage: staging_stage,
-  ahead_stage: master_stage,
+  ahead_stage: main_stage,
   released: true,
   description: []
 )
@@ -81,8 +81,8 @@ charge_project = artsy_org.projects.create!(
   description: 'create and pay auction invoices',
   tags: ['auctions']
 )
-charge_master_stage = charge_project.stages.create!(
-  name: 'master',
+charge_main_stage = charge_project.stages.create!(
+  name: 'main',
   git_remote: 'https://github.com/artsy/charge.git',
   profile: github_aws_profile
 )

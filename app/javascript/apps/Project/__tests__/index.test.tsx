@@ -53,7 +53,7 @@ describe("ProjectShow", () => {
   })
 
   it("renders stages", () => {
-    expect(component.find(StackableBorderBox).at(0).text()).toMatch("master")
+    expect(component.find(StackableBorderBox).at(0).text()).toMatch("main")
     expect(component.find(StackableBorderBox).at(0).text()).toMatch(
       "Up to date",
     )
