@@ -30,7 +30,7 @@ export const unreleasedProjectFixture: Project = {
       stages: [
         {
           id: 27,
-          name: "master",
+          name: "main",
           position: 1,
           project_id: 11,
           git_remote: "https://github.com/artsy/force.git",
@@ -159,7 +159,7 @@ export const unreleasedProjectFixture: Project = {
   stages: [
     {
       id: 27,
-      name: "master",
+      name: "main",
       position: 1,
       project_id: 11,
       git_remote: "https://github.com/artsy/force.git",
@@ -217,12 +217,12 @@ export const releasedProjectFixture: Project = {
       stages: [
         {
           id: 67,
-          name: "master",
+          name: "main",
           position: 1,
           project_id: 25,
           git_remote: "https://github.com/artsy/radiation.git",
           tag_pattern: "",
-          branch: "master",
+          branch: "main",
           hokusai: "",
           created_at: "2018-11-14T22:26:37.400Z",
           updated_at: "2020-03-11T18:36:40.186Z",
@@ -310,12 +310,12 @@ export const releasedProjectFixture: Project = {
   stages: [
     {
       id: 67,
-      name: "master",
+      name: "main",
       position: 1,
       project_id: 25,
       git_remote: "https://github.com/artsy/radiation.git",
       tag_pattern: "",
-      branch: "master",
+      branch: "main",
       hokusai: "",
       created_at: "2018-11-14T22:26:37.400Z",
       updated_at: "2020-03-11T18:36:40.186Z",
@@ -368,12 +368,12 @@ export const erroringProjectFixture: Project = {
       stages: [
         {
           id: 68,
-          name: "master",
+          name: "main",
           position: 1,
           project_id: 26,
           git_remote: "https://github.com/artsy/refraction.git",
           tag_pattern: "",
-          branch: "master",
+          branch: "main",
           hokusai: "",
           created_at: "2018-11-14T22:26:37.400Z",
           updated_at: "2020-03-11T18:36:40.186Z",
@@ -461,12 +461,12 @@ export const erroringProjectFixture: Project = {
   stages: [
     {
       id: 68,
-      name: "master",
+      name: "main",
       position: 1,
       project_id: 26,
       git_remote: "https://github.com/artsy/refraction.git",
       tag_pattern: "",
-      branch: "master",
+      branch: "main",
       hokusai: "",
       created_at: "2018-11-14T22:26:37.400Z",
       updated_at: "2020-03-11T18:36:40.186Z",
