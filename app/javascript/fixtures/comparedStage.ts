@@ -4,7 +4,7 @@ export const comparedStageUpToDate: ComparedStage = {
   stages: [
     {
       id: 27,
-      name: "master",
+      name: "main",
       position: 1,
       project_id: 11,
       git_remote: "https://github.com/artsy/force.git",

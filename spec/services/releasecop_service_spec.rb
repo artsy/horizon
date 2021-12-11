@@ -13,7 +13,7 @@ RSpec.describe ReleasecopService, type: :service do
   let(:org) { Organization.create! name: 'Artsy' }
   let(:project) do
     org.projects.create!(name: 'shipping').tap do |p|
-      p.stages.create!(name: 'master')
+      p.stages.create!(name: 'main')
       p.stages.create!(name: 'production')
     end
   end
