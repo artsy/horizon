@@ -6,7 +6,7 @@ Visual representations of release pipelines.
 - **Production:** [https://releases.artsy.net](https://releases.artsy.net) | [k8s](https://kubernetes.prd.artsy.systems/#!/search?q=horizon&namespace=default)
 - **Staging:** [https://releases-staging.artsy.net](https://releases-staging.artsy.net) | [k8s](https://kubernetes.stg.artsy.systems/#!/search?q=horizon&namespace=default)
 - **GitHub:** https://github.com/artsy/horizon
-- **CI/Deploys:** [CircleCi](https://circleci.com/gh/artsy/horizon); merged PRs to `artsy/horizon#master` are automatically deployed to staging; PRs from `staging` to `release` are automatically deployed to production. [Start a deploy...](https://github.com/artsy/horizon/compare/release...staging?expand=1)
+- **CI/Deploys:** [CircleCi](https://circleci.com/gh/artsy/horizon); merged PRs to `artsy/horizon#main` are automatically deployed to staging; PRs from `staging` to `release` are automatically deployed to production. [Start a deploy...](https://github.com/artsy/horizon/compare/release...staging?expand=1)
 - **Point Team:** [Platform](https://artsy.slack.com/messages/product-platform)
 
 ## Quick links
@@ -40,10 +40,10 @@ The UI can then be found at http://localhost:3000.
 ## Design
 
 - `Organization`s have many `Project`s
-- Each `Project` has an associated list of `Stage`s, with their order determined by `Stage#position` (e.g., _master_, _staging_, and _production_)
-- `Stage`s must describe how to get information about their current state. This takes the form of a `#git_remote` (e.g., referring to Github or Heroku), optional `#branch` name (default: _master_), optional `#hokusai` environment (e.g., _staging_ or _production_), or `#tag_pattern` (e.g., _release-\*_). The [`releasecop` gem](https://github.com/joeyAghion/releasecop) is used internally to determine stage diffs, so see that project for more detail.
+- Each `Project` has an associated list of `Stage`s, with their order determined by `Stage#position` (e.g., _main_, _staging_, and _production_)
+- `Stage`s must describe how to get information about their current state. This takes the form of a `#git_remote` (e.g., referring to Github or Heroku), optional `#branch` name (default: _main_), optional `#hokusai` environment (e.g., _staging_ or _production_), or `#tag_pattern` (e.g., _release-\*_). The [`releasecop` gem](https://github.com/joeyAghion/releasecop) is used internally to determine stage diffs, so see that project for more detail.
 - `Stage`s can optionally be associated with a `Profile` that stores credentials for accessing git providers or AWS.
-- `Snapshot`s capture the complete state of a project's stages at a point in time. Each `Snapshot` has associated `Comparison`s between the consecutive stages of a project (e).g., a comparison between _master_ and _staging_, and a second between _staging_ and _production_)
+- `Snapshot`s capture the complete state of a project's stages at a point in time. Each `Snapshot` has associated `Comparison`s between the consecutive stages of a project (e).g., a comparison between _main_ and _staging_, and a second between _staging_ and _production_)
 - A cron periodically reevaluates these comparisons, creating a new snapshot if the state has changed at all.
 - A `Stage` (such as "production") can have a `DeployStrategy` for automatically triggering releases. Currently only the "github pull request" provider is implemented. When defined, a deploy strategy will automatically start a release (e.g., by opening a pull request) when a diff exceeds a certain threshold.
 - `DeployBlock`s indicate that a project _should not_ be released. In addition to appearing on dashboards, any unresolved blocks will prevent new releases from being automated.
@@ -53,9 +53,9 @@ The UI can then be found at http://localhost:3000.
 * Navigate to the [new project form](https://releases.artsy.net/admin/projects/new) and specify the name, description, and any tags (often _teams_) associated with the project.
 * Follow the _stages_ link and click to create a new stage:
   * Choose a "profile" granting access to the repository or deployment (e.g., `github...`)
-  * Enter a name, usually `master` to start
+  * Enter a name, usually `main` to start
   * Enter a git remote (e.g., `https://github.com/artsy/delta.git`)
-  * Enter a tag pattern, branch, or hokusai environment associated with the deployment. For "master," these are usually blank.
+  * Enter a tag pattern, branch, or hokusai environment associated with the deployment. For "main," these are usually blank.
 * Create additional stages for `staging` (usually specifying the `staging` hokusai environment), and `production` (usually specifying the `production` hokusai environment), if applicable.
 * After defining the `production` stage, follow the link to create a new _deploy strategy_.
   * Choose `github pull request` as the provider
@@ -71,7 +71,9 @@ The UI can then be found at http://localhost:3000.
   "base": "release",
   "head": "staging",
   "merge_after": 86400,
-  "slack_webhook_url": ["https://hooks.slack.com/services/T.../B.../Q...", "https://hooks.slack.com/services/O.../C.../U..."]
+  "slack_webhook_url": ["https://hooks.slack.com/services/T.../B.../Q...", "https://hooks.slack.com/services/O.../C.../U..."],
+  "blocked_time_buckets": ["* 1-2 * * *"]
+
 }
 ```
 
@@ -79,7 +81,7 @@ The UI can then be found at http://localhost:3000.
 
 * Navigate to the [new deploy block form](https://releases.artsy.net/admin/deploy_blocks/new).
 * Choose a project and describe the reason for blocking deploys. Leave "resolved at" blank.
-* While the block is unresolved, Horizon will _not_ open new release pull requests or merge existing ones, but manual merges or deploys are still possible. CircleCI release workflows can use the `block` step defined in the [artsy/release](https://github.com/artsy/orbs/blob/master/src/release/release.yml) orb to short-circuit release builds.
+* While the block is unresolved, Horizon will _not_ open new release pull requests or merge existing ones, but manual merges or deploys are still possible. CircleCI release workflows can use the `block` step defined in the [artsy/release](https://github.com/artsy/orbs/blob/main/src/release/release.yml) orb to short-circuit release builds.
 * Once resolved, click _edit_ in the [list of deploy blocks](https://releases-staging.artsy.net/admin/deploy_blocks) and specify a "resolved at" time.
 
 ## TO DO

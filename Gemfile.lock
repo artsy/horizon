@@ -99,12 +99,14 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.1.9)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
     diff-lcs (1.3)
     erubi (1.10.0)
+    et-orbi (1.2.6)
+      tzinfo
     execjs (2.7.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
@@ -112,13 +114,16 @@ GEM
     formtastic (4.0.0)
       actionpack (>= 5.2.0)
     formtastic_i18n (0.6.0)
+    fugit (1.5.2)
+      et-orbi (~> 1.1, >= 1.1.8)
+      raabro (~> 1.4)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     has_scope (0.8.0)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
     hashdiff (1.0.1)
-    i18n (1.8.10)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     inherited_resources (1.12.0)
       actionpack (>= 5.2, < 6.2)
@@ -147,7 +152,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.9.1)
+    loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -172,7 +177,8 @@ GEM
     public_suffix (4.0.6)
     puma (4.3.9)
       nio4r (~> 2.0)
-    racc (1.5.2)
+    raabro (1.4.0)
+    racc (1.6.0)
     rack (2.2.3)
     rack-proxy (0.7.0)
       rack
@@ -196,7 +202,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.3.0)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     railties (6.1.3.1)
       actionpack (= 6.1.3.1)
@@ -205,7 +211,7 @@ GEM
       rake (>= 0.8.7)
       thor (~> 1.0)
     rainbow (3.0.0)
-    rake (13.0.3)
+    rake (13.0.6)
     ransack (2.4.2)
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
@@ -305,7 +311,7 @@ GEM
       rails (>= 3.2.16)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   ruby
@@ -316,6 +322,7 @@ DEPENDENCIES
   acts_as_list
   byebug
   capybara
+  fugit
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   octokit (~> 4.0)

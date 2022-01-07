@@ -37,6 +37,7 @@ class ComparisonService
   end
 
   def self.refresh_comparisons_for_organization(org)
+    Rails.logger.debug "Refreshing comparisons for org ##{org.id}"
     new_snapshots = []
     org.projects.each do |project|
       new_snapshots << new(project).refresh_comparisons
@@ -49,6 +50,7 @@ class ComparisonService
   end
 
   def refresh_comparisons
+    Rails.logger.debug "Refreshing comparisons for project ##{project.id}"
     refreshed_at = Time.now
     result = ReleasecopService.new(project).perform_comparison
     new_snapshot = nil
@@ -71,12 +73,9 @@ class ComparisonService
   private
 
   def warrants_deploy?(stage)
-    comparison = stage.project.snapshot.comparisons.detect do |c|
+    stage.project.snapshot.comparisons.released(false).any? do |c|
       c.behind_stage == stage
     end
-    return false unless comparison
-
-    true
   end
 
   def equivalent_snapshots?(snapshot, result)

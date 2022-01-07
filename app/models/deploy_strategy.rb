@@ -15,7 +15,8 @@ class DeployStrategy < ApplicationRecord
       'merge_after', # seconds after which to automatically merge release PRs (default 86400 or 24 hours)
       'merge_prior_warning', # when to notify slack about a pending merge, in seconds (default 3600 or 1 hour)
       'slack_webhook_url', # for notifying prior to merging release PRs
-      'warned_pull_request_url' # used internally to avoid repeat notifications
+      'warned_pull_request_url', # used internally to avoid repeat notifications
+      'blocked_time_buckets' # a list of cron expr that allows to block merge deploys into an specific part of the day
     ]
   }.freeze
 
@@ -29,6 +30,12 @@ class DeployStrategy < ApplicationRecord
   # Prefer a `repo` argument, but fall back to org and project names otherwise.
   def github_repo
     arguments['repo'] || [stage.project.organization.name, stage.project.name].join('/')
+  end
+
+  def can_release?(at = Time.now)
+    arguments.fetch('blocked_time_buckets', []).none? do |bucket|
+      Fugit::Cron.parse(bucket).match?(at.beginning_of_minute)
+    end
   end
 
   private

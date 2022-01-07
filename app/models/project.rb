@@ -28,7 +28,7 @@ class Project < ApplicationRecord
   end
 
   def git_remote
-    stage = stages&.detect { |s| s.name == 'master' }
+    stage = stages&.detect { |main_stage| %w[main master].any? main_stage.name }
     stage&.git_remote
   end
 

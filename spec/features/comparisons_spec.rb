@@ -7,23 +7,30 @@ RSpec.feature 'Comparisons', type: :feature do
   let(:profile) { org.profiles.create!(basic_password: 'foo') }
   let(:project) do
     org.projects.create!(name: 'shipping').tap do |p|
-      p.stages.create!(name: 'master')
+      p.stages.create!(name: 'main')
       p.stages.create!(name: 'production')
     end
   end
   let(:small_comparison) do
     double('Releasecop::Comparison',
-           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           ahead: double('Releasecop::ManifestItem', name: 'main'),
            behind: double('Releasecop::ManifestItem', name: 'production'),
            unreleased?: true,
            lines: ['commit foo', 'commit bar'])
   end
   let(:large_comparison) do
     double('Releasecop::Comparison',
-           ahead: double('Releasecop::ManifestItem', name: 'master'),
+           ahead: double('Releasecop::ManifestItem', name: 'main'),
            behind: double('Releasecop::ManifestItem', name: 'production'),
            unreleased?: true,
            lines: (0..20).map { |i| "commit #{i}" })
+  end
+  let(:empty_comparison) do
+    double('Releasecop::Comparison',
+           ahead: double('Releasecop::ManifestItem', name: 'main'),
+           behind: double('Releasecop::ManifestItem', name: 'production'),
+           unreleased?: false,
+           lines: [])
   end
 
   it 'cleans up old snapshots' do
@@ -52,7 +59,7 @@ RSpec.feature 'Comparisons', type: :feature do
         provider: 'github pull request',
         profile: profile,
         automatic: true,
-        arguments: { base: 'release', head: 'staging ' }
+        arguments: { base: 'release', head: 'staging' }
       )
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
@@ -61,12 +68,26 @@ RSpec.feature 'Comparisons', type: :feature do
       ComparisonService.new(project).refresh_comparisons
     end
 
+    it 'does nothing when deploy unwarranted' do
+      project.stages.last.deploy_strategies.create!(
+        provider: 'github pull request',
+        profile: profile,
+        automatic: true,
+        arguments: { base: 'release', head: 'staging' }
+      )
+      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+        Releasecop::Result.new('shipping', [empty_comparison])
+      )
+      expect_any_instance_of(DeployService).not_to receive(:start)
+      ComparisonService.new(project).refresh_comparisons
+    end
+
     it 'does nothing when deploy warranted but automatic is false' do
       project.stages.last.deploy_strategies.create!(
         provider: 'github pull request',
         profile: profile,
         automatic: false,
-        arguments: { base: 'release', head: 'staging ' }
+        arguments: { base: 'release', head: 'staging' }
       )
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
@@ -80,7 +101,7 @@ RSpec.feature 'Comparisons', type: :feature do
         provider: 'github pull request',
         profile: profile,
         automatic: true,
-        arguments: { base: 'release', head: 'staging ' }
+        arguments: { base: 'release', head: 'staging' }
       )
       allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
         Releasecop::Result.new('shipping', [large_comparison])
