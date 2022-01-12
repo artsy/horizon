@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # Base Image
 # ---------------------------------------------------------
-FROM artsy/ruby:2.6.6-node-12-yarn as base
+FROM artsy/ruby:2.6.6-node-14-yarn as base
 
 RUN apk update && apk --no-cache --quiet add --update \
     git \
