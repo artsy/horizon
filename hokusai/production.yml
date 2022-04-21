@@ -190,10 +190,14 @@ spec:
             command:
             - /bin/sh
             - -c
-            - "DEPLOY_USER_UID=1001\nMOUNT_DIR=/home/deploy/data\nMOUNT_DIR_UID=$(stat\
-              \ -c %u $MOUNT_DIR)\nif [ \"$MOUNT_DIR_UID\" != \"$DEPLOY_USER_UID\"\
-              \ ]\nthen\n  chown -R \"$DEPLOY_USER_UID\":\"$DEPLOY_USER_UID\" $MOUNT_DIR\n\
-              fi\n"
+            - |
+              DEPLOY_USER_UID=1001
+              MOUNT_DIR=/home/deploy/data
+              MOUNT_DIR_UID=$(stat -c %u $MOUNT_DIR)
+              if [ "$MOUNT_DIR_UID" != "$DEPLOY_USER_UID" ]
+              then
+                chown -R "$DEPLOY_USER_UID":"$DEPLOY_USER_UID" $MOUNT_DIR
+              fi
             securityContext:
               privileged: true
             volumeMounts:
