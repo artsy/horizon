@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,6 +7,7 @@ metadata:
     app: horizon
     component: web
     layer: application
+    app.kubernetes.io/version: production
 spec:
   strategy:
     rollingUpdate:
@@ -25,74 +25,81 @@ spec:
         app: horizon
         component: web
         layer: application
+        app.kubernetes.io/version: production
       name: horizon-web
     spec:
       containers:
-        - name: horizon-web
-          env:
-            - name: PORT
-              value: "8080"
-            - name: PUMA_WORKERS
-              value: "1"
-            - name: PUMA_THREAD_MIN
-              value: "5"
-            - name: PUMA_THREAD_MAX
-              value: "5"
-            - name: RAILS_SERVE_STATIC_FILES
-              value: 'true'
-            - name: RAILS_LOG_TO_STDOUT
-              value: 'true'
-            - name: PUMA_BIND
-              value: 'tcp://0.0.0.0:8080'
-            - name: MALLOC_ARENA_MAX
-              value: "2"
-            - name: DATADOG_TRACE_AGENT_HOSTNAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-          envFrom:
-            - configMapRef:
-                name: horizon-environment
-          image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-          imagePullPolicy: Always
-          ports:
-            - name: horizon-http
-              containerPort: 8080
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              memory: 500Mi
-          readinessProbe:
-            httpGet:
-              port: horizon-http
-              path: /robots.txt
-              httpHeaders:
-                - name: X-Forwarded-Proto
-                  value: https
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sh", "-c", "sleep 5"]
+      - name: horizon-web
+        env:
+        - name: PORT
+          value: '8080'
+        - name: PUMA_WORKERS
+          value: '1'
+        - name: PUMA_THREAD_MIN
+          value: '5'
+        - name: PUMA_THREAD_MAX
+          value: '5'
+        - name: RAILS_SERVE_STATIC_FILES
+          value: 'true'
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
+        - name: PUMA_BIND
+          value: tcp://0.0.0.0:8080
+        - name: MALLOC_ARENA_MAX
+          value: '2'
+        - name: DATADOG_TRACE_AGENT_HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app.kubernetes.io/version']
+        envFrom:
+        - configMapRef:
+            name: horizon-environment
+        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
+        imagePullPolicy: Always
+        ports:
+        - name: horizon-http
+          containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 500Mi
+        readinessProbe:
+          httpGet:
+            port: horizon-http
+            path: /robots.txt
+            httpHeaders:
+            - name: X-Forwarded-Proto
+              value: https
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 5
       dnsPolicy: ClusterFirst
       dnsConfig:
         options:
-          - name: ndots
-            value: "1"
+        - name: ndots
+          value: '1'
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: tier
-                    operator: In
-                    values:
-                      - foreground
-
+            - matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                - foreground
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -107,7 +114,6 @@ spec:
   minReplicas: 2
   maxReplicas: 3
   targetCPUUtilizationPercentage: 70
-
 ---
 apiVersion: v1
 kind: Service
@@ -120,37 +126,35 @@ metadata:
   namespace: default
 spec:
   ports:
-    - port: 8080
-      protocol: TCP
-      name: http
-      targetPort: horizon-http
+  - port: 8080
+    protocol: TCP
+    name: http
+    targetPort: horizon-http
   selector:
     app: horizon
     layer: application
     component: web
   type: ClusterIP
-
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: horizon
   annotations:
-    nginx.ingress.kubernetes.io/whitelist-source-range: "{{ cloudflareIpSourceRanges|join(',') }}"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ cloudflareIpSourceRanges|join(',') }}
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
 spec:
   ingressClassName: nginx
   rules:
-    - host: releases.artsy.net
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              serviceName: horizon-web-internal
-              servicePort: http
-
+  - host: releases.artsy.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          serviceName: horizon-web-internal
+          servicePort: http
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -158,19 +162,18 @@ metadata:
   name: horizon-refresh-comparisons-cron-data
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   storageClassName: gp2
   resources:
     requests:
       storage: 10Gi
-
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: horizon-refresh-comparisons-cron
 spec:
-  schedule: "*/10 * * * *"
+  schedule: '*/10 * * * *'
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -179,63 +182,66 @@ spec:
       template:
         metadata:
           annotations:
-            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+            cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
           initContainers:
-            - name: fix-the-volume-permission
-              image: busybox
-              command:
-              - /bin/sh
-              - -c
-              - |
-                DEPLOY_USER_UID=1001
-                MOUNT_DIR=/home/deploy/data
-                MOUNT_DIR_UID=$(stat -c %u $MOUNT_DIR)
-                if [ "$MOUNT_DIR_UID" != "$DEPLOY_USER_UID" ]
-                then
-                  chown -R "$DEPLOY_USER_UID":"$DEPLOY_USER_UID" $MOUNT_DIR
-                fi
-              securityContext:
-                privileged: true
-              volumeMounts:
-                - name: data
-                  mountPath: /home/deploy/data
+          - name: fix-the-volume-permission
+            image: busybox
+            command:
+            - /bin/sh
+            - -c
+            - |
+              DEPLOY_USER_UID=1001
+              MOUNT_DIR=/home/deploy/data
+              MOUNT_DIR_UID=$(stat -c %u $MOUNT_DIR)
+              if [ "$MOUNT_DIR_UID" != "$DEPLOY_USER_UID" ]
+              then
+                chown -R "$DEPLOY_USER_UID":"$DEPLOY_USER_UID" $MOUNT_DIR
+              fi
+            securityContext:
+              privileged: true
+            volumeMounts:
+            - name: data
+              mountPath: /home/deploy/data
           containers:
-            - name: horizon-refresh-comparisons-cron
-              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-              imagePullPolicy: Always
-              args: ["bundle", "exec", "rake", "cron:refresh_comparisons"]
-              volumeMounts:
-                - name: data
-                  mountPath: /home/deploy/data
-              envFrom:
-                - configMapRef:
-                    name: horizon-environment
-              env:
-                - name: WORKING_DIR
-                  value: /home/deploy/data
+          - name: horizon-refresh-comparisons-cron
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
+            imagePullPolicy: Always
+            args:
+            - bundle
+            - exec
+            - rake
+            - cron:refresh_comparisons
+            volumeMounts:
+            - name: data
+              mountPath: /home/deploy/data
+            envFrom:
+            - configMapRef:
+                name: horizon-environment
+            env:
+            - name: WORKING_DIR
+              value: /home/deploy/data
           restartPolicy: Never
           volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: horizon-refresh-comparisons-cron-data
+          - name: data
+            persistentVolumeClaim:
+              claimName: horizon-refresh-comparisons-cron-data
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
-                  - matchExpressions:
-                      - key: tier
-                        operator: In
-                        values:
-                          - api
-
+                - matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                    - api
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: horizon-refresh-components-cron
 spec:
-  schedule: "0 0 * * 1"
+  schedule: 0 0 * * 1
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -243,23 +249,27 @@ spec:
       template:
         metadata:
           annotations:
-            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+            cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
           containers:
-            - name: horizon-refresh-components-cron
-              image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
-              args: ["bundle", "exec", "rake", "cron:refresh_components"]
-              imagePullPolicy: Always
-              envFrom:
-                - configMapRef:
-                    name: horizon-environment
+          - name: horizon-refresh-components-cron
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
+            args:
+            - bundle
+            - exec
+            - rake
+            - cron:refresh_components
+            imagePullPolicy: Always
+            envFrom:
+            - configMapRef:
+                name: horizon-environment
           restartPolicy: Never
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
-                  - matchExpressions:
-                      - key: tier
-                        operator: In
-                        values:
-                          - background
+                - matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                    - background
