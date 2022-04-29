@@ -43,7 +43,6 @@ class ProjectDataService
     orbs = []
     @circle_config.include?('artsy/auto@') && orbs.push('auto')
     @circle_config.include?('artsy/hokusai@') && orbs.push('hokusai')
-    @circle_config.include?('artsy/node@') && orbs.push('node')
     @circle_config.include?('artsy/release@') && orbs.push('release')
     @circle_config.include?('artsy/remote-docker@') && orbs.push('remote-docker')
     @circle_config.include?('artsy/yarn@') && orbs.push('yarn')
