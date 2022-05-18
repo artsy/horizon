@@ -52,7 +52,7 @@
     "prettier": "2.0.5",
     "typescript": "4.6.4",
     "webpack": "4.46.0",
-    "webpack-bundle-analyzer": "3.8.0",
+    "webpack-bundle-analyzer": "4.5.0",
     "webpack-dev-server": "4.6.0"
   },
   "jest": {
