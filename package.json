@@ -50,7 +50,7 @@
     "jest": "26.0.1",
     "lint-staged": "10.2.9",
     "prettier": "2.0.5",
-    "typescript": "4.4.4",
+    "typescript": "4.6.4",
     "webpack": "4.46.0",
     "webpack-bundle-analyzer": "3.8.0",
     "webpack-dev-server": "4.6.0"
