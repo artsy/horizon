@@ -8,7 +8,7 @@ class Project < ApplicationRecord
   belongs_to :organization
   has_many :stages, dependent: :destroy
   has_many :snapshots, dependent: :destroy
-  has_many :deploy_blocks
+  has_many :deploy_blocks, dependent: :destroy
   belongs_to :snapshot, optional: true
   has_many :dependencies, dependent: :destroy
 

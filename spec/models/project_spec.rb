@@ -26,6 +26,7 @@ RSpec.describe Project, type: :model do
 
   it 'can be deleted despite associations' do
     snapshot = project.snapshots.create!
+    project.deploy_blocks.create!
     snapshot.comparisons.create!(ahead_stage: project.stages.first, behind_stage: project.stages.last)
     project.update(snapshot: snapshot)
     expect(project.destroy).to be_present
