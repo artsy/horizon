@@ -9,7 +9,8 @@
     "prettier-write": "prettier --write 'app/**/*.(ts|tsx|js|jsx)'",
     "test": "jest",
     "test-watch": "jest --watch",
-    "type-check": "tsc --noEmit --pretty"
+    "type-check": "tsc --noEmit --pretty",
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions"
   },
   "engines": {
     "node": "^14.0.0"
@@ -80,5 +81,8 @@
     "singleQuote": false,
     "trailingComma": "all",
     "bracketSpacing": true
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
   }
 }
