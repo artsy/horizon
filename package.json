@@ -80,5 +80,8 @@
     "singleQuote": false,
     "trailingComma": "all",
     "bracketSpacing": true
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
   }
 }
