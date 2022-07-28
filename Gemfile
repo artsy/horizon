@@ -6,7 +6,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby File.read('.ruby-version')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1.5.1'
+gem 'coffee-rails'
+gem 'rails', '~> 6.1.6.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -36,8 +37,8 @@ gem 'jbuilder', '~> 2.5'
 # Reduces boot times through caching; required in config/boot.rb
 # gem 'bootsnap', '>= 1.1.0', require: false
 
-gem 'active_admin_datetimepicker'
 gem 'activeadmin' # manage models
+gem 'active_admin_datetimepicker'
 gem 'acts_as_list' # order Project#stages
 gem 'octokit', '~> 4.0' # talk to github api
 gem 'redis' # actioncable adapter
