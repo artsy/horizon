@@ -19,7 +19,7 @@ class ReleasecopService
     working_dir = Horizon.config[:working_dir]
 
     if working_dir
-      Dir.mkdir(working_dir) unless Dir.exist?(working_dir)
+      FileUtils.mkdir_p(working_dir)
       perform_comparison_in_dir(working_dir)
     else
       Dir.mktmpdir(['releasecop', project.name]) do |dir|
