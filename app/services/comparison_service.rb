@@ -33,7 +33,7 @@ class ComparisonService
     now = Time.now
     oldest_commit_at = commits.map { |c| c[:date] }.min&.to_time
     age = (now - (oldest_commit_at || now)) / 1.day
-    commits.size + contributors.size**2 + age**2
+    commits.size + (contributors.size**2) + (age**2)
   end
 
   def self.refresh_comparisons_for_organization(org)
