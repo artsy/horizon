@@ -151,18 +151,14 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    listen (3.1.5)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
+    listen (3.8.0)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     lograge (0.12.0)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    listen (3.8.0)
-      rb-fsevent (~> 0.10, >= 0.10.3)
-      rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -334,7 +330,7 @@ DEPENDENCIES
   coffee-rails
   fugit
   jbuilder (~> 2.5)
-  listen (>= 3.0.5, < 3.2)
+  listen
   lograge
   octokit (~> 4.0)
   pg
