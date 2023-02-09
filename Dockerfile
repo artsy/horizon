@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # Base Image
 # ---------------------------------------------------------
-FROM artsy/ruby:2.6.6-node-14-yarn as base
+FROM artsy/ruby:3.0.2-node-14-yarn as base
 
 RUN apk update && apk --no-cache --quiet add --update \
     git \
@@ -18,7 +18,7 @@ RUN apk update && apk --no-cache --quiet add --update \
     py3-pip
 
 RUN pip3 install --upgrade --no-cache-dir pip \
-    && pip3 install --upgrade --no-cache-dir hokusai
+    && pip3 install --upgrade --no-cache-dir hokusai --ignore-installed
 
 # ---------------------------------------------------------
 # Build Image
