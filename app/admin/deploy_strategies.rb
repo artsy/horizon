@@ -18,7 +18,7 @@ ActiveAdmin.register DeployStrategy do
   permit_params :provider, :automatic, :profile_id, :arguments_input
 
   form do |f|
-    f.semantic_errors(*f.object.errors.keys)
+    f.semantic_errors(*f.object.errors.attribute_names)
     f.inputs do
       f.input :provider, as: :select, collection: DeployStrategy::PROVIDERS
       f.input :profile

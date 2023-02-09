@@ -23,7 +23,7 @@ ActiveAdmin.register Project do
   permit_params :organization_id, :name, :description, :tags_input, :criticality
 
   form do |f|
-    f.semantic_errors(*f.object.errors.keys)
+    f.semantic_errors(*f.object.errors.attribute_names)
     f.inputs do
       f.input :organization
       f.input :name
