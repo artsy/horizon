@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe ComparisonService, type: :model do
   include ActiveSupport::Testing::TimeHelpers
   let(:org) { Organization.create! name: 'Artsy' }
-  let(:project) do
+  let!(:project) do
     org.projects.create!(name: 'shipping').tap do |p|
       p.stages.create!(name: 'main')
       p.stages.create!(name: 'production')
@@ -14,9 +14,15 @@ RSpec.describe ComparisonService, type: :model do
 
   describe 'refresh_all_comparisons' do
     it 'recovers from releasecop comparison failures' do
-      project # ensure project and org are created
-      allow_any_instance_of(ComparisonService).to receive(:refresh_comparisons).and_raise(ZeroDivisionError)
+      allow_any_instance_of(ComparisonService).to receive(:refresh_comparisons)
+        .and_raise(ZeroDivisionError)
       expect { ComparisonService.refresh_all_comparisons }.not_to raise_error
+    end
+  end
+
+  describe 'refresh_comparisons_for_organizations' do
+    it 'works' do
+      expect { ComparisonService.refresh_comparisons_for_organization(org) }.not_to raise_error
     end
   end
 
