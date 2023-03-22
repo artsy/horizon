@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  class DeployBlocksController < ApplicationController
+  class DeployBlocksController < Api::BaseController
     def index
       project = Project.find(params[:project_id])
       coerced_resolved_param =

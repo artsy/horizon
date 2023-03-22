@@ -8,7 +8,7 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
 
   describe 'GET /api/projects/:id/deployability' do
     context 'when we do not pass any resolved parameter' do
-      it 'does not filter by resolved, but still filters by partner id' do
+      it 'does not filter by resolved, but still filters by project id' do
         artsy = Organization.create!(name: 'Artsy')
         shipping = artsy.projects.create!(name: 'shipping')
         packing = artsy.projects.create!(name: 'packing')
@@ -61,6 +61,24 @@ RSpec.feature 'an API to know whether a project is a deployable', type: :request
         headers = { 'ACCEPT' => 'application/json' }
         get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
 
+        expect(response).to have_http_status(:success)
+        expect(response.body).to eq('[]')
+      end
+
+      it 'enforces basic auth on deploy_blocks API' do
+        allow(Horizon).to receive(:config).and_return(
+          basic_auth_user: 'admin',
+          basic_auth_pass: 'secret'
+        )
+        artsy = Organization.create!(name: 'Artsy')
+        shipping = artsy.projects.create!(name: 'shipping')
+        headers = { 'ACCEPT' => 'application/json' }
+        get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers
+        expect(response).to have_http_status(:unauthorized)
+
+        get "/api/deploy_blocks?project_id=#{shipping.id}&resolved=false", headers: headers.merge(
+          'Authorization' => ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'secret')
+        )
         expect(response).to have_http_status(:success)
         expect(response.body).to eq('[]')
       end
