@@ -10,7 +10,7 @@ jobs:
     executor: hokusai/deploy
     steps:
       - hokusai/setup-docker
-      - run: hokusai registry pull --tag "$CIRCLE_SHA1"
+      - run: hokusai registry pull --tag "$CIRCLE_SHA1"-builder
       - hokusai/run-tests:
           flags: --no-build
 
@@ -41,35 +41,50 @@ workflows:
           context: horizon
           project_id: 38
 
-      - artsy-remote-docker/build:
+      - artsy-remote-docker/buildkit-build:
           <<: *not_staging_or_release
           context: hokusai
-          name: build
+          name: builder-image-build
           pre-steps:
             - run:
-                command: echo 'export BUILD_TARGET="builder"' >> $BASH_ENV
+                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
+
+      - artsy-remote-docker/buildkit-push:
+          <<: *not_staging_or_release
+          context: hokusai
+          name: builder-image-push
+          requires:
+            - builder-image-build
+          pre-steps:
+            - run:
+                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
 
       - test:
           <<: *not_staging_or_release
           context: hokusai
           requires:
-            - build
+            - builder-image-push
 
-      - artsy-remote-docker/build:
+      - artsy-remote-docker/buildkit-build:
           <<: *only_main
           context: hokusai
-          name: push-staging-image
+          name: production-image-build
+          requires:
+            - builder-image-build
+
+      - artsy-remote-docker/buildkit-push:
+          <<: *only_main
+          context: hokusai
+          name: production-image-push
           requires:
             - test
-          pre-steps:
-            - run:
-                command: echo 'export BUILD_TARGET="production"' >> $BASH_ENV
+            - production-image-build
 
       - hokusai/deploy-staging:
           <<: *only_main
           project-name: horizon
           requires:
-            - push-staging-image
+            - production-image-push
 
       - hokusai/deploy-production:
           <<: *only_release
