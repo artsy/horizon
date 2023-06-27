@@ -65,7 +65,7 @@ workflows:
           <<: *not_staging_or_release
           context: hokusai
           requires:
-            - build
+            - builder-image-push
 
       - artsy-remote-docker/buildkit-build:
           <<: *only_main
