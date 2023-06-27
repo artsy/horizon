@@ -41,25 +41,25 @@ workflows:
           context: horizon
           project_id: 38
 
-     - artsy-remote-docker/buildkit-build:
-          <<: *not_staging_or_release
-          context: hokusai
-          executor: hokusai/beta
-          name: builder-image-build
-          pre-steps:
-            - run:
-                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
+      - artsy-remote-docker/buildkit-build:
+            <<: *not_staging_or_release
+            context: hokusai
+            executor: hokusai/beta
+            name: builder-image-build
+            pre-steps:
+              - run:
+                  command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
 
-      - artsy-remote-docker/buildkit-push:
-          <<: *not_staging_or_release
-          context: hokusai
-          executor: hokusai/beta
-          name: builder-image-push
-          requires:
-            - builder-image-build
-          pre-steps:
-            - run:
-                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
+        - artsy-remote-docker/buildkit-push:
+            <<: *not_staging_or_release
+            context: hokusai
+            executor: hokusai/beta
+            name: builder-image-push
+            requires:
+              - builder-image-build
+            pre-steps:
+              - run:
+                  command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
 
       - test:
           <<: *not_staging_or_release
@@ -67,13 +67,13 @@ workflows:
           requires:
             - build
 
-       - artsy-remote-docker/buildkit-build:
-          <<: *only_main
-          context: hokusai
-          executor: hokusai/beta
-          name: production-image-build
-          requires:
-            - builder-image-build
+      - artsy-remote-docker/buildkit-build:
+        <<: *only_main
+        context: hokusai
+        executor: hokusai/beta
+        name: production-image-build
+        requires:
+          - builder-image-build
 
       - artsy-remote-docker/buildkit-push:
           <<: *only_main
