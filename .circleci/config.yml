@@ -88,7 +88,7 @@ workflows:
           <<: *only_main
           project-name: horizon
           requires:
-            - push-staging-image
+            - production-image-push
 
       - hokusai/deploy-production:
           <<: *only_release
