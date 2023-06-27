@@ -50,16 +50,16 @@ workflows:
               - run:
                   command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
 
-        - artsy-remote-docker/buildkit-push:
-            <<: *not_staging_or_release
-            context: hokusai
-            executor: hokusai/beta
-            name: builder-image-push
-            requires:
-              - builder-image-build
-            pre-steps:
-              - run:
-                  command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
+      - artsy-remote-docker/buildkit-push:
+          <<: *not_staging_or_release
+          context: hokusai
+          executor: hokusai/beta
+          name: builder-image-push
+          requires:
+            - builder-image-build
+          pre-steps:
+            - run:
+                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
 
       - test:
           <<: *not_staging_or_release
