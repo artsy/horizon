@@ -10,7 +10,7 @@ jobs:
     executor: hokusai/deploy
     steps:
       - hokusai/setup-docker
-      - run: hokusai registry pull --tag "$CIRCLE_SHA1"
+      - run: hokusai registry pull --tag "$CIRCLE_SHA1"-builder
       - hokusai/run-tests:
           flags: --no-build
 
