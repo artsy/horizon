@@ -101,9 +101,9 @@ RSpec.describe ProjectDataService, type: :service do
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('12')
       expect(Horizon.dogstatsd).to have_received(:gauge)
-        .with('runtime.ruby.version_status', -1, tags: ['project:candela', 'criticality:1', 'team:engineering']).once
+        .with('runtime.version_status', -1, tags: ['project:candela', 'criticality:1', 'team:engineering']).once
       expect(Horizon.dogstatsd).to have_received(:gauge)
-        .with('runtime.node.version_status', 1, tags: ['project:candela', 'criticality:1', 'team:engineering']).once
+        .with('runtime.version_status', 1, tags: ['project:candela', 'criticality:1', 'team:engineering']).once
     end
   end
 
