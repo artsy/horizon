@@ -6,7 +6,7 @@ RSpec.describe ProjectDataService, type: :service do
   let(:org) { Organization.create! name: 'artsy' }
   let(:profile) { org.profiles.create!(basic_password: 'foo') }
   let(:project) do
-    org.projects.create!(name: 'candela', criticality: 1, tags: []).tap do |p|
+    org.projects.create!(name: 'candela', criticality: 1, tags: ['engineering']).tap do |p|
       p.stages.create!(name: 'main', profile: profile)
       p.stages.create!(name: 'production', profile: profile)
     end
