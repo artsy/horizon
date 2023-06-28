@@ -56,19 +56,9 @@ class ProjectDataService
 
   def update_dependency(name, version)
     dependency = @project.dependencies.find_or_initialize_by(name: name)
-
     dependency.update(version: version)
 
-    Horizon.dogstatsd.gauge(
-      'runtime.version_status', # Metric name
-      dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
-      tags: [
-        "runtime:#{name}",
-        "project:#{@project.name}",
-        "criticality:#{@project.criticality}",
-        "team:#{@project.tags&.join(':')}"
-      ]
-    )
+    report_runtime_version_status(dependency)
 
     dependency
   end
@@ -120,5 +110,18 @@ class ProjectDataService
     file&.to_h
   rescue Octokit::NotFound
     # file not found - don't fail if ruby project doesn't have node etc
+  end
+
+  def report_runtime_version_status(dependency)
+    Horizon.dogstatsd.gauge(
+      'runtime.version_status', # Metric name
+      dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
+      tags: [
+        "runtime:#{dependency.name}",
+        "project:#{@project.name}",
+        "criticality:#{@project.criticality}",
+        "team:#{@project.tags&.join(':')}"
+      ]
+    )
   end
 end
