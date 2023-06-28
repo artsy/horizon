@@ -55,8 +55,21 @@ class ProjectDataService
   end
 
   def update_dependency(name, version)
-    @project.dependencies.find_or_initialize_by(name: name)
-            .update!(version: version)
+    dependency = @project.dependencies.find_or_initialize_by(name: name)
+
+    dependency.update(version: version)
+
+    Horizon.dogstatsd.gauge(
+      "runtime.#{name}.version_status", # Metric name
+      dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
+      tags: [
+        "project:#{@project.name}",
+        "criticality:#{@project.criticality}",
+        "team:#{@project.tags&.join(':')}"
+      ]
+    )
+
+    dependency
   end
 
   def ruby_version
