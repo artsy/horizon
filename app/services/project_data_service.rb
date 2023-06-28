@@ -60,9 +60,10 @@ class ProjectDataService
     dependency.update(version: version)
 
     Horizon.dogstatsd.gauge(
-      "runtime.#{name}.version_status", # Metric name
+      'runtime.version_status', # Metric name
       dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
       tags: [
+        "runtime:#{name}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
         "team:#{@project.tags&.join(':')}"
