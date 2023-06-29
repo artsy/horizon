@@ -58,7 +58,7 @@ class ProjectDataService
     dependency = @project.dependencies.find_or_initialize_by(name: name)
     dependency.update(version: version)
 
-    report_runtime_version_status(dependency)
+    report_runtime_version(dependency)
 
     dependency
   end
@@ -112,7 +112,7 @@ class ProjectDataService
     # file not found - don't fail if ruby project doesn't have node etc
   end
 
-  def report_runtime_version_status(dependency)
+  def report_runtime_version(dependency)
     tags = [
       "runtime:#{dependency.name}",
       "project:#{@project.name}",
