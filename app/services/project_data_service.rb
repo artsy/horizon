@@ -128,7 +128,7 @@ class ProjectDataService
 
     Horizon.dogstatsd.gauge(
       'runtime.version', # Metric name
-      dependency.version, # The value associated with the metric. -1 = out of date, 1 = up to date
+      dependency.version,
       tags: tags
     )
   end
