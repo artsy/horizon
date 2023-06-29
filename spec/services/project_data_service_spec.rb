@@ -6,7 +6,7 @@ RSpec.describe ProjectDataService, type: :service do
   let(:org) { Organization.create! name: 'artsy' }
   let(:profile) { org.profiles.create!(basic_password: 'foo') }
   let(:project) do
-    org.projects.create!(name: 'candela').tap do |p|
+    org.projects.create!(name: 'candela', criticality: 1, tags: ['engineering']).tap do |p|
       p.stages.create!(name: 'main', profile: profile)
       p.stages.create!(name: 'production', profile: profile)
     end
@@ -93,11 +93,33 @@ RSpec.describe ProjectDataService, type: :service do
 
   describe 'update_dependencies' do
     it 'calls update_dependency with ruby and node' do
+      allow(Horizon.dogstatsd).to receive(:gauge)
       ProjectDataService.new(project).update_dependencies
+
       expect(project.dependencies.first.name).to eq('ruby')
       expect(project.dependencies.first.version).to eq('2.5.7')
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('12')
+      expect(Horizon.dogstatsd).to have_received(:gauge).with(
+        'runtime.version_status',
+        -1,
+        tags: [
+          'runtime:ruby',
+          'project:candela',
+          'criticality:1',
+          'team:engineering'
+        ]
+      ).once
+      expect(Horizon.dogstatsd).to have_received(:gauge).with(
+        'runtime.version_status',
+        1,
+        tags: [
+          'runtime:node',
+          'project:candela',
+          'criticality:1',
+          'team:engineering'
+        ]
+      ).once
     end
   end
 
