@@ -120,7 +120,7 @@ class ProjectDataService
         "runtime:#{dependency.name}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
-        "team:#{@project.tags&.join(':')}"
+        "team:#{@project.tags&.none? ? 'none' : @project.tags.join(':')}"
       ]
     )
   end
