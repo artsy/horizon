@@ -92,33 +92,41 @@ RSpec.describe ProjectDataService, type: :service do
   end
 
   describe 'update_dependencies' do
-    it 'calls update_dependency with ruby and node' do
+    before do
       allow(Horizon.dogstatsd).to receive(:gauge)
       ProjectDataService.new(project).update_dependencies
+    end
 
+    it 'calls update_dependency with ruby and node' do
       expect(project.dependencies.first.name).to eq('ruby')
       expect(project.dependencies.first.version).to eq('2.5.7')
       expect(project.dependencies.last.name).to eq('node')
       expect(project.dependencies.last.version).to eq('12')
+    end
+
+    it 'sends metrics with the correct payloads' do
+      node_tags = ['runtime:node', 'project:candela', 'criticality:1', 'tags:engineering']
+      ruby_tags = ['runtime:ruby', 'project:candela', 'criticality:1', 'tags:engineering']
+
       expect(Horizon.dogstatsd).to have_received(:gauge).with(
         'runtime.version_status',
         -1,
-        tags: [
-          'runtime:ruby',
-          'project:candela',
-          'criticality:1',
-          'team:engineering'
-        ]
+        tags: ruby_tags
       ).once
       expect(Horizon.dogstatsd).to have_received(:gauge).with(
         'runtime.version_status',
         1,
-        tags: [
-          'runtime:node',
-          'project:candela',
-          'criticality:1',
-          'team:engineering'
-        ]
+        tags: node_tags
+      ).once
+      expect(Horizon.dogstatsd).to have_received(:gauge).with(
+        'runtime.version',
+        '12',
+        tags: node_tags
+      ).once
+      expect(Horizon.dogstatsd).to have_received(:gauge).with(
+        'runtime.version',
+        '2.5.7',
+        tags: ruby_tags
       ).once
     end
   end

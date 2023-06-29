@@ -113,15 +113,23 @@ class ProjectDataService
   end
 
   def report_runtime_version_status(dependency)
+    tags = [
+      "runtime:#{dependency.name}",
+      "project:#{@project.name}",
+      "criticality:#{@project.criticality}",
+      "tags:#{@project.tags&.none? ? 'none' : @project.tags.join(':')}"
+    ]
+
     Horizon.dogstatsd.gauge(
       'runtime.version_status', # Metric name
       dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
-      tags: [
-        "runtime:#{dependency.name}",
-        "project:#{@project.name}",
-        "criticality:#{@project.criticality}",
-        "team:#{@project.tags&.none? ? 'none' : @project.tags.join(':')}"
-      ]
+      tags: tags
+    )
+
+    Horizon.dogstatsd.gauge(
+      'runtime.version', # Metric name
+      dependency.version, # The value associated with the metric. -1 = out of date, 1 = up to date
+      tags: tags
     )
   end
 end
