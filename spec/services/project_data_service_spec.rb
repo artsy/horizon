@@ -105,8 +105,8 @@ RSpec.describe ProjectDataService, type: :service do
     end
 
     it 'sends metrics with the correct payloads' do
-      node_tags = ['runtime:node', 'project:candela', 'criticality:1', 'tags:engineering']
-      ruby_tags = ['runtime:ruby', 'project:candela', 'criticality:1', 'tags:engineering']
+      node_tags = ['runtime:node', 'runtime_version:12', 'project:candela', 'criticality:1', 'tags:engineering']
+      ruby_tags = ['runtime:ruby', 'runtime_version:2.5.7', 'project:candela', 'criticality:1', 'tags:engineering']
 
       expect(Horizon.dogstatsd).to have_received(:gauge).with(
         'runtime.version_status',
@@ -117,16 +117,6 @@ RSpec.describe ProjectDataService, type: :service do
         'runtime.version_status',
         1,
         tags: node_tags
-      ).once
-      expect(Horizon.dogstatsd).to have_received(:gauge).with(
-        'runtime.version',
-        '12',
-        tags: node_tags
-      ).once
-      expect(Horizon.dogstatsd).to have_received(:gauge).with(
-        'runtime.version',
-        '2.5.7',
-        tags: ruby_tags
       ).once
     end
   end
