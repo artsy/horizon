@@ -118,7 +118,7 @@ class ProjectDataService
       dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
       tags: [
         "runtime:#{dependency.name}",
-        "runtime_version:#{dependency.version}",
+        "runtime_version:#{dependency.version == 'unknown version' ? 'none' : dependency.version.delete('^0-9.')}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
         "tags:#{@project.tags&.none? ? 'none' : @project.tags.join(':')}"
