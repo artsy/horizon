@@ -211,6 +211,13 @@ spec:
             - exec
             - rake
             - cron:refresh_comparisons
+            resources:
+              requests:
+                cpu: 300m
+                memory: 500Mi
+              limits:
+                cpu: 500m
+                memory: 1Gi
             volumeMounts:
             - name: data
               mountPath: /home/deploy/data
