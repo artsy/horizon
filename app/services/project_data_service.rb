@@ -121,7 +121,7 @@ class ProjectDataService
         "runtime_version:#{dependency.version == 'unknown version' ? 'none' : dependency.version.delete('^0-9.')}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
-        "tags:#{@project.tags&.none? ? 'none' : @project.tags.join(':')}"
+        "tags:#{@project.tags&.nil? ? 'none' : @project.tags.join(':')}"
       ]
     )
   end
