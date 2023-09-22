@@ -136,7 +136,7 @@ spec:
     component: web
   type: ClusterIP
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: horizon
@@ -153,8 +153,10 @@ spec:
       - path: /
         pathType: Prefix
         backend:
-          serviceName: horizon-web-internal
-          servicePort: http
+          service:
+            name: horizon-web-internal
+            port:
+              name: http
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
