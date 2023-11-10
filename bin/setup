@@ -31,7 +31,7 @@ FileUtils.chdir APP_ROOT do
   end
 
   puts "\n== Downloading .env.shared (for shared configuration) =="
-  system! 'aws s3 cp s3://artsy-citadel/dev/.env.horizon .env.shared'
+  system! 'aws s3 cp s3://artsy-citadel/horizon/.env.shared ./'
 
   puts "\n== Installing foreman for local development =="
   system! 'gem install foreman'
