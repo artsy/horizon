@@ -8,7 +8,7 @@ ruby File.read('.ruby-version')
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'coffee-rails'
 gem 'dogstatsd-ruby', require: 'datadog/statsd' # send metrics to datadog agent
-gem 'rails', '~> 6.1.6.1'
+gem 'rails', '~> 6.1.7.7'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
