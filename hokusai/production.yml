@@ -170,7 +170,7 @@ spec:
     requests:
       storage: 10Gi
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: horizon-refresh-comparisons-cron
@@ -238,7 +238,7 @@ spec:
                     values:
                     - api
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: horizon-refresh-components-cron
