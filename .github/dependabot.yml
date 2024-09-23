@@ -9,7 +9,7 @@ updates:
     assignees:
       - mc-jones
     reviewers:
-      - artsy/velocity-engineers
+      - artsy/sapphire-engineers
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -19,4 +19,4 @@ updates:
     assignees:
       - mc-jones
     reviewers:
-      - artsy/velocity-engineers
+      - artsy/sapphire-engineers
