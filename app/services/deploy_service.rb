@@ -13,7 +13,7 @@ class DeployService
 
   def start
     case deploy_strategy.provider
-    when 'github pull request' then create_or_update_github_pull_request
+    when "github pull request" then create_or_update_github_pull_request
     else raise NotImplementedError
     end
   end
@@ -23,14 +23,14 @@ class DeployService
   def create_or_update_github_pull_request
     pull_request = find_pull_request || create_pull_request
     assign_pull_request(pull_request) if pull_request.assignee.blank?
-    return unless deploy_strategy.arguments['merge_after'] && deploy_strategy.can_release?
+    return unless deploy_strategy.arguments["merge_after"] && deploy_strategy.can_release?
 
-    merge_at = pull_request.created_at + deploy_strategy.arguments['merge_after'].seconds
-    warn_at = merge_at - deploy_strategy.arguments.fetch('merge_prior_warning', MERGE_PRIOR_WARNING)
+    merge_at = pull_request.created_at + deploy_strategy.arguments["merge_after"].seconds
+    warn_at = merge_at - deploy_strategy.arguments.fetch("merge_prior_warning", MERGE_PRIOR_WARNING)
 
     if warn_at.past? &&
-       (webhook_urls = deploy_strategy.arguments['slack_webhook_url']) &&
-       deploy_strategy.arguments['warned_pull_request_url'] != pull_request.html_url &&
+       (webhook_urls = deploy_strategy.arguments["slack_webhook_url"]) &&
+       deploy_strategy.arguments["warned_pull_request_url"] != pull_request.html_url &&
        (merge_at.past? || deploy_strategy.can_release?(merge_at))
       deliver_slack_webhooks(pull_request, webhook_urls, merge_at)
       deploy_strategy.update!(
@@ -50,17 +50,17 @@ class DeployService
   def find_pull_request
     github_client.pull_requests(
       github_repo,
-      base: deploy_strategy.arguments['base'],
-      head: deploy_strategy.arguments['head']
+      base: deploy_strategy.arguments["base"],
+      head: deploy_strategy.arguments["head"]
     ).first
   end
 
   def create_pull_request
     github_client.create_pull_request(
       github_repo,
-      deploy_strategy.arguments['base'],
-      deploy_strategy.arguments['head'],
-      'Deploy',
+      deploy_strategy.arguments["base"],
+      deploy_strategy.arguments["head"],
+      "Deploy",
       "This is an automatically generated release PR!\n\nHumans: remember to _merge_ (not squash or rebase) this PR."
     )
   end
@@ -81,7 +81,7 @@ class DeployService
   def github_access_token
     @github_access_token ||=
       deploy_strategy.profile&.basic_password.presence ||
-      (raise 'A profile and basic_password are required for Github authentication')
+      (raise "A profile and basic_password are required for Github authentication")
   end
 
   def validate_slack_webhook_url?(webhook_url)
@@ -104,13 +104,13 @@ class DeployService
     if validate_slack_webhook_url?(webhook_url)
       uri = URI.parse webhook_url
       request = Net::HTTP::Post.new(uri.request_uri)
-      request['Content-Type'] = 'application/json'
-      distance_of_time = merge_at.past? ? 'a few minutes' : distance_of_time_in_words_to_now(merge_at)
+      request["Content-Type"] = "application/json"
+      distance_of_time = merge_at.past? ? "a few minutes" : distance_of_time_in_words_to_now(merge_at)
       request.body = {
         text: "The following changes will be released in #{distance_of_time}: #{pull_request.html_url}"
       }.to_json
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = (uri.scheme == 'https')
+      http.use_ssl = (uri.scheme == "https")
       http.request(request)
     end
   rescue StandardError => e
@@ -121,7 +121,7 @@ class DeployService
     github_client
       .pull_request_commits(github_repo, pull_request.number)
       .flat_map { |c| [c.author, c.committer] }
-      .reject { |c| c.nil? || c.type == 'Bot' || c.login == 'web-flow' || c.login == 'artsyit' || c.login[/\bbot\b/] }
+      .reject { |c| c.nil? || c.type == "Bot" || c.login == "web-flow" || c.login == "artsyit" || c.login[/\bbot\b/] }
       .group_by(&:login).map { |k, v| [v.size, k] }.sort.reverse.map(&:last)
       .detect { |l| github_client.check_assignee(github_repo, l) }
   end

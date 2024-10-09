@@ -14,11 +14,11 @@ class Project < ApplicationRecord
 
   jsonb_editable :tags
 
-  validates :criticality, inclusion: { in: [0, 1, 2, 3] }, unless: proc { |a| a.criticality.blank? }
+  validates :criticality, inclusion: {in: [0, 1, 2, 3]}, unless: proc { |a| a.criticality.blank? }
 
   def github_repo
     github_match = stages.ordered.first&.git_remote&.match(GITHUB_REMOTE_EXPR)
-    return [organization.name, name].join('/') unless github_match
+    return [organization.name, name].join("/") unless github_match
 
     "#{github_match[:org]}/#{github_match[:project]}"
   end
@@ -46,13 +46,13 @@ class Project < ApplicationRecord
   end
 
   def heroku?
-    stages.any? { |s| s.profile&.name == 'heroku' }
+    stages.any? { |s| s.profile&.name == "heroku" }
   end
 
   def deployment_type
-    return 'kubernetes' if kubernetes?
+    return "kubernetes" if kubernetes?
 
-    return 'heroku' if heroku?
+    return "heroku" if heroku?
   end
 
   def dependencies_up_to_date?
@@ -60,7 +60,7 @@ class Project < ApplicationRecord
   end
 
   def dependencies_with_unknown_status
-    dependencies.select { |d| d.version.include?('unknown') }
+    dependencies.select { |d| d.version.include?("unknown") }
   end
 
   def dependencies_with_update_required

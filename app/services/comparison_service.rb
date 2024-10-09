@@ -15,7 +15,7 @@ class ComparisonService
     Organization.all.map do |org|
       new_snapshots += refresh_comparisons_for_organization(org)
     end
-    ActionCable.server.broadcast(ProjectChannel.channel_name, { newSnapshots: true }) if new_snapshots.any?
+    ActionCable.server.broadcast(ProjectChannel.channel_name, {newSnapshots: true}) if new_snapshots.any?
     new_snapshots
   end
 
@@ -45,7 +45,7 @@ class ComparisonService
       Rails.logger.error "Refreshing project ##{project.id} (#{project.name}) failed with: #{e.full_message}"
     end
     new_snapshots.compact!
-    ActionCable.server.broadcast(ProjectChannel.channel_name(org.id), { newSnapshots: true }) if new_snapshots.any?
+    ActionCable.server.broadcast(ProjectChannel.channel_name(org.id), {newSnapshots: true}) if new_snapshots.any?
     new_snapshots
   end
 
@@ -101,6 +101,6 @@ class ComparisonService
     ids = project.snapshots.pluck(:id).sort
     return unless ids.size > KEEP_OLD_SNAPSHOTS
 
-    project.snapshots.where('id < ?', ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
+    project.snapshots.where("id < ?", ids[-KEEP_OLD_SNAPSHOTS]).destroy_all
   end
 end

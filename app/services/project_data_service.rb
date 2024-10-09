@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'base64'
+require "base64"
 
 class ProjectDataService
   def initialize(project)
@@ -29,9 +29,9 @@ class ProjectDataService
 
   def ci_provider
     if @circle_config
-      'circleci'
+      "circleci"
     elsif travis?
-      'travis'
+      "travis"
     end
   end
 
@@ -41,17 +41,17 @@ class ProjectDataService
 
   def orbs
     orbs = []
-    @circle_config.include?('artsy/auto@') && orbs.push('auto')
-    @circle_config.include?('artsy/hokusai@') && orbs.push('hokusai')
-    @circle_config.include?('artsy/release@') && orbs.push('release')
-    @circle_config.include?('artsy/remote-docker@') && orbs.push('remote-docker')
-    @circle_config.include?('artsy/yarn@') && orbs.push('yarn')
+    @circle_config.include?("artsy/auto@") && orbs.push("auto")
+    @circle_config.include?("artsy/hokusai@") && orbs.push("hokusai")
+    @circle_config.include?("artsy/release@") && orbs.push("release")
+    @circle_config.include?("artsy/remote-docker@") && orbs.push("remote-docker")
+    @circle_config.include?("artsy/yarn@") && orbs.push("yarn")
     orbs
   end
 
   def update_dependencies
-    update_dependency('ruby', ruby_version) if ruby_version
-    update_dependency('node', node_version) if node_version
+    update_dependency("ruby", ruby_version) if ruby_version
+    update_dependency("node", node_version) if node_version
   end
 
   def update_dependency(name, version)
@@ -64,45 +64,45 @@ class ProjectDataService
   end
 
   def ruby_version
-    version_file = fetch_github_file('.ruby-version')
-    gem_file = fetch_github_file('Gemfile') unless version_file
+    version_file = fetch_github_file(".ruby-version")
+    gem_file = fetch_github_file("Gemfile") unless version_file
     return if !version_file && !gem_file
 
-    decode_content(version_file) || 'unknown version'
+    decode_content(version_file) || "unknown version"
   end
 
   def node_version
-    package_file = fetch_github_file('package.json')
+    package_file = fetch_github_file("package.json")
     return unless package_file
 
     json = JSON.parse(decode_content(package_file))
-    engine = json['engines'] && json['engines']['node']
-    nvmrc = fetch_github_file('.nvmrc') unless engine
+    engine = json["engines"] && json["engines"]["node"]
+    nvmrc = fetch_github_file(".nvmrc") unless engine
     return decode_content(nvmrc) if nvmrc
 
-    engine || 'unknown version'
+    engine || "unknown version"
   end
 
   def circle_config
-    file = fetch_github_file('.circleci/config.yml')
+    file = fetch_github_file(".circleci/config.yml")
     return unless file
 
     decode_content(file)
   end
 
   def travis?
-    !!fetch_github_file('.travis.yml')
+    !!fetch_github_file(".travis.yml")
   end
 
   def renovate_config
-    file = fetch_github_file('renovate.json')
+    file = fetch_github_file("renovate.json")
     return unless file
 
     decode_content(file)
   end
 
   def decode_content(file)
-    Base64.decode64(file[:content]).gsub(/\n/, '') if file && file[:content]
+    Base64.decode64(file[:content]).gsub(/\n/, "") if file && file[:content]
   end
 
   def fetch_github_file(path)
@@ -114,14 +114,14 @@ class ProjectDataService
 
   def report_runtime_version(dependency)
     Horizon.dogstatsd.gauge(
-      'runtime.version_status', # Metric name
+      "runtime.version_status", # Metric name
       dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
       tags: [
         "runtime:#{dependency.name}",
-        "runtime_version:#{dependency.version == 'unknown version' ? 'none' : dependency.version.delete('^0-9.')}",
+        "runtime_version:#{dependency.version == "unknown version" ? "none" : dependency.version.delete("^0-9.")}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
-        "tags:#{@project.tags.blank? ? 'none' : @project.tags.join(':')}"
+        "tags:#{@project.tags.blank? ? "none" : @project.tags.join(":")}"
       ]
     )
   end

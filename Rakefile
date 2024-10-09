@@ -3,7 +3,7 @@
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-require_relative 'config/application'
+require_relative "config/application"
 
 Rails.application.load_tasks
 
@@ -20,20 +20,20 @@ namespace :cron do
 end
 
 if Rails.env.development? || Rails.env.test?
-  require 'rubocop/rake_task'
-  desc 'Run RuboCop'
+  require "rubocop/rake_task"
+  desc "Run RuboCop"
   RuboCop::RakeTask.new(:rubocop)
 
-  desc 'run prettier'
+  desc "run prettier"
   task prettier: :environment do
-    system 'yarn prettier'
-    abort 'prettier failed' unless $CHILD_STATUS.exitstatus.zero?
+    system "yarn prettier"
+    abort "prettier failed" unless $CHILD_STATUS.exitstatus.zero?
   end
 
-  desc 'run jest'
+  desc "run jest"
   task jest: :environment do
-    system 'yarn test --runInBand'
-    abort 'jest failed' unless $CHILD_STATUS.exitstatus.zero?
+    system "yarn test --runInBand"
+    abort "jest failed" unless $CHILD_STATUS.exitstatus.zero?
   end
 
   Rake::Task[:default].clear

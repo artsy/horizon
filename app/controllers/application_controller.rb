@@ -13,6 +13,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_admin_timezone
-    Time.zone = 'Eastern Time (US & Canada)'
+    Time.zone = "Eastern Time (US & Canada)"
   end
 end

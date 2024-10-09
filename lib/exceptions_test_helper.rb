@@ -24,15 +24,15 @@ module ExceptionsTestHelper
   #   end
   #
   def with_exceptions_app(enabled: true)
-    org_show_detailed_exceptions = Rails.application.env_config['action_dispatch.show_detailed_exceptions']
-    org_show_exceptions = Rails.application.env_config['action_dispatch.show_exceptions']
+    org_show_detailed_exceptions = Rails.application.env_config["action_dispatch.show_detailed_exceptions"]
+    org_show_exceptions = Rails.application.env_config["action_dispatch.show_exceptions"]
 
-    Rails.application.env_config['action_dispatch.show_detailed_exceptions'] = !enabled
-    Rails.application.env_config['action_dispatch.show_exceptions'] = enabled
+    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = !enabled
+    Rails.application.env_config["action_dispatch.show_exceptions"] = enabled
 
     yield
   ensure
-    Rails.application.env_config['action_dispatch.show_detailed_exceptions'] = org_show_detailed_exceptions
-    Rails.application.env_config['action_dispatch.show_exceptions'] = org_show_exceptions
+    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = org_show_detailed_exceptions
+    Rails.application.env_config["action_dispatch.show_exceptions"] = org_show_exceptions
   end
 end

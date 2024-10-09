@@ -13,10 +13,10 @@ ActiveAdmin.register Project do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  sidebar 'Associated Data', only: %i[show edit] do
+  sidebar "Associated Data", only: %i[show edit] do
     ul do
-      li link_to 'Stages', admin_project_stages_path(project)
-      li link_to 'Deploy Blocks', admin_deploy_blocks_path(q: { project_id_eq: project.id })
+      li link_to "Stages", admin_project_stages_path(project)
+      li link_to "Deploy Blocks", admin_deploy_blocks_path(q: {project_id_eq: project.id})
     end
   end
 
@@ -28,7 +28,7 @@ ActiveAdmin.register Project do
       f.input :organization
       f.input :name
       f.input :description
-      f.input :tags_input, label: 'Tags (JSON array)'
+      f.input :tags_input, label: "Tags (JSON array)"
       f.input :criticality, as: :select, collection: [0, 1, 2, 3]
     end
     f.actions

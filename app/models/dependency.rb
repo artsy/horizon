@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'semantic'
-require 'semantic/core_ext'
+require "semantic"
+require "semantic/core_ext"
 
 class Dependency < ApplicationRecord
   belongs_to :project
@@ -25,7 +25,7 @@ class Dependency < ApplicationRecord
       current < expectation
     else
       # FIXME: backup to handle non-semantic version syntax coming from projects
-      current = version.delete('^0-9.').split('.')
+      current = version.delete("^0-9.").split(".")
       current_major = current[0]&.to_i
       current_minor = current[1]&.to_i
       return unless current_major
