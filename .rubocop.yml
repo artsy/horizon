@@ -1,11 +1,13 @@
-AllCops:
-  NewCops: enable
-  Exclude:
-    - db/**/*
-    - bin/**/*
-    - node_modules/**/*
-  TargetRubyVersion: 2.6
-Metrics:
-  Enabled: false
-Style/Documentation:
-  Enabled: false
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+  EnforcedStyle: no_space
+  EnforcedStyleForEmptyBraces: no_space
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: false
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
