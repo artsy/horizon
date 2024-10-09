@@ -11,9 +11,9 @@ RSpec.describe Dependency, type: :model do
     allow(Horizon)
       .to receive(:config)
       .and_return({
-                    minimum_version_ruby: "2.6.6",
-                    minimum_version_node: "12.0.0"
-                  })
+        minimum_version_ruby: "2.6.6",
+        minimum_version_node: "12.0.0"
+      })
   end
 
   describe "update_required?" do

@@ -102,7 +102,7 @@ class ProjectDataService
   end
 
   def decode_content(file)
-    Base64.decode64(file[:content]).gsub(/\n/, "") if file && file[:content]
+    Base64.decode64(file[:content]).delete("\n") if file && file[:content]
   end
 
   def fetch_github_file(path)
@@ -118,7 +118,7 @@ class ProjectDataService
       dependency.update_required? ? -1 : 1, # The value associated with the metric. -1 = out of date, 1 = up to date
       tags: [
         "runtime:#{dependency.name}",
-        "runtime_version:#{dependency.version == "unknown version" ? "none" : dependency.version.delete("^0-9.")}",
+        "runtime_version:#{(dependency.version == "unknown version") ? "none" : dependency.version.delete("^0-9.")}",
         "project:#{@project.name}",
         "criticality:#{@project.criticality}",
         "tags:#{@project.tags.blank? ? "none" : @project.tags.join(":")}"

@@ -48,9 +48,9 @@ RSpec.describe ProjectDataService, type: :service do
     allow(Horizon)
       .to receive(:config)
       .and_return({
-                    minimum_version_ruby: "2.6.6",
-                    minimum_version_node: "12.0.0"
-                  })
+        minimum_version_ruby: "2.6.6",
+        minimum_version_node: "12.0.0"
+      })
   end
 
   describe "refresh_data_for_org" do
@@ -59,10 +59,10 @@ RSpec.describe ProjectDataService, type: :service do
       ProjectDataService.refresh_data_for_org(org)
       expect(project).to have_received(:update)
         .with({
-                ci_provider: "circleci",
-                renovate: true,
-                orbs: %w[hokusai release yarn]
-              })
+          ci_provider: "circleci",
+          renovate: true,
+          orbs: %w[hokusai release yarn]
+        })
       expect(project.dependencies.first.name).to eq("ruby")
       expect(project.dependencies.first.version).to eq("2.5.7")
       expect(project.dependencies.last.name).to eq("node")

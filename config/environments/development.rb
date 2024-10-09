@@ -62,7 +62,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new($stdout)
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    logger = ActiveSupport::Logger.new($stdout)
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 end

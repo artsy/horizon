@@ -29,9 +29,9 @@ class DeployService
     warn_at = merge_at - deploy_strategy.arguments.fetch("merge_prior_warning", MERGE_PRIOR_WARNING)
 
     if warn_at.past? &&
-       (webhook_urls = deploy_strategy.arguments["slack_webhook_url"]) &&
-       deploy_strategy.arguments["warned_pull_request_url"] != pull_request.html_url &&
-       (merge_at.past? || deploy_strategy.can_release?(merge_at))
+        (webhook_urls = deploy_strategy.arguments["slack_webhook_url"]) &&
+        deploy_strategy.arguments["warned_pull_request_url"] != pull_request.html_url &&
+        (merge_at.past? || deploy_strategy.can_release?(merge_at))
       deliver_slack_webhooks(pull_request, webhook_urls, merge_at)
       deploy_strategy.update!(
         arguments: deploy_strategy.arguments.merge(warned_pull_request_url: pull_request.html_url)
@@ -96,7 +96,7 @@ class DeployService
     Array(webhook_urls).each do |webhook_url|
       send_slack_alert(pull_request, webhook_url.strip, merge_at)
     end
-  rescue StandardError => e
+  rescue => e
     Rails.logger.warn "Failed to deliver webhook to #{webhook_urls.inspect} (#{e.message})"
   end
 
@@ -113,7 +113,7 @@ class DeployService
       http.use_ssl = (uri.scheme == "https")
       http.request(request)
     end
-  rescue StandardError => e
+  rescue => e
     Rails.logger.warn "Failed to deliver webhook to #{webhook_url.inspect} (#{e.message})"
   end
 

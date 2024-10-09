@@ -13,24 +13,24 @@ RSpec.feature "Comparisons", type: :feature do
   end
   let(:small_comparison) do
     double("Releasecop::Comparison",
-           ahead: double("Releasecop::ManifestItem", name: "main"),
-           behind: double("Releasecop::ManifestItem", name: "production"),
-           unreleased?: true,
-           lines: ["commit foo", "commit bar"])
+      ahead: double("Releasecop::ManifestItem", name: "main"),
+      behind: double("Releasecop::ManifestItem", name: "production"),
+      unreleased?: true,
+      lines: ["commit foo", "commit bar"])
   end
   let(:large_comparison) do
     double("Releasecop::Comparison",
-           ahead: double("Releasecop::ManifestItem", name: "main"),
-           behind: double("Releasecop::ManifestItem", name: "production"),
-           unreleased?: true,
-           lines: (0..20).map { |i| "commit #{i}" })
+      ahead: double("Releasecop::ManifestItem", name: "main"),
+      behind: double("Releasecop::ManifestItem", name: "production"),
+      unreleased?: true,
+      lines: (0..20).map { |i| "commit #{i}" })
   end
   let(:empty_comparison) do
     double("Releasecop::Comparison",
-           ahead: double("Releasecop::ManifestItem", name: "main"),
-           behind: double("Releasecop::ManifestItem", name: "production"),
-           unreleased?: false,
-           lines: [])
+      ahead: double("Releasecop::ManifestItem", name: "main"),
+      behind: double("Releasecop::ManifestItem", name: "production"),
+      unreleased?: false,
+      lines: [])
   end
 
   it "cleans up old snapshots" do

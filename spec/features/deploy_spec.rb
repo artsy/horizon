@@ -76,11 +76,11 @@ RSpec.feature "Deploys", type: :feature do
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
       .with("artsy/candela", 42)
       .and_return([
-                    double(author: renovate, committer: renovate),
-                    double(author: joe, committer: jane),
-                    double(author: jane, committer: web_flow),
-                    double(author: renovate, committer: jane)
-                  ])
+        double(author: renovate, committer: renovate),
+        double(author: joe, committer: jane),
+        double(author: jane, committer: web_flow),
+        double(author: renovate, committer: jane)
+      ])
     expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
     expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with("artsy/candela", 42, "jane")
     DeployService.new(strategy).start
@@ -96,9 +96,9 @@ RSpec.feature "Deploys", type: :feature do
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
       .with("artsy/candela", 42)
       .and_return([
-                    double(author: nil, committer: renovate),
-                    double(author: jane, committer: web_flow)
-                  ])
+        double(author: nil, committer: renovate),
+        double(author: jane, committer: web_flow)
+      ])
     expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
     expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with("artsy/candela", 42, "jane")
     DeployService.new(strategy).start
@@ -111,11 +111,11 @@ RSpec.feature "Deploys", type: :feature do
     allow_any_instance_of(Octokit::Client).to receive(:pull_request_commits)
       .with("artsy/candela", 42)
       .and_return([
-                    double(author: renovate, committer: renovate),
-                    double(author: joe, committer: jane),
-                    double(author: jane, committer: web_flow),
-                    double(author: renovate, committer: jane)
-                  ])
+        double(author: renovate, committer: renovate),
+        double(author: joe, committer: jane),
+        double(author: jane, committer: web_flow),
+        double(author: renovate, committer: jane)
+      ])
     expect_any_instance_of(Octokit::Client).to receive(:check_assignee).and_return(true)
     expect_any_instance_of(Octokit::Client).to receive(:add_assignees).with("artsy/candela", 42, "jane")
 

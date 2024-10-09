@@ -3,7 +3,7 @@
 class Project < ApplicationRecord
   include JsonbEditable
 
-  GITHUB_REMOTE_EXPR = %r{https://github.com/(?<org>[^/]+)/(?<project>[^.]+).git}.freeze
+  GITHUB_REMOTE_EXPR = %r{https://github.com/(?<org>[^/]+)/(?<project>[^.]+).git}
 
   belongs_to :organization
   has_many :stages, dependent: :destroy
@@ -52,7 +52,7 @@ class Project < ApplicationRecord
   def deployment_type
     return "kubernetes" if kubernetes?
 
-    return "heroku" if heroku?
+    "heroku" if heroku?
   end
 
   def dependencies_up_to_date?

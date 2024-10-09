@@ -7,9 +7,9 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 if ENV["ARTSY_ENV"]
-  $stderr.puts "Sourcing seed data from shared Artsy environment variables."
+  warn "Sourcing seed data from shared Artsy environment variables."
 else
-  $stderr.puts "No shared Artsy environment found. Falling back to defaults."
+  warn "No shared Artsy environment found. Falling back to defaults."
 end
 
 artsy_org = Organization.create!(name: "artsy")
@@ -81,17 +81,17 @@ charge_project = artsy_org.projects.create!(
   description: "create and pay auction invoices",
   tags: ["auctions"]
 )
-charge_main_stage = charge_project.stages.create!(
+charge_project.stages.create!(
   name: "main",
   git_remote: "https://github.com/artsy/charge.git",
   profile: github_aws_profile
 )
-charge_staging_stage = charge_project.stages.create!(
+charge_project.stages.create!(
   name: "staging",
   git_remote: "https://git.heroku.com/charge-staging.git",
   profile: heroku_profile
 )
-charge_production_stage = charge_project.stages.create!(
+charge_project.stages.create!(
   name: "production",
   git_remote: "https://git.heroku.com/charge-production.git",
   profile: heroku_profile

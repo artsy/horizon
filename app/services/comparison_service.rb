@@ -41,7 +41,7 @@ class ComparisonService
     new_snapshots = []
     org.projects.each do |project|
       new_snapshots << new(project).refresh_comparisons
-    rescue StandardError => e
+    rescue => e
       Rails.logger.error "Refreshing project ##{project.id} (#{project.name}) failed with: #{e.full_message}"
     end
     new_snapshots.compact!

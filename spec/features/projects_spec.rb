@@ -6,10 +6,10 @@ RSpec.feature "Projects", type: :feature do
   let(:org) { Organization.create! name: "Artsy" }
   let(:releasecop_comparison) do
     double("Releasecop::Comparison",
-           ahead: double("Releasecop::ManifestItem", name: "main"),
-           behind: double("Releasecop::ManifestItem", name: "production"),
-           unreleased?: true,
-           lines: ["commit foo", "commit bar"])
+      ahead: double("Releasecop::ManifestItem", name: "main"),
+      behind: double("Releasecop::ManifestItem", name: "production"),
+      unreleased?: true,
+      lines: ["commit foo", "commit bar"])
   end
 
   scenario "view projects" do
