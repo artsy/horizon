@@ -43,7 +43,7 @@ class DeployStrategy < ApplicationRecord
   def validate_arguments
     return unless PROVIDERS.include?(provider) # don't bother if provider invalid
 
-    unless REQUIRED_ARGUMENTS[provider].all? { |a| (arguments || {}).keys.include?(a) }
+    unless REQUIRED_ARGUMENTS[provider].all? { |a| (arguments || {}).key?(a) }
       errors.add(:arguments, "must include #{REQUIRED_ARGUMENTS[provider].to_sentence}")
     end
     return if (arguments || {}).keys.all? { |a| SUPPORTED_ARGUMENTS[provider].include?(a) }
