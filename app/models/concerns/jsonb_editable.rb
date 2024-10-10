@@ -15,8 +15,8 @@ module JsonbEditable
 
   class_methods do
     def jsonb_editable(field_name, as: "#{field_name}_input")
-      define_method("#{as}=") do |val|
-        send("#{field_name}=", val.presence && JSON.parse(val))
+      define_method(:"#{as}=") do |val|
+        send(:"#{field_name}=", val.presence && JSON.parse(val))
       end
 
       define_method(as) do

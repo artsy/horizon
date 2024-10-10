@@ -12,8 +12,8 @@ ActiveAdmin.register DeployBlock do
       input(
         :resolved_at,
         as: :date_time_picker,
-        datepicker_options: { formatTime: 'g:ia' },
-        label: 'Resolved At (TZ: Eastern Time)'
+        datepicker_options: {formatTime: "g:ia"},
+        label: "Resolved At (TZ: Eastern Time)"
       )
       input :description
     end

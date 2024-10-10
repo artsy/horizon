@@ -31,7 +31,7 @@ ActiveAdmin.register Profile do
       f.input :organization
       f.input :basic_username
       f.input :basic_password
-      f.input :environment_input, as: :text, label: 'Environment'
+      f.input :environment_input, as: :text, label: "Environment"
     end
     f.actions
   end

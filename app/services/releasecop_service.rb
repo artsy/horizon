@@ -5,7 +5,7 @@ class ReleasecopService
 
   # format criteria: %h %ad %s (%an, %ae)
   # see https://github.com/joeyAghion/releasecop/blob/master/lib/releasecop/comparison.rb#L5
-  LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/.freeze
+  LOG_LINE_EXPR = /^(?<sha>[0-9a-f]+) (?<date>[0-9-]+) (?<message>.*) \((?<name>.*), (?<email>.*)\)\w*$/
 
   def self.parsed_log_line(line)
     line.match(LOG_LINE_EXPR)&.named_captures&.with_indifferent_access || {}
@@ -22,7 +22,7 @@ class ReleasecopService
       FileUtils.mkdir_p(working_dir)
       perform_comparison_in_dir(working_dir)
     else
-      Dir.mktmpdir(['releasecop', project.name]) do |dir|
+      Dir.mktmpdir(["releasecop", project.name]) do |dir|
         perform_comparison_in_dir(dir)
       end
     end
@@ -33,7 +33,7 @@ class ReleasecopService
 
     def initialize(checker)
       @result = checker.check
-    rescue StandardError => e
+    rescue => e
       self.error = e
     end
 
@@ -57,13 +57,13 @@ class ReleasecopService
 
   def build_manifest_item(stage)
     {
-      'name' => stage.name,
-      'git' => construct_git(stage),
-      'tag_pattern' => stage.tag_pattern.presence,
-      'branch' => stage.branch.presence,
-      'hokusai' => stage.hokusai.presence,
-      'aws_access_key_id' => stage.profile&.environment&.fetch('AWS_ACCESS_KEY_ID'),
-      'aws_secret_access_key' => stage.profile&.environment&.fetch('AWS_SECRET_ACCESS_KEY')
+      "name" => stage.name,
+      "git" => construct_git(stage),
+      "tag_pattern" => stage.tag_pattern.presence,
+      "branch" => stage.branch.presence,
+      "hokusai" => stage.hokusai.presence,
+      "aws_access_key_id" => stage.profile&.environment&.fetch("AWS_ACCESS_KEY_ID"),
+      "aws_secret_access_key" => stage.profile&.environment&.fetch("AWS_SECRET_ACCESS_KEY")
     }
   end
 

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Organization, type: :model do
-  it 'can be deleted despite associations' do
-    org = Organization.create!(name: 'artsy')
-    project = org.projects.create!(name: 'eigen')
+  it "can be deleted despite associations" do
+    org = Organization.create!(name: "artsy")
+    project = org.projects.create!(name: "eigen")
     stages = (1..2).map do |i|
       project.stages.create!(
         name: "stage #{i}",
-        git_remote: 'https://github.com/artsy/eigen.git'
+        git_remote: "https://github.com/artsy/eigen.git"
       )
     end
     snapshot = project.snapshots.create!

@@ -36,7 +36,7 @@ class ProjectPresenter
     end
     if @project.orbs.any? && @project.kubernetes? && !@project.renovate
       messages.push(
-        'Enable Renovate to receive automatic PRs when orb versions change.'
+        "Enable Renovate to receive automatic PRs when orb versions change."
       )
     end
     messages
