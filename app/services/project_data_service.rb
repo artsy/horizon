@@ -3,6 +3,8 @@
 require "base64"
 
 class ProjectDataService
+  GEMFILE_RUBY_REGEX = /^ruby "([0-9.]+)"$/
+
   def initialize(project)
     @project = project
     access_token = @project.organization.profiles.first.basic_password
@@ -64,11 +66,14 @@ class ProjectDataService
   end
 
   def ruby_version
-    version_file = fetch_github_file(".ruby-version")
-    gem_file = fetch_github_file("Gemfile") unless version_file
-    return if !version_file && !gem_file
+    gemfile = decode_content(fetch_github_file("Gemfile"))
+    version = gemfile.match(GEMFILE_RUBY_REGEX)&.captures&.first if gemfile
+    return version || "unknown version" if gemfile
 
-    decode_content(version_file) || "unknown version"
+    version_file = fetch_github_file(".ruby-version")
+    return if !version_file
+
+    decode_content(version_file)&.strip
   end
 
   def node_version
@@ -78,7 +83,7 @@ class ProjectDataService
     json = JSON.parse(decode_content(package_file))
     engine = json["engines"] && json["engines"]["node"]
     nvmrc = fetch_github_file(".nvmrc") unless engine
-    return decode_content(nvmrc) if nvmrc
+    return decode_content(nvmrc)&.strip if nvmrc
 
     engine || "unknown version"
   end
@@ -102,7 +107,7 @@ class ProjectDataService
   end
 
   def decode_content(file)
-    Base64.decode64(file[:content]).delete("\n") if file && file[:content]
+    Base64.decode64(file[:content]) if file && file[:content]
   end
 
   def fetch_github_file(path)
