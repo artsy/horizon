@@ -18,8 +18,8 @@ RSpec.describe ProjectDataService, type: :service do
   let(:github_nvmrc_response) do
     {name: ".nvmrc", path: ".nvmrc", sha: "dae199aecb18022d9c525b7af95f6cd1bb44f43a", size: 4, url: "https://api.github.com/repos/artsy/metaphysics/contents/.nvmrc?ref=main", html_url: "https://github.com/artsy/metaphysics/blob/main/.nvmrc", git_url: "https://api.github.com/repos/artsy/metaphysics/git/blobs/dae199aecb18022d9c525b7af95f6cd1bb44f43a", download_url: "https://raw.githubusercontent.com/artsy/metaphysics/main/.nvmrc", type: "file", content: "djEyCg==\n", encoding: "base64", _links: {self: "https://api.github.com/repos/artsy/metaphysics/contents/.nvmrc?ref=main", git: "https://api.github.com/repos/artsy/metaphysics/git/blobs/dae199aecb18022d9c525b7af95f6cd1bb44f43a", html: "https://github.com/artsy/metaphysics/blob/main/.nvmrc"}}
   end
-  let(:github_ruby_response) do
-    {name: ".ruby-version", path: ".ruby-version", sha: "35d16fb1a74c5b135d4278c6a69edd3cfa0d9a74", size: 6, url: "https://api.github.com/repos/artsy/gravity/contents/.ruby-version?ref=main", html_url: "https://github.com/artsy/gravity/blob/main/.ruby-version", git_url: "https://api.github.com/repos/artsy/gravity/git/blobs/35d16fb1a74c5b135d4278c6a69edd3cfa0d9a74", download_url: "https://raw.githubusercontent.com/artsy/gravity/main/.ruby-version?token=AAEEFFHK6TGTBOY7HJLJVWK66UJRS", type: "file", content: "Mi41LjcK\n", encoding: "base64", _links: {self: "https://api.github.com/repos/artsy/gravity/contents/.ruby-version?ref=main", git: "https://api.github.com/repos/artsy/gravity/git/blobs/35d16fb1a74c5b135d4278c6a69edd3cfa0d9a74", html: "https://github.com/artsy/gravity/blob/main/.ruby-version"}}
+  let(:github_gemfile_response) do
+    {content: Base64.encode64("source \"https://rubygems.org\"\n\nruby \"2.5.7\"\n\ngem \"puma\"\n")}
   end
   let(:github_circle_response) do
     {name: "config.yml", path: ".circleci/config.yml", sha: "efe34e82768fbd0142420c93b436064741cf39ef", size: 2552, url: "https://api.github.com/repos/artsy/metaphysics/contents/.circleci/config.yml?ref=main", html_url: "https://github.com/artsy/metaphysics/blob/main/.circleci/config.yml", git_url: "https://api.github.com/repos/artsy/metaphysics/git/blobs/efe34e82768fbd0142420c93b436064741cf39ef", download_url: "https://raw.githubusercontent.com/artsy/metaphysics/main/.circleci/config.yml", type: "file", content: "dmVyc2lvbjogMi4xCgpvcmJzOgogIGNvZGVjb3Y6IGNvZGVjb3YvY29kZWNv\ndkAxLjEuMAogIGhva3VzYWk6IGFydHN5L2hva3VzYWlAMC43LjQKICBob3Jp\nem9uOiBhcnRzeS9yZWxlYXNlQDAuMC4xCiAgbm9kZTogY2lyY2xlY2kvbm9k\nZUAzLjAuMAogIHlhcm46IGFydHN5L3lhcm5ANS4xLjMKCm5vdF9zdGFnaW5n\nX29yX3JlbGVhc2U6ICZub3Rfc3RhZ2luZ19vcl9yZWxlYXNlCiAgZmlsdGVy\nczoKICAgIGJyYW5jaGVzOgogICAgICBpZ25vcmU6CiAgICAgICAgLSBzdGFn\naW5nCiAgICAgICAgLSByZWxlYXNlCgpvbmx5X21hc3RlcjogJm9ubHlfbWFz\ndGVyCiAgY29udGV4dDogaG9rdXNhaQogIGZpbHRlcnM6CiAgICBicmFuY2hl\nczoKICAgICAgb25seTogbWFzdGVyCgpvbmx5X3JlbGVhc2U6ICZvbmx5X3Jl\nbGVhc2UKICBjb250ZXh0OiBob2t1c2FpCiAgZmlsdGVyczoKICAgIGJyYW5j\naGVzOgogICAgICBvbmx5OiByZWxlYXNlCgpvbmx5X2RldmVsb3BtZW50OiAm\nb25seV9kZXZlbG9wbWVudAogIGZpbHRlcnM6CiAgICBicmFuY2hlczoKICAg\nICAgaWdub3JlOgogICAgICAgIC0gc3RhZ2luZwogICAgICAgIC0gcmVsZWFz\nZQogICAgICAgIC0gbWFzdGVyCgpqb2JzOgogIHB1c2gtc2NoZW1hLWNoYW5n\nZXM6CiAgICBleGVjdXRvcjoKICAgICAgbmFtZTogbm9kZS9kZWZhdWx0CiAg\nICAgIHRhZzogIjEyLjE0IgogICAgc3RlcHM6CiAgICAgIC0gcnVuOgogICAg\nICAgICAgbmFtZTogTGV0IGhva3VzYWkgbW9kaWZ5IC91c3IvbG9jYWwvYmlu\nCiAgICAgICAgICBjb21tYW5kOiBzdWRvIGNobW9kIC1SIDc3NyAvdXNyL2xv\nY2FsL2JpbgogICAgICAtIGNoZWNrb3V0CiAgICAgIC0gaG9rdXNhaS9pbnN0\nYWxsLWF3cy1pYW0tYXV0aGVudGljYXRvcgogICAgICAtIHJ1bjoKICAgICAg\nICAgIG5hbWU6IEluc3RhbGwgaG9rdXNhaQogICAgICAgICAgY29tbWFuZDog\nfAogICAgICAgICAgICBzdWRvIGFwdCB1cGRhdGUKICAgICAgICAgICAgc3Vk\nbyBhcHQgaW5zdGFsbCAtLWFzc3VtZS15ZXMgcHl0aG9uLXBpcAogICAgICAg\nICAgICBwaXAgaW5zdGFsbCBhd3NjbGkgLS11cGdyYWRlCiAgICAgICAgICAg\nIHBpcCBpbnN0YWxsIGhva3VzYWkKICAgICAgLSBob2t1c2FpL2NvbmZpZ3Vy\nZS1ob2t1c2FpCiAgICAgIC0geWFybi9sb2FkX2RlcGVuZGVuY2llcwogICAg\nICAtIHlhcm4vaW5zdGFsbAogICAgICAtIHlhcm4vc2F2ZV9kZXBlbmRlbmNp\nZXMKICAgICAgLSBydW46CiAgICAgICAgICBuYW1lOiBwdXNoIHNjaGVtYSBj\naGFuZ2VzCiAgICAgICAgICBjb21tYW5kOiBub2RlIHNjcmlwdHMvcHVzaC1z\nY2hlbWEtY2hhbmdlcy5qcwoKd29ya2Zsb3dzOgogIGRlZmF1bHQ6CiAgICBq\nb2JzOgogICAgICAjIGZvciBQUnMKICAgICAgLSB5YXJuL3VwZGF0ZS1jYWNo\nZToKICAgICAgICAgIDw8OiAqb25seV9kZXZlbG9wbWVudAoKICAgICAgIyBw\ncmUtc3RhZ2luZwogICAgICAtIGhva3VzYWkvdGVzdDoKICAgICAgICAgIG5h\nbWU6IHRlc3QKICAgICAgICAgIDw8OiAqbm90X3N0YWdpbmdfb3JfcmVsZWFz\nZQogICAgICAgICAgcG9zdC1zdGVwczoKICAgICAgICAgICAgLSBydW46IG1r\nZGlyIC1wIC4vY292ZXJhZ2UKICAgICAgICAgICAgLSBydW46CiAgICAgICAg\nICAgICAgICBuYW1lOiBDb3B5IGNvdmVyYWdlIGFydGlmYWN0cwogICAgICAg\nICAgICAgICAgY29tbWFuZDogZG9ja2VyIGNwIGhva3VzYWlfbWV0YXBoeXNp\nY3NfMTovYXBwL2NvdmVyYWdlIC4vCiAgICAgICAgICAgICAgICB3aGVuOiBh\nbHdheXMKICAgICAgICAgICAgLSBjb2RlY292L3VwbG9hZDoKICAgICAgICAg\nICAgICAgIGZpbGU6IC4vY292ZXJhZ2UvbGNvdi5pbmZvCgogICAgICAjIHN0\nYWdpbmcKICAgICAgLSBob2t1c2FpL3B1c2g6CiAgICAgICAgICBuYW1lOiBw\ndXNoLXN0YWdpbmctaW1hZ2UKICAgICAgICAgIDw8OiAqb25seV9tYXN0ZXIK\nICAgICAgICAgIHJlcXVpcmVzOgogICAgICAgICAgICAtIHRlc3QKCiAgICAg\nIC0gaG9rdXNhaS9kZXBsb3ktc3RhZ2luZzoKICAgICAgICAgIG5hbWU6IGRl\ncGxveS1zdGFnaW5nCiAgICAgICAgICA8PDogKm9ubHlfbWFzdGVyCiAgICAg\nICAgICBwcm9qZWN0LW5hbWU6IG1ldGFwaHlzaWNzCiAgICAgICAgICByZXF1\naXJlczoKICAgICAgICAgICAgLSBwdXNoLXN0YWdpbmctaW1hZ2UKCiAgICAg\nIC0gcHVzaC1zY2hlbWEtY2hhbmdlczoKICAgICAgICAgIDw8OiAqb25seV9t\nYXN0ZXIKICAgICAgICAgIGNvbnRleHQ6IGhva3VzYWkKICAgICAgICAgIHJl\ncXVpcmVzOgogICAgICAgICAgICAtIHB1c2gtc3RhZ2luZy1pbWFnZQogICAg\nICAgICAgICAtIGRlcGxveS1zdGFnaW5nCgogICAgICAjIHJlbGVhc2UKICAg\nICAgLSBob3Jpem9uL2Jsb2NrOgogICAgICAgICAgPDw6ICpvbmx5X3JlbGVh\nc2UKICAgICAgICAgIGNvbnRleHQ6IGhvcml6b24KICAgICAgICAgIHByb2pl\nY3RfaWQ6IDE4CgogICAgICAtIGhva3VzYWkvZGVwbG95LXByb2R1Y3Rpb246\nCiAgICAgICAgICA8PDogKm9ubHlfcmVsZWFzZQogICAgICAgICAgcmVxdWly\nZXM6CiAgICAgICAgICAgIC0gaG9yaXpvbi9ibG9jawo=\n", encoding: "base64", _links: {self: "https://api.github.com/repos/artsy/metaphysics/contents/.circleci/config.yml?ref=main", git: "https://api.github.com/repos/artsy/metaphysics/git/blobs/efe34e82768fbd0142420c93b436064741cf39ef", html: "https://github.com/artsy/metaphysics/blob/main/.circleci/config.yml"}}
@@ -36,11 +36,8 @@ RSpec.describe ProjectDataService, type: :service do
       .with(project.github_repo.to_s, path: ".nvmrc")
       .and_return(github_nvmrc_response)
     allow_any_instance_of(Octokit::Client).to receive(:contents)
-      .with(project.github_repo.to_s, path: ".ruby-version")
-      .and_return(github_ruby_response)
-    allow_any_instance_of(Octokit::Client).to receive(:contents)
       .with(project.github_repo.to_s, path: "Gemfile")
-      .and_return({content: ""})
+      .and_return(github_gemfile_response)
     allow_any_instance_of(Octokit::Client).to receive(:contents)
       .with(project.github_repo.to_s, path: "renovate.json")
       .and_return({content: ""})
@@ -119,24 +116,37 @@ RSpec.describe ProjectDataService, type: :service do
     end
   end
 
-  describe "ruby_version" do
+  describe "Gemfile" do
     it "returns version when provided" do
       version = ProjectDataService.new(project).ruby_version
       expect(version).to eq("2.5.7")
     end
 
-    it "returns unknown when no .ruby-version but Gemfile is present" do
+    it "returns unknown when Gemfile is present without ruby" do
       allow_any_instance_of(Octokit::Client).to receive(:contents)
-        .with(project.github_repo.to_s, path: ".ruby-version")
-        .and_return(nil)
+        .with(project.github_repo.to_s, path: "Gemfile")
+        .and_return({content: ""})
       version = ProjectDataService.new(project).ruby_version
       expect(version).to eq("unknown version")
     end
 
-    it "returns nothing if no .ruby-version or Gemfile" do
+    it "returns nothing if no Gemfile or .ruby-version" do
       allow_any_instance_of(Octokit::Client).to receive(:contents).and_return(nil)
       version = ProjectDataService.new(project).ruby_version
       expect(version).to eq(nil)
+    end
+  end
+
+  describe ".ruby-version" do
+    it "retrieves ruby version from .ruby-version if present (and no Gemfile)" do
+      allow_any_instance_of(Octokit::Client).to receive(:contents)
+        .with(project.github_repo.to_s, path: "Gemfile")
+        .and_return(nil)
+      allow_any_instance_of(Octokit::Client).to receive(:contents)
+        .with(project.github_repo.to_s, path: ".ruby-version")
+        .and_return({content: Base64.encode64("2.5.7\n")})
+      version = ProjectDataService.new(project).ruby_version
+      expect(version).to eq("2.5.7")
     end
   end
 
