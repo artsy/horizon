@@ -212,6 +212,21 @@ spec:
             cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
           initContainers:
+          - name: setenv
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:staging
+            imagePullPolicy: Always
+            command:
+            - python
+            - src/load/load.py
+            - kubernetes
+            - staging
+            - horizon
+            envFrom:
+            - configMapRef:
+                name: secrets-config
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           - name: fix-the-volume-permission
             image: busybox
             command:
@@ -249,7 +264,12 @@ spec:
             volumeMounts:
             - name: data
               mountPath: /home/deploy/data
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
             envFrom:
+            - configMapRef:
+                name: secrets-config
             - configMapRef:
                 name: horizon-environment
             env:
@@ -260,6 +280,9 @@ spec:
           - name: data
             persistentVolumeClaim:
               claimName: horizon-refresh-comparisons-cron-data
+          - name: secrets
+            emptyDir: {}
+          serviceAccount: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -285,6 +308,22 @@ spec:
           annotations:
             cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
+          initContainers:
+          - name: setenv
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:staging
+            imagePullPolicy: Always
+            command:
+            - python
+            - src/load/load.py
+            - kubernetes
+            - staging
+            - horizon
+            envFrom:
+            - configMapRef:
+                name: secrets-config
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           containers:
           - name: horizon-refresh-components-cron
             image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:staging
@@ -296,8 +335,14 @@ spec:
             imagePullPolicy: Always
             envFrom:
             - configMapRef:
+                name: secrets-config
+            - configMapRef:
                 name: horizon-environment
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           restartPolicy: Never
+          serviceAccount: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -307,3 +352,6 @@ spec:
                     operator: In
                     values:
                     - background
+          volumes:
+          - name: secrets
+            emptyDir: {}
