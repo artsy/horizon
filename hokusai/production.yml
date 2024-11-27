@@ -28,6 +28,22 @@ spec:
         app.kubernetes.io/version: production
       name: horizon-web
     spec:
+     initContainers:
+      - name: setenv
+        image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:production
+        imagePullPolicy: Always
+        command:
+        - python
+        - src/load/load.py
+        - kubernetes
+        - production
+        - horizon
+        envFrom:
+        - configMapRef:
+            name: secrets-config
+        volumeMounts:
+        - name: secrets
+          mountPath: /secrets
       containers:
       - name: horizon-web
         env:
@@ -57,7 +73,13 @@ spec:
               fieldPath: metadata.labels['app.kubernetes.io/version']
         envFrom:
         - configMapRef:
+           name: secrets-config
+        - configMapRef:
             name: horizon-environment
+        volumeMounts:
+        - name: secrets
+          mountPath: /secrets
+          readOnly: true
         image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
         imagePullPolicy: Always
         ports:
@@ -91,6 +113,7 @@ spec:
         options:
         - name: ndots
           value: '1'
+      serviceAccount: horizon
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -100,6 +123,9 @@ spec:
                 operator: In
                 values:
                 - foreground
+      volumes:
+      - name: secrets
+        emptyDir: {}
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -187,6 +213,21 @@ spec:
             cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
           initContainers:
+          - name: setenv
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:production
+            imagePullPolicy: Always
+            command:
+            - python
+            - src/load/load.py
+            - kubernetes
+            - production
+            - horizon
+            envFrom:
+            - configMapRef:
+                name: secrets-config
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           - name: fix-the-volume-permission
             image: busybox
             command:
@@ -205,6 +246,9 @@ spec:
             volumeMounts:
             - name: data
               mountPath: /home/deploy/data
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
           containers:
           - name: horizon-refresh-comparisons-cron
             image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
@@ -219,6 +263,8 @@ spec:
               mountPath: /home/deploy/data
             envFrom:
             - configMapRef:
+                name: secrets-config
+            - configMapRef:
                 name: horizon-environment
             env:
             - name: WORKING_DIR
@@ -228,6 +274,9 @@ spec:
           - name: data
             persistentVolumeClaim:
               claimName: horizon-refresh-comparisons-cron-data
+          - name: secrets
+            emptyDir: {}
+          serviceAccount: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -253,6 +302,22 @@ spec:
           annotations:
             cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
         spec:
+          initContainers:
+          - name: setenv
+            image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:production
+            imagePullPolicy: Always
+            command:
+            - python
+            - src/load/load.py
+            - kubernetes
+            - production
+            - horizon
+            envFrom:
+            - configMapRef:
+                name: secrets-config
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           containers:
           - name: horizon-refresh-components-cron
             image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
@@ -264,8 +329,14 @@ spec:
             imagePullPolicy: Always
             envFrom:
             - configMapRef:
+                name: secrets-config
+            - configMapRef:
                 name: horizon-environment
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
           restartPolicy: Never
+          serviceAccount: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -275,3 +346,6 @@ spec:
                     operator: In
                     values:
                     - background
+          volumes: 
+          - name: secrets
+          emptyDir: {}
