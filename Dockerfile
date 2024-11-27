@@ -76,6 +76,8 @@ RUN apk update && apk --no-cache --quiet add --update \
 COPY --chown=deploy:deploy --from=builder /app .
 # copy gems
 COPY --chown=deploy:deploy --from=builder /usr/local/bundle /usr/local/bundle
+# copy scripts
+COPY --chown=deploy:deploy --from=builder /app/scripts/load_secrets_and_run.sh load_secrets_and_run.sh
 
 # Create directories for Puma/Nginx & give deploy user access
 RUN mkdir -p /shared/pids /shared/sockets && \
@@ -90,5 +92,5 @@ RUN rm -rf node_modules
 
 USER deploy
 
-ENTRYPOINT ["/usr/bin/dumb-init", "./scripts/load_secrets_and_run.sh"]
+ENTRYPOINT ["/usr/bin/dumb-init", "./load_secrets_and_run.sh"]
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
