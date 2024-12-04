@@ -5,10 +5,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.0.2"
 
+gem "rails", "6.1.7.9"
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "coffee-rails"
 gem "dogstatsd-ruby", require: "datadog/statsd" # send metrics to datadog agent
-gem "rails", "~> 6.1.7.7"
 # Use postgresql as the database for Active Record
 gem "pg"
 # Use Puma as the app server
