@@ -73,7 +73,7 @@ spec:
               fieldPath: metadata.labels['app.kubernetes.io/version']
         envFrom:
         - configMapRef:
-           name: secrets-config
+            name: secrets-config
         - configMapRef:
             name: horizon-environment
         volumeMounts:
@@ -113,7 +113,7 @@ spec:
         options:
         - name: ndots
           value: '1'
-      serviceAccount: horizon
+      serviceAccountName: horizon
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -246,9 +246,6 @@ spec:
             volumeMounts:
             - name: data
               mountPath: /home/deploy/data
-            - name: secrets
-              mountPath: /secrets
-              readOnly: true
           containers:
           - name: horizon-refresh-comparisons-cron
             image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/horizon:production
@@ -261,6 +258,9 @@ spec:
             volumeMounts:
             - name: data
               mountPath: /home/deploy/data
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
             envFrom:
             - configMapRef:
                 name: secrets-config
@@ -276,7 +276,7 @@ spec:
               claimName: horizon-refresh-comparisons-cron-data
           - name: secrets
             emptyDir: {}
-          serviceAccount: horizon
+          serviceAccountName: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -335,8 +335,9 @@ spec:
             volumeMounts:
             - name: secrets
               mountPath: /secrets
+              readOnly: true
           restartPolicy: Never
-          serviceAccount: horizon
+          serviceAccountName: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
