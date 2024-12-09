@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/version: production
       name: horizon-web
     spec:
-     initContainers:
+      initContainers:
       - name: setenv
         image: 585031190124.dkr.ecr.us-east-1.amazonaws.com/fortress:production
         imagePullPolicy: Always
@@ -349,4 +349,4 @@ spec:
                     - background
           volumes: 
           - name: secrets
-          emptyDir: {}
+            emptyDir: {}
