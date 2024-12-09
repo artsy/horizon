@@ -282,7 +282,7 @@ spec:
               claimName: horizon-refresh-comparisons-cron-data
           - name: secrets
             emptyDir: {}
-          serviceAccount: horizon
+          serviceAccountName: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -341,8 +341,9 @@ spec:
             volumeMounts:
             - name: secrets
               mountPath: /secrets
+              readOnly: true
           restartPolicy: Never
-          serviceAccount: horizon
+          serviceAccountName: horizon
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
