@@ -113,7 +113,7 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
                     color="white100"
                     underlineBehavior="none"
                   >
-                    <Flex>
+                    <Flex title={`${block.description} (${block.created_at})`}>
                       {/** @ts-ignore */}
                       <LockIcon fill="white100" mr={0.5} />
                       Blocked
