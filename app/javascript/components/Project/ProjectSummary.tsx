@@ -28,7 +28,11 @@ export const ProjectSummary: React.FC<Project> = ({
     >
       <Link href={projectPath(id)} underlineBehavior="none">
         {block && (
-          <Box position="absolute" right={3}>
+          <Box
+            position="absolute"
+            right={3}
+            title={`${block.description} (${block.created_at})`}
+          >
             <Button variant="primaryBlack" size="small">
               Blocked
             </Button>
