@@ -1,41 +1,66 @@
-#!/usr/bin/env ruby
-require "fileutils"
+#!/bin/sh
 
-# path to your application root.
-APP_ROOT = File.expand_path("..", __dir__)
+# Exit if any subcommand fails
+set -e
 
-def system!(*args)
-  system(*args) || abort("\n== Command #{args} failed ==")
-end
+echo "brew bundle install..."
+brew bundle --file=- <<EOF
+brew 'postgresql@12', restart_service: true
+EOF
 
-FileUtils.chdir APP_ROOT do
-  # This script is a way to setup or update your development environment automatically.
-  # This script is idempotent, so that you can run it at anytime and get an expectable outcome.
-  # Add necessary setup steps to this file.
+if command -v asdf >/dev/null; then
+  echo "Installing language dependencies with asdf"
+  asdf install
+else
+  echo "Skipping language dependencies installation (asdf not found)"
+fi
 
-  puts "== Installing dependencies =="
-  system! "gem install bundler --conservative"
-  system("bundle check") || system!("bundle install")
+echo "install the bundler version locked in Gemfile.lock, if any..."
+LOCKED_BUNDLER_VERSION=$(grep -A2 'BUNDLED WITH' Gemfile.lock | tail -1 | awk '{print $1}')
+if [[ "$LOCKED_BUNDLER_VERSION" != '' ]]; then
+  gem install bundler:"$LOCKED_BUNDLER_VERSION"
+fi
 
-  # Install JavaScript dependencies
-  # system('bin/yarn')
+echo "install lastest bundler version, if at this point bundler is still missing..."
+if ! command -v bundler > /dev/null; then
+  gem install bundler
+fi
 
-  # puts "\n== Copying sample files =="
-  # unless File.exist?('config/database.yml')
-  #   FileUtils.cp 'config/database.yml.sample', 'config/database.yml'
-  # end
+echo "foreman install, if required..."
+if ! command -v foreman > /dev/null; then
+  gem install foreman
+fi
 
-  unless File.exist?(".env")
-    puts "\n== Creating .env (for any custom configuration) =="
-    FileUtils.cp ".env.example", ".env"
-  end
+echo "install project's gem dependencies..."
+# To mitigate 'BuildError: No pg_config..' when installing pg gem.
+bundle config build.pg --with-pg-config=$(brew --prefix)/Cellar/postgresql@12/$(brew info postgresql@12 | grep $(brew --prefix)/Cellar/postgresql@12 | cut -d' ' -f1 | xargs basename)/bin/pg_config
+bundle install > /dev/null
 
-  puts "\n== Downloading .env.shared (for shared configuration) =="
-  system! "aws s3 cp s3://artsy-citadel/horizon/.env.shared ./"
+if command -v yarn >/dev/null; then
+  echo "Yarn is already installed"
+else
+  echo "Installing yarn..."
+  npm install -g yarn
+fi
 
-  puts "\n== Installing foreman for local development =="
-  system! "gem install foreman"
+echo "download .env.shared (common local dev config) from S3..."
+aws s3 cp s3://artsy-citadel/horizon/.env.shared ./
 
-  puts "\n== Preparing database =="
-  system! "foreman run bin/rails db:setup db:seed"
-end
+echo "initialize .env (custom local dev config) from .env.example, if required..."
+if [ ! -e ".env" ]; then
+  cp .env.example .env
+fi
+
+echo "db setup..."
+foreman run bundle exec rake db:setup db:seed
+
+echo "
+Your local dev environment has been set up based on:
+  - sane defaults in config/initializers/_config.rb
+  - common local dev config in .env.shared
+  - custom local dev config in .env
+
+To launch the server, run:
+
+  foreman start
+"

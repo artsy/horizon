@@ -118,7 +118,11 @@ export const ProjectsListRow: React.FC<{ project: Project }> = ({
             </Sans>
 
             {block && (
-              <Button size="small" ml={1}>
+              <Button
+                size="small"
+                ml={1}
+                title={`${block.description} (${block.created_at})`}
+              >
                 Blocked
               </Button>
             )}
