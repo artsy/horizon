@@ -29,6 +29,7 @@
 .env
 .env.shared
 *.dump
+.ruby-version
 
 /public/packs
 /public/packs-test
