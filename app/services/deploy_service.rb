@@ -61,7 +61,7 @@ class DeployService
       deploy_strategy.arguments["base"],
       deploy_strategy.arguments["head"],
       "Deploy",
-      "This is an automatically generated release PR!\n\nHumans: remember to _merge_ (not squash or rebase) this PR."
+      "This is an automatically generated release PR!"
     )
   end
 
