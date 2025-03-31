@@ -5,7 +5,7 @@ set -e
 
 echo "brew bundle install..."
 brew bundle --file=- <<EOF
-brew 'postgresql@12', restart_service: true
+brew 'postgresql@14', restart_service: true
 EOF
 
 if command -v asdf >/dev/null; then
@@ -33,7 +33,7 @@ fi
 
 echo "install project's gem dependencies..."
 # To mitigate 'BuildError: No pg_config..' when installing pg gem.
-bundle config build.pg --with-pg-config=$(brew --prefix)/Cellar/postgresql@12/$(brew info postgresql@12 | grep $(brew --prefix)/Cellar/postgresql@12 | cut -d' ' -f1 | xargs basename)/bin/pg_config
+bundle config build.pg --with-pg-config=$(brew --prefix)/Cellar/postgresql@14/$(brew info postgresql@14 | grep $(brew --prefix)/Cellar/postgresql@14 | cut -d' ' -f1 | xargs basename)/bin/pg_config
 bundle install > /dev/null
 
 if command -v yarn >/dev/null; then
