@@ -43,6 +43,7 @@ class ProjectDataService
 
   def orbs
     orbs = []
+    return orbs unless @circle_config
     @circle_config.include?("artsy/auto@") && orbs.push("auto")
     @circle_config.include?("artsy/hokusai@") && orbs.push("hokusai")
     @circle_config.include?("artsy/release@") && orbs.push("release")

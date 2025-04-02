@@ -183,5 +183,14 @@ RSpec.describe ProjectDataService, type: :service do
       orbs = ProjectDataService.new(project).orbs
       expect(orbs).to eq(%w[hokusai release yarn])
     end
+
+    it "returns an empty array if ci config is nil" do
+      allow_any_instance_of(Octokit::Client).to receive(:contents)
+        .with(project.github_repo.to_s, path: ".circleci/config.yml")
+        .and_return(nil)
+
+      orbs = ProjectDataService.new(project).orbs
+      expect(orbs).to eq([])
+    end
   end
 end
