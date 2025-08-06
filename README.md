@@ -7,7 +7,7 @@ Visual representations of release pipelines.
 - **Staging:** [https://releases-staging.artsy.net](https://releases-staging.artsy.net) | [k8s](https://kubernetes.stg.artsy.systems/#!/search?q=horizon&namespace=default)
 - **GitHub:** https://github.com/artsy/horizon
 - **CI/Deploys:** [CircleCi](https://circleci.com/gh/artsy/horizon); merged PRs to `artsy/horizon#main` are automatically deployed to staging; PRs from `staging` to `release` are automatically deployed to production. [Start a deploy...](https://github.com/artsy/horizon/compare/release...staging?expand=1)
-- **Point Team:** [Platform](https://artsy.slack.com/messages/product-platform)
+- **Point People:** [@mc-jones](https://github.com/mc-jones), [@ovasdi](https://github.com/ovasdi), [@joey](https://github.com/joeyAghion), [@narikazu](https://github.com/narikazu)
 
 ## Quick links
 
