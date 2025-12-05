@@ -10,7 +10,7 @@ Horizon.config = {
   working_dir: ENV.fetch("WORKING_DIR", nil),
   datadog_service_name: ENV["DATADOG_SERVICE_NAME"] || "horizon",
   datadog_trace_agent_hostname: ENV.fetch("DATADOG_TRACE_AGENT_HOSTNAME", nil),
-  sentry_dsn: ENV["SENTRY_DSN"]
+  sentry_dsn: ENV.fetch("SENTRY_DSN", nil)
 }
 
 if Rails.env.production? && Horizon.config[:basic_auth_pass].blank?
