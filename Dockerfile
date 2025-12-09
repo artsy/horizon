@@ -18,6 +18,7 @@ RUN apk update && apk --no-cache --quiet add --update \
     py3-pip
 
 RUN pip3 install --upgrade --no-cache-dir pip \
+    && pip3 install --upgrade --no-cache-dir 'PyYAML>=6.0.2' \
     && pip3 install --upgrade --no-cache-dir hokusai --ignore-installed
 
 # ---------------------------------------------------------
