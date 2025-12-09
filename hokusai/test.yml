@@ -20,4 +20,4 @@ services:
       - POSTGRES_DB=horizon_test
       - POSTGRES_HOST_AUTH_METHOD=trust
   horizon-redis:
-    image: redis:3.2-alpine
+    image: redis:6.2.21-alpine
