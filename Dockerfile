@@ -18,8 +18,8 @@ RUN apk update && apk --no-cache --quiet add --update \
     py3-pip
 
 RUN pip3 install --upgrade --no-cache-dir pip \
-    && pip3 install --upgrade --no-cache-dir 'PyYAML>=6.0.2' \
-    && pip3 install --upgrade --no-cache-dir hokusai --ignore-installed
+    && pip3 install --no-cache-dir 'Cython<3.0' 'setuptools==69.5.1' 'wheel' \
+    && pip3 install --upgrade --no-cache-dir --no-build-isolation hokusai
 
 # ---------------------------------------------------------
 # Build Image
@@ -58,7 +58,8 @@ RUN yarn install --frozen-lockfile --quiet && \
 COPY --chown=deploy:deploy . ./
 
 # Precompile Rails assets
-RUN bundle exec rake assets:precompile
+# Use legacy OpenSSL provider for Node.js 18 compatibility with webpack 4
+RUN NODE_OPTIONS=--openssl-legacy-provider bundle exec rake assets:precompile
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
