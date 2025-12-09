@@ -58,8 +58,7 @@ RUN yarn install --frozen-lockfile --quiet && \
 COPY --chown=deploy:deploy . ./
 
 # Precompile Rails assets
-# Use legacy OpenSSL provider for Node.js 18 compatibility with webpack 4
-RUN NODE_OPTIONS=--openssl-legacy-provider bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
