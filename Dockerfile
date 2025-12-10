@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # Base Image
 # ---------------------------------------------------------
-FROM artsy/ruby:3.0.2-node-14-yarn as base
+FROM artsy/ruby:3.1.4-node-18-yarn as base
 
 RUN apk update && apk --no-cache --quiet add --update \
     git \
@@ -18,7 +18,8 @@ RUN apk update && apk --no-cache --quiet add --update \
     py3-pip
 
 RUN pip3 install --upgrade --no-cache-dir pip \
-    && pip3 install --upgrade --no-cache-dir hokusai --ignore-installed
+    && pip3 install --no-cache-dir 'Cython<3.0' 'setuptools==69.5.1' 'wheel' \
+    && pip3 install --upgrade --no-cache-dir --no-build-isolation hokusai
 
 # ---------------------------------------------------------
 # Build Image
