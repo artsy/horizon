@@ -127,7 +127,7 @@ spec:
       - name: secrets
         emptyDir: {}
 ---
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: horizon-web
@@ -139,7 +139,13 @@ spec:
     name: horizon-web
   minReplicas: 2
   maxReplicas: 3
-  targetCPUUtilizationPercentage: 70
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ---
 apiVersion: v1
 kind: Service
