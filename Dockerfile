@@ -46,7 +46,8 @@ USER deploy
 # TODO: look into buildkit to prevent re-installing node modules after changing gems
 COPY --chown=deploy:deploy Gemfile Gemfile.lock ./
 # RUN bundle install -j4 --path /usr/local/bundle-prod --without development test && \
-RUN bundle install -j4 --path /usr/local/bundle
+RUN bundle config set --global path /usr/local/bundle && \
+    bundle install -j4
 # bundle clean
 
 # Set up packages, empty cache to save space
