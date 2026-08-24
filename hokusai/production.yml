@@ -200,7 +200,7 @@ spec:
   storageClassName: gp2
   resources:
     requests:
-      storage: 10Gi
+      storage: 12Gi
 ---
 apiVersion: batch/v1
 kind: CronJob
