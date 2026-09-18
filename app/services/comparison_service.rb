@@ -40,6 +40,7 @@ class ComparisonService
     Rails.logger.debug "Refreshing comparisons for org ##{org.id}"
     new_snapshots = []
     org.projects.each do |project|
+      Rails.logger.debug "Refreshing comparisons for project ##{project.id} (#{project.name})..."
       new_snapshots << new(project).refresh_comparisons
     rescue => e
       Rails.logger.error "Refreshing project ##{project.id} (#{project.name}) failed with: #{e.full_message}"
