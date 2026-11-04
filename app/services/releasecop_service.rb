@@ -191,7 +191,13 @@ class ReleasecopService
     # releasecop used to fetch every branch, so a deployed SHA (hokusai or tag_pattern) was usually
     # present. sync_repo fetches only the compared branches, so fetch a missing SHA directly.
     def ensure_commit!(env, item)
-      rev = env.for_rev_range
+      rev = begin
+        env.for_rev_range
+      rescue NoMethodError
+        raise unless item["hokusai"].present?
+        # releasecop's find_hokusai_sha calls nil.detect when no image has the stage's tag
+        raise GitError, "no hokusai image tagged #{item["hokusai"]} found for stage #{env.name}"
+      end
       sha = rev.to_s.match?(/\A\h{40}\z/)
       # releasecop falls back to <stage>/<branch>, which sync_repo didn't fetch, so it would be stale
       raise GitError, "no hokusai image SHA found for stage #{env.name}" unless sha || ReleasecopService.fetches_branch?(item)

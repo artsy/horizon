@@ -154,6 +154,14 @@ RSpec.describe ReleasecopService, type: :service do
         .to raise_error(ReleasecopService::GitError, /no hokusai image SHA/)
     end
 
+    it "reports a readable error when no hokusai image has the stage's tag" do
+      stages = [{"name" => "main", "git" => url, "branch" => "main"}, {"name" => "staging", "git" => url, "hokusai" => "staging"}]
+      ReleasecopService.sync_repo(work, "shipping", stages)
+      allow_any_instance_of(Releasecop::ManifestItem).to receive(:`).and_return("") # `hokusai registry images` lists nothing
+      expect { ReleasecopService::Checker.new("shipping", stages, work).check }
+        .to raise_error(ReleasecopService::GitError, "no hokusai image tagged staging found for stage staging")
+    end
+
     it "fetch_all keeps going when a project's stages can't be built" do
       profile = org.profiles.create!(name: "no-aws", environment: {"FOO" => "x"})
       bad = org.projects.create!(name: "broken").tap { |p| p.stages.create!(name: "main", git_remote: url, profile: profile) }
