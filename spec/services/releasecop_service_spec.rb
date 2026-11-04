@@ -136,6 +136,15 @@ RSpec.describe ReleasecopService, type: :service do
       expect { ReleasecopService.sync_repo(work, "shipping", stages) }.not_to raise_error
     end
 
+    it "doesn't fetch a hokusai stage's branch, which may not exist" do
+      stages = [{"name" => "main", "git" => url, "branch" => "main"}, {"name" => "staging", "git" => url, "branch" => "staging", "hokusai" => "staging"}]
+      expect { ReleasecopService.sync_repo(work, "shipping", stages) }.not_to raise_error
+      sha = sh("git", "rev-parse", "release").strip
+      allow_any_instance_of(Releasecop::ManifestItem).to receive(:find_hokusai_sha).and_return(sha)
+      lines = ReleasecopService::Checker.new("shipping", stages, work).check.comparisons.first.lines
+      expect(lines.join).to include("unreleased")
+    end
+
     it "fails loudly when a hokusai stage with no branch finds no image SHA" do
       stages = [{"name" => "main", "git" => url, "branch" => "main"}, {"name" => "production", "git" => url, "hokusai" => "production"}]
       ReleasecopService.sync_repo(work, "shipping", stages)
