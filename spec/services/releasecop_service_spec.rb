@@ -169,6 +169,10 @@ RSpec.describe ReleasecopService, type: :service do
         .to raise_error(ReleasecopService::GitTimeout, /timed out after 1s/)
     end
 
+    it "turns off auto-gc" do
+      expect(ReleasecopService.git!("config", "--get", "gc.auto", chdir: Dir.tmpdir).strip).to eq("0")
+    end
+
     it "keeps credentials out of the error" do
       expect { ReleasecopService.git!("ls-remote", "https://user:s3cret@127.0.0.1:9/x.git", chdir: Dir.tmpdir) }
         .to raise_error(ReleasecopService::GitError) { |e| expect(e.message).not_to include("s3cret") }

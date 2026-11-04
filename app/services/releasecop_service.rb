@@ -100,7 +100,8 @@ class ReleasecopService
   end
 
   def self.git!(*args, chdir:, timeout: GIT_TIMEOUT)
-    Open3.popen2e("git", *args, chdir: chdir, pgroup: true) do |stdin, out, wait|
+    # no auto-gc: it detaches, the pod kills it on exit, and its leftover gc.log.lock blocks gc for good
+    Open3.popen2e("git", "-c", "gc.auto=0", *args, chdir: chdir, pgroup: true) do |stdin, out, wait|
       stdin.close
       reader = Thread.new { out.read }
       reader.report_on_exception = false
