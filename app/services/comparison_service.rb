@@ -11,10 +11,14 @@ class ComparisonService
   end
 
   def self.refresh_all_comparisons
+    working_dir = Horizon.config[:working_dir]
+    fetched = ReleasecopService.fetch_all(Project.all, working_dir) if working_dir
+    started = Time.now
     new_snapshots = []
     Organization.all.map do |org|
-      new_snapshots += refresh_comparisons_for_organization(org)
+      new_snapshots += refresh_comparisons_for_organization(org, fetched)
     end
+    Rails.logger.info "[releasecop] compared projects in #{(Time.now - started).round}s, #{new_snapshots.size} new snapshots"
     ActionCable.server.broadcast(ProjectChannel.channel_name, {newSnapshots: true}) if new_snapshots.any?
     new_snapshots
   end
@@ -36,12 +40,12 @@ class ComparisonService
     commits.size + (contributors.size**2) + (age**2)
   end
 
-  def self.refresh_comparisons_for_organization(org)
+  def self.refresh_comparisons_for_organization(org, fetched = nil)
     Rails.logger.debug "Refreshing comparisons for org ##{org.id}"
     new_snapshots = []
     org.projects.each do |project|
       Rails.logger.debug "Refreshing comparisons for project ##{project.id} (#{project.name})..."
-      new_snapshots << new(project).refresh_comparisons
+      new_snapshots << new(project).refresh_comparisons(fetched: fetched)
     rescue => e
       Rails.logger.error "Refreshing project ##{project.id} (#{project.name}) failed with: #{e.full_message}"
     end
@@ -50,10 +54,10 @@ class ComparisonService
     new_snapshots
   end
 
-  def refresh_comparisons
+  def refresh_comparisons(fetched: nil)
     Rails.logger.debug "Refreshing comparisons for project ##{project.id}"
     refreshed_at = Time.now
-    result = ReleasecopService.new(project).perform_comparison
+    result = ReleasecopService.new(project, fetched: fetched).perform_comparison
     new_snapshot = nil
     if project.snapshot && equivalent_snapshots?(project.snapshot, result)
       project.snapshot.update!(refreshed_at: refreshed_at)
