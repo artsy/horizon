@@ -90,9 +90,10 @@ class ReleasecopService
     File.rename(File.join(working_dir, tmp), File.join(working_dir, name))
   end
 
-  # A tag or hokusai stage with no branch compares a SHA, so its default branch may not exist on the remote.
+  # A tag or hokusai stage compares a SHA; its branch is only releasecop's fallback and may not
+  # exist on the remote (e.g. impulse's 2018 stages: branch "staging" plus hokusai "staging").
   def self.fetches_branch?(item)
-    item["branch"].present? || (item["tag_pattern"].blank? && item["hokusai"].blank?)
+    item["tag_pattern"].blank? && item["hokusai"].blank?
   end
 
   def self.branch(item)
