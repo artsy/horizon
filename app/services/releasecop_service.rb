@@ -80,13 +80,13 @@ class ReleasecopService
     end
   end
 
-  # Same clone as Releasecop::Checker (bare unless hokusai needs a checkout), into a temp
-  # name so a clone that times out isn't mistaken for a repo on the next run.
+  # Non-bare, like Horizon has always cloned (build_manifest_item always sets "hokusai", so
+  # Releasecop::Checker never went bare): a later hokusai stage needs ./hokusai/config.yml on disk.
+  # Cloned into a temp name so a clone that times out isn't mistaken for a repo on the next run.
   def self.clone_repo(working_dir, name, items)
     tmp = "#{name}.cloning"
     FileUtils.rm_rf(File.join(working_dir, tmp))
-    bare = items.none? { |i| i["hokusai"].present? }
-    git!("clone", "--quiet", *("--bare" if bare), items.first["git"], tmp, chdir: working_dir, timeout: CLONE_TIMEOUT)
+    git!("clone", "--quiet", items.first["git"], tmp, chdir: working_dir, timeout: CLONE_TIMEOUT)
     File.rename(File.join(working_dir, tmp), File.join(working_dir, name))
   end
 
@@ -194,7 +194,7 @@ class ReleasecopService
       rev = env.for_rev_range
       sha = rev.to_s.match?(/\A\h{40}\z/)
       # releasecop falls back to <stage>/<branch>, which sync_repo didn't fetch, so it would be stale
-      raise GitError, "no hokusai image SHA found for stage #{env.name}" unless sha || ReleasecopService.fetches_branch?(item)
+      raise GitError, "no deployed SHA found for stage #{env.name}" unless sha || ReleasecopService.fetches_branch?(item)
       fetch_sha(env, item, rev) if sha && !commit?(rev)
     end
 
