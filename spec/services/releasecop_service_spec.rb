@@ -151,7 +151,7 @@ RSpec.describe ReleasecopService, type: :service do
       sh("git", "update-ref", "refs/remotes/production/master", "main", dir: File.join(work, "shipping")) # stale ref, as in an old clone
       allow_any_instance_of(Releasecop::ManifestItem).to receive(:find_hokusai_sha).and_return(nil)
       expect { ReleasecopService::Checker.new("shipping", stages, work).check }
-        .to raise_error(ReleasecopService::GitError, /no hokusai image SHA/)
+        .to raise_error(ReleasecopService::GitError, /no deployed SHA/)
     end
 
     it "fetch_all keeps going when a project's stages can't be built" do
