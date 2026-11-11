@@ -27,7 +27,7 @@ RSpec.feature "Projects", type: :feature do
     expect(props).to have_content("Scheduling")
 
     # view diffs...
-    allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+    allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
       Releasecop::Result.new("shipping", [releasecop_comparison])
     )
     ComparisonService.new(project).refresh_comparisons
