@@ -45,7 +45,7 @@ RSpec.feature "Comparisons", type: :feature do
       end
     end
     expect(project.snapshots.size).to eq(5)
-    allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+    allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
       Releasecop::Result.new("shipping", [small_comparison])
     )
     ComparisonService.new(project).refresh_comparisons
@@ -61,7 +61,7 @@ RSpec.feature "Comparisons", type: :feature do
         automatic: true,
         arguments: {base: "release", head: "staging"}
       )
-      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+      allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
         Releasecop::Result.new("shipping", [large_comparison])
       )
       expect_any_instance_of(DeployService).to receive(:start)
@@ -75,7 +75,7 @@ RSpec.feature "Comparisons", type: :feature do
         automatic: true,
         arguments: {base: "release", head: "staging"}
       )
-      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+      allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
         Releasecop::Result.new("shipping", [empty_comparison])
       )
       expect_any_instance_of(DeployService).not_to receive(:start)
@@ -89,7 +89,7 @@ RSpec.feature "Comparisons", type: :feature do
         automatic: false,
         arguments: {base: "release", head: "staging"}
       )
-      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+      allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
         Releasecop::Result.new("shipping", [large_comparison])
       )
       expect_any_instance_of(DeployService).not_to receive(:start)
@@ -103,7 +103,7 @@ RSpec.feature "Comparisons", type: :feature do
         automatic: true,
         arguments: {base: "release", head: "staging"}
       )
-      allow_any_instance_of(Releasecop::Checker).to receive(:check).and_return(
+      allow_any_instance_of(ReleasecopService::Checker).to receive(:check).and_return(
         Releasecop::Result.new("shipping", [large_comparison])
       )
       project.deploy_blocks.create!(description: "staging broken")
