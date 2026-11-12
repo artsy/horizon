@@ -48,25 +48,27 @@ export const ProjectSummary: React.FC<Project> = ({
           )}
         </Box>
 
+        {/* a failed comparison has no data; don't show it as "Up to date" */}
         <Box pt={1}>
-          {stages.map((stage: Stage, i: number) => {
-            if (i === 0) {
-              return null
-            }
-            const comparison = comparedStages[i - 1]
-            return (
-              <Box key={i} py={1}>
-                <StageName comparison={comparison} stage={stage} />
-                <Box pl={30}>
-                  <CommitsMessage {...comparison} />
+          {!errorMessage &&
+            stages.map((stage: Stage, i: number) => {
+              if (i === 0) {
+                return null
+              }
+              const comparison = comparedStages[i - 1]
+              return (
+                <Box key={i} py={1}>
+                  <StageName comparison={comparison} stage={stage} />
+                  <Box pl={30}>
+                    <CommitsMessage {...comparison} />
 
-                  {comparison.blame && (
-                    <Sans size="3t">{comparison.blame}</Sans>
-                  )}
+                    {comparison.blame && (
+                      <Sans size="3t">{comparison.blame}</Sans>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-            )
-          })}
+              )
+            })}
         </Box>
       </Link>
     </BorderBox>

@@ -77,5 +77,10 @@ describe("ProjectSummary", () => {
       const component = getWrapper({ ...erroringProjectFixture })
       expect(component.text()).toMatch("No such file or directory")
     })
+
+    it("Doesn't show stages as up to date", () => {
+      const component = getWrapper({ ...erroringProjectFixture })
+      expect(component.text()).not.toMatch("Up to date")
+    })
   })
 })
