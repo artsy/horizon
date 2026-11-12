@@ -138,16 +138,17 @@ export const ProjectShow: React.FC<ProjectShowProps> = ({ project, tags }) => {
         )}
 
         <Box mb={3}>
-          {stages.map((stage: Stage, i: number) => {
-            const comparison = i > 0 ? comparedStages[i - 1] : undefined
-            return (
-              <StageWithComparison
-                stage={stage}
-                comparison={comparison}
-                key={i}
-              />
-            )
-          })}
+          {!errorMessage &&
+            stages.map((stage: Stage, i: number) => {
+              const comparison = i > 0 ? comparedStages[i - 1] : undefined
+              return (
+                <StageWithComparison
+                  stage={stage}
+                  comparison={comparison}
+                  key={i}
+                />
+              )
+            })}
         </Box>
 
         <Box>

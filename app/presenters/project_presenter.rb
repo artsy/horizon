@@ -10,7 +10,7 @@ class ProjectPresenter
   end
 
   def fully_released?
-    snapshot && severity.zero?
+    snapshot && snapshot.error_message.blank? && severity.zero?
   end
 
   def severity
