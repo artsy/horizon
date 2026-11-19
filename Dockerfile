@@ -1,7 +1,7 @@
 # ---------------------------------------------------------
 # Base Image
 # ---------------------------------------------------------
-FROM artsy/ruby:3.3.0-node-18-yarn as base
+FROM artsy/ruby:3.3.14-node-18-yarn as base
 
 RUN apk update && apk --no-cache --quiet add --update \
     git \
@@ -17,9 +17,12 @@ RUN apk update && apk --no-cache --quiet add --update \
     python3-dev \
     py3-pip
 
-RUN pip3 install --upgrade --no-cache-dir pip \
-    && pip3 install --no-cache-dir 'Cython<3.0' 'setuptools==69.5.1' 'wheel' \
-    && pip3 install --upgrade --no-cache-dir --no-build-isolation hokusai
+# alpine3.23 python is externally managed (PEP 668), so hokusai gets its own venv
+RUN python3 -m venv /opt/hokusai \
+    && /opt/hokusai/bin/pip install --upgrade --no-cache-dir pip \
+    && /opt/hokusai/bin/pip install --no-cache-dir 'Cython<3.0' 'setuptools==69.5.1' 'wheel' \
+    && /opt/hokusai/bin/pip install --upgrade --no-cache-dir --no-build-isolation hokusai \
+    && ln -s /opt/hokusai/bin/hokusai /usr/local/bin/hokusai
 
 # ---------------------------------------------------------
 # Build Image
