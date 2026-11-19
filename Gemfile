@@ -3,7 +3,7 @@
 source "https://rubygems.org", cooldown: 10
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.3.0"
+ruby "3.3.14"
 
 gem "rails", "6.1.7.9"
 
