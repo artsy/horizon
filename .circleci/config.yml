@@ -41,23 +41,12 @@ workflows:
           context: horizon
           project_id: 38
 
-      - artsy-remote-docker/buildkit-build:
-          <<: *not_staging_or_release
-          context: hokusai
-          name: builder-image-build
-          pre-steps:
-            - run:
-                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
-
-      - artsy-remote-docker/buildkit-push:
+      - artsy-remote-docker/buildx-build-push:
           <<: *not_staging_or_release
           context: hokusai
           name: builder-image-push
-          requires:
-            - builder-image-build
-          pre-steps:
-            - run:
-                command: echo 'export BUILD_TARGET="builder";' >> $BASH_ENV
+          target: builder
+          resource_class: medium
 
       - test:
           <<: *not_staging_or_release
@@ -65,25 +54,20 @@ workflows:
           requires:
             - builder-image-push
 
-      - artsy-remote-docker/buildkit-build:
-          <<: *only_main
-          context: hokusai
-          name: production-image-build
-          requires:
-            - builder-image-build
-
-      - artsy-remote-docker/buildkit-push:
+      - artsy-remote-docker/buildx-build-push:
           <<: *only_main
           context: hokusai
           name: production-image-push
+          resource_class: medium
           requires:
             - test
-            - production-image-build
+            - builder-image-push
 
       - hokusai/deploy-staging:
           <<: *only_main
           project-name: horizon
           requires:
+            - test
             - production-image-push
 
       - hokusai/deploy-production:
