@@ -18,6 +18,14 @@ RSpec.describe ReleasecopService, type: :service do
     end
   end
 
+  describe "#manifest_items" do
+    it "passes each stage's path to releasecop, blank as nil" do
+      project.stages.find_by!(name: "production").update!(hokusai: "production", path: "apps/agent-web")
+      items = ReleasecopService.new(project).manifest_items
+      expect(items.map { |i| i["path"] }).to eq([nil, "apps/agent-web"])
+    end
+  end
+
   describe "working dir not set by user" do
     it "uses a temp dir" do
       obj = ReleasecopService.new(project)
