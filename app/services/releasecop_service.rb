@@ -241,6 +241,7 @@ class ReleasecopService
       "tag_pattern" => stage.tag_pattern.presence,
       "branch" => stage.branch.presence,
       "hokusai" => stage.hokusai.presence,
+      "path" => stage.path.presence,
       "aws_access_key_id" => stage.profile&.environment&.fetch("AWS_ACCESS_KEY_ID"),
       "aws_secret_access_key" => stage.profile&.environment&.fetch("AWS_SECRET_ACCESS_KEY")
     }
