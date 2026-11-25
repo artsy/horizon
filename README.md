@@ -41,7 +41,7 @@ The UI can then be found at http://localhost:3000.
 
 - `Organization`s have many `Project`s
 - Each `Project` has an associated list of `Stage`s, with their order determined by `Stage#position` (e.g., _main_, _staging_, and _production_)
-- `Stage`s must describe how to get information about their current state. This takes the form of a `#git_remote` (e.g., referring to Github or Heroku), optional `#branch` name (default: _main_), optional `#hokusai` environment (e.g., _staging_ or _production_), or `#tag_pattern` (e.g., _release-\*_). The [`releasecop` gem](https://github.com/joeyAghion/releasecop) is used internally to determine stage diffs, so see that project for more detail.
+- `Stage`s must describe how to get information about their current state. This takes the form of a `#git_remote` (e.g., referring to Github or Heroku), optional `#branch` name (default: _main_), optional `#hokusai` environment (e.g., _staging_ or _production_) with an optional `#path` to the subdirectory containing its `hokusai/` config (for monorepos, e.g., _apps/agent-web_), or `#tag_pattern` (e.g., _release-\*_). The [`releasecop` gem](https://github.com/joeyAghion/releasecop) is used internally to determine stage diffs, so see that project for more detail.
 - `Stage`s can optionally be associated with a `Profile` that stores credentials for accessing git providers or AWS.
 - `Snapshot`s capture the complete state of a project's stages at a point in time. Each `Snapshot` has associated `Comparison`s between the consecutive stages of a project (e).g., a comparison between _main_ and _staging_, and a second between _staging_ and _production_)
 - A cron periodically reevaluates these comparisons, creating a new snapshot if the state has changed at all.

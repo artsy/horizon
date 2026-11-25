@@ -21,5 +21,5 @@ ActiveAdmin.register Stage do
     end
   end
 
-  permit_params :project_id, :profile_id, :name, :position, :git_remote, :tag_pattern, :branch, :hokusai
+  permit_params :project_id, :profile_id, :name, :position, :git_remote, :tag_pattern, :branch, :hokusai, :path
 end

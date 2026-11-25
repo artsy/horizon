@@ -68,6 +68,7 @@ export interface Stage {
   name: string
   position: number
   profile_id: number
+  path?: string | null
   project_id: number
   tag_pattern: string | null
   updated_at: string
